@@ -1,4 +1,109 @@
 package chess;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+
 public class PawnMovementRule {
+
+    private ChessBoard board;
+    private ChessPosition position;
+    public PawnMovementRule(ChessBoard board, ChessPosition position){
+        this.board = board;
+        this.position = position;
+
+    }
+
+    public Collection<ChessMove> possibleMoves(){
+
+        int [][] possible_1 = {{position.getRow()+1, position.getColumn()+1},
+                {position.getRow()-1, position.getColumn()+1},
+                {position.getRow(), position.getColumn()+1},
+                {position.getRow(), position.getColumn()+2}};
+
+        int [][] possible_2 = {{position.getRow()+1, position.getColumn()+1},
+                {position.getRow()-1, position.getColumn()+1},
+                {position.getRow(), position.getColumn()+1}};
+
+        boolean first = false;
+
+        Collection<ChessMove> result = new ArrayList<>();
+
+        if (position.getRow() == 2) {
+            for (int i = 0; i < possible_1.length; i++) {
+                if (possible_1[i][0] < 9 & possible_1[i][1] < 9 & possible_1[i][0] > 0 & possible_1[i][1] > 0) {
+                    ChessPosition endpoint = new ChessPosition(possible_1[i][0], possible_1[i][1]);
+                    if (board.getPiece(endpoint) == null & endpoint.getRow() == position.getRow()
+                            & (endpoint.getColumn() - position.getColumn() == 1||endpoint.getColumn() - position.getColumn() == -1)){
+                        if (endpoint.getRow() == 7){
+                            ChessMove move = new ChessMove(position, endpoint,ChessPiece.PieceType.QUEEN);
+                            result.add(move);
+                            first = true;
+                        }else {
+                            ChessMove move = new ChessMove(position, endpoint, null);
+                            result.add(move);
+                            first = true;
+                        }
+                    }else if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
+                            & (endpoint.getColumn() - position.getColumn() == 2||endpoint.getRow() - position.getColumn() == -2)
+                            & first){
+                        ChessMove move = new ChessMove(position, endpoint, null);
+                        result.add(move);
+                    }else if (board.getPiece(endpoint) != null){
+                        if ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()){
+                            ChessMove move = new ChessMove(position, endpoint, null);
+                            result.add(move);
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < possible_2.length; i++) {
+                if (possible_2[i][0] < 9 & possible_2[i][1] < 9 & possible_2[i][0] > 0 & possible_2[i][1] > 0) {
+                    ChessPosition endpoint = new ChessPosition(possible_2[i][0], possible_2[i][1]);
+                    if (board.getPiece(endpoint) == null & endpoint.getRow() == position.getRow()
+                            & (endpoint.getColumn() - position.getColumn() == 1||endpoint.getColumn() - position.getColumn() == -1)){
+                        if (endpoint.getRow() == 7){
+                            ChessMove move = new ChessMove(position, endpoint,ChessPiece.PieceType.QUEEN);
+                            result.add(move);
+                            first = true;
+                        }else {
+                            ChessMove move = new ChessMove(position, endpoint, null);
+                            result.add(move);
+                            first = true;
+                        }
+                    }else if (board.getPiece(endpoint) != null){
+                        if ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()){
+                            ChessMove move = new ChessMove(position, endpoint, null);
+                            result.add(move);
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PawnMovementRule that = (PawnMovementRule) o;
+        return Objects.equals(board, that.board) && Objects.equals(position, that.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board, position);
+    }
+
+    @Override
+    public String toString() {
+        return "PawnMovementRule{" +
+                "board=" + board +
+                ", position=" + position +
+                '}';
+    }
 }
+
+
