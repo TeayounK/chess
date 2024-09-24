@@ -1,5 +1,6 @@
 package chess;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -55,8 +56,27 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
-
-
+        if (getPieceType() == PieceType.KING) {
+            KingMovementRule King = new KingMovementRule(board, myPosition);
+            return King.possibleMoves();
+        }else if ((getPieceType() == PieceType.KNIGHT)){
+            KnightMovementRule Kight = new KnightMovementRule(board, myPosition);
+            return Kight.possibleMoves();
+        }else if ((getPieceType() == PieceType.PAWN)){
+            PawnMovementRule Pawn = new PawnMovementRule(board, myPosition);
+            return Pawn.possibleMoves();
+        }else if ((getPieceType() == PieceType.QUEEN)){
+            QueenMovementRule Queen = new QueenMovementRule(board, myPosition);
+            return Queen.possibleMoves();
+        }else if ((getPieceType() == PieceType.ROOK)){
+            RookMovementRule Rook = new RookMovementRule(board, myPosition);
+            return Rook.possibleMoves();
+        }else if ((getPieceType() == PieceType.BISHOP)){
+            BishopMovementRule Bishop = new BishopMovementRule(board, myPosition);
+            return Bishop.possibleMoves();
+        }else{
+            return new ArrayList<>();
+        }
 
 
         //        Rule rule = switch(getPieceType()) {
@@ -68,7 +88,6 @@ public class ChessPiece {
 //            default     -> null;
 //        };
 //        return rule.getMoves(board,myPosition);
-        return new ArrayList<>();
     }
 
 
@@ -83,5 +102,13 @@ public class ChessPiece {
     @Override
     public int hashCode() {
         return Objects.hash(pieceColor, type);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                '}';
     }
 }

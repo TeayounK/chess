@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 public class KingMovementRule {
 
@@ -10,9 +11,9 @@ public class KingMovementRule {
     public KingMovementRule(ChessBoard board, ChessPosition position){
         this.board = board;
         this.position = position;
-
     }
-    public void possibleMoves(){
+
+    public Collection<ChessMove> possibleMoves(){
         int [][] possible = {{position.getRow(), position.getColumn()-1},
                             {position.getRow(), position.getColumn()+1},
                             {position.getRow()+1, position.getColumn()},
@@ -22,13 +23,33 @@ public class KingMovementRule {
                             {position.getRow()-1, position.getColumn()-1},
                             {position.getRow()-1, position.getColumn()+1}};
 
-        Collection<ChessMove> result = new Collection<ChessMove>();
+        Collection<ChessMove> result = new ArrayList<>();
         for (int i = 0 ; i < possible.length ; i++ ){
-            ChessPosition temp = new ChessPosition(possible[i][0],possible[i][1]);
-            if (board.getPiece(temp) == null){
-                result.add(possible[i]);
+            if (possible[i][0] < 9 & possible[i][1] < 9 & possible[i][0] > 0 & possible[i][1] > 0){
+                ChessPosition endpoint = new ChessPosition(possible[i][0],possible[i][1]);
+                if (board.getPiece(endpoint) == null){
+                    ChessMove move = new ChessMove(position, endpoint, null);
+                    result.add(move);
+                }else if ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()) {
+                    ChessMove move = new ChessMove(position, endpoint, null);
+                    result.add(move);
+                }
             }
+
         }
+        return result;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        KingMovementRule that = (KingMovementRule) o;
+        return Objects.equals(board, that.board) && Objects.equals(position, that.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board, position);
+    }
 }
