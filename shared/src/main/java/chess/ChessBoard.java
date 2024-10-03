@@ -12,6 +12,7 @@ import java.util.Objects;
 public class ChessBoard {
 
     private ChessPiece[][] squares = new ChessPiece[8][8];
+
     public ChessBoard() {
         
     }
@@ -25,6 +26,12 @@ public class ChessBoard {
     public void addPiece(ChessPosition position, ChessPiece piece) {
         squares[position.getRow()-1][position.getColumn()-1] = piece;
     }
+
+    public void removePiece(ChessPosition position){
+        squares[position.getRow()-1][position.getColumn()-1] = null;
+    }
+
+
 
     /**
      * Gets a chess piece on the chessboard
@@ -80,6 +87,22 @@ public class ChessBoard {
         squares[7][4] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KING);
 
     }
+
+
+    public ChessBoard duplicate() {
+        ChessBoard clone = new ChessBoard() ;
+        for (int i=1; i<9; i++){
+            for(int j=1; j<9; j++){
+                ChessPosition pos = new ChessPosition(i,j);
+                if (getPiece(pos)!= null) {
+                    clone.addPiece(pos, squares[i-1][j-1]);
+                }
+            }
+        }
+        return clone;
+    }
+
+    //getCopy()
 
     @Override
     public boolean equals(Object o) {

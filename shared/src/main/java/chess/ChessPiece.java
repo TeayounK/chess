@@ -1,6 +1,5 @@
 package chess;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -19,6 +18,7 @@ public class ChessPiece {
         this.pieceColor = pieceColor;
         this.type = type;
     }
+
 
     /**
      * The various different chess piece options
@@ -76,17 +76,6 @@ public class ChessPiece {
         }else{
             return new ArrayList<>();
         }
-
-
-        //        Rule rule = switch(getPieceType()) {
-//            case BISHOP -> new Rule(true, new int[][]{{1,-1},{-1,1},{-1,-1},{1,1}});
-//            case ROOK   -> new Rule(true, new int[][]{{1,0},{-1,0},{0,1},{0,-1}});
-//            case KNIGHT -> new Rule(false, new int[][]{{2,1},{2,-1},{-2,1}});
-//            case QUEEN  -> new Rule(true, new int[][]{{1,-1},{-1,1},{-1,-1},{1,1}});
-//            case KING   -> new Rule(false, new int[][]{{1,-1},{-1,1},{-1,-1},{1,1}});
-//            default     -> null;
-//        };
-//        return rule.getMoves(board,myPosition);
     }
 
 
@@ -110,4 +99,5 @@ public class ChessPiece {
                 ", type=" + type +
                 '}';
     }
+
 }
