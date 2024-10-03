@@ -57,7 +57,7 @@ public class ChessGame {
         Collection<ChessMove> result = new ArrayList<>();
         // loop through the list "moves"
         for(ChessMove move : moves){
-            // if there is no piece in the endposition
+            // if there is no piece in the end_position
             if (board.getPiece(move.getEndPosition()) == null){
                 board.addPiece(move.getEndPosition(),board.getPiece(move.getStartPosition()));
                 board.removePiece(move.getStartPosition());
@@ -69,7 +69,7 @@ public class ChessGame {
                 board.addPiece(move.getStartPosition(),board.getPiece(move.getEndPosition()));
                 board.removePiece(move.getEndPosition());
             // if there is an opponent piece
-            }else{ // since piecemoves returns valid moves where it can capture enemy or move to an empty position
+            }else{ // since piece_moves returns valid moves where it can capture enemy or move to an empty position
                 ChessPiece target = board.getPiece(move.getEndPosition());
                 board.removePiece(move.getEndPosition());
                 board.addPiece(move.getEndPosition(),board.getPiece(move.getStartPosition()));
@@ -122,7 +122,7 @@ public class ChessGame {
                             teamColor=piece_color;
                         }
                         // killing opponent piece
-                    } else { // since piecemoves returns valid moves where it can capture enemy or move to an empty position
+                    } else { // since piece_moves returns valid moves where it can capture enemy or move to an empty position
                         if (move.getPromotionPiece() != null) {
                             ChessPiece.PieceType pieceType = move.getPromotionPiece();
                             TeamColor colorType = board.getPiece(move.getStartPosition()).getTeamColor();
@@ -197,7 +197,7 @@ public class ChessGame {
         for (int i=1;i<9;i++){
             for (int j=1;j<9;j++){
                 ChessPosition pos = new ChessPosition(i,j);
-                // verify a existence of piece
+                // verify an existence of piece
                 if (clone.getPiece(pos) != null){
                     // verify team color
                     if (clone.getPiece(pos).getTeamColor()==teamColor){
@@ -214,7 +214,7 @@ public class ChessGame {
                                 clone.addPiece(a_move.getStartPosition(),clone.getPiece(a_move.getEndPosition()));
                                 clone.removePiece(a_move.getEndPosition());
 
-                            }else{ // since piecemoves returns valid moves where it can capture enemy or move to an empty position
+                            }else{ // since piece_moves returns valid moves where it can capture enemy or move to an empty position
                                 ChessPiece target = clone.getPiece(a_move.getEndPosition());
                                 clone.removePiece(a_move.getEndPosition());
                                 clone.addPiece(a_move.getEndPosition(),clone.getPiece(a_move.getStartPosition()));
