@@ -95,15 +95,20 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        // need to check if the piece we chose is not null
         if (board.getPiece(move.getStartPosition())!=null){
+            // need to check the team color is the same as the color of piece we want to move
             if(teamColor==board.getPiece(move.getStartPosition()).getTeamColor()){
                 Collection<ChessMove> valid_moves = validMoves(move.getStartPosition());
                 TeamColor piece_color = board.getPiece(move.getStartPosition()).getTeamColor();
+                // after successfully done with the move, we change the team color for next turn
                 piece_color = switch (piece_color){
                     case WHITE -> TeamColor.BLACK;
                     case BLACK -> TeamColor.WHITE;
                 };
+                // want to make sure the move we want to make is valid.
                 if (valid_moves.contains(move)) {
+                    // moving to empty space
                     if (board.getPiece(move.getEndPosition()) == null) {
                         if (move.getPromotionPiece() != null) {
                             ChessPiece.PieceType pieceType = move.getPromotionPiece();
@@ -116,8 +121,7 @@ public class ChessGame {
                             board.removePiece(move.getStartPosition());
                             teamColor=piece_color;
                         }
-
-
+                        // killing opponent piece
                     } else { // since piecemoves returns valid moves where it can capture enemy or move to an empty position
                         if (move.getPromotionPiece() != null) {
                             ChessPiece.PieceType pieceType = move.getPromotionPiece();
