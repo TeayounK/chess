@@ -55,8 +55,7 @@ public class ChessBoard {
         for (int i = 1 ; i < 17; i++){
             if (i < 9){
                 int row = 2;
-                int col = i;
-                squares[row-1][col-1] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.PAWN);
+                squares[row-1][i-1] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.PAWN);
 
             }else {
                 int row = 7;
