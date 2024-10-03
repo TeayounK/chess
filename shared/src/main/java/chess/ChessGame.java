@@ -155,15 +155,19 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        // looping through board
         for (int i=1;i<9;i++){
             for (int j=1;j<9;j++){
                 ChessPosition pos = new ChessPosition(i,j);
                 ChessPiece piece = board.getPiece(pos);
+                // if piece is not null,
                 if (piece != null){
+                    // want to know which moves are possible for opponent
                     if(piece.getTeamColor() != teamColor) {
                         Collection<ChessMove> moves = piece.pieceMoves(board, pos);
                         for (ChessMove move:moves){
                             if (board.getPiece(move.getEndPosition()) != null){
+                                // want to know if one of possible movement threat my king
                                 if (board.getPiece(move.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING &&
                                         board.getPiece(move.getEndPosition()).getTeamColor() == teamColor) {
                                     return true;
