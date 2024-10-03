@@ -188,10 +188,12 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
+        // setting for result, clone of board, new game setup
         boolean result = true;
         ChessBoard clone = board.duplicate();
         ChessGame temp = new ChessGame();
         temp.setBoard(clone);
+        // looping through new cloned board
         for (int i=1;i<9;i++){
             for (int j=1;j<9;j++){
                 ChessPosition pos = new ChessPosition(i,j);
