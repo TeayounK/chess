@@ -54,13 +54,12 @@ public class ChessGame {
 
         ChessPiece startPiece = this.board.getPiece(startPosition);
         Collection<ChessMove> moves = startPiece.pieceMoves(board,startPosition);
-        TeamColor teamColor = startPiece.getTeamColor();
         Collection<ChessMove> result = new ArrayList<>();
         for(ChessMove move : moves){
             if (board.getPiece(move.getEndPosition()) == null){
                 board.addPiece(move.getEndPosition(),board.getPiece(move.getStartPosition()));
                 board.removePiece(move.getStartPosition());
-                if (!isInCheck(teamColor)){
+                if (!isInCheck(startPiece.getTeamColor())){
                     result.add(move);
                 }
                 // Revert to before moving
@@ -72,7 +71,7 @@ public class ChessGame {
                 board.removePiece(move.getEndPosition());
                 board.addPiece(move.getEndPosition(),board.getPiece(move.getStartPosition()));
                 board.removePiece(move.getStartPosition());
-                if (!isInCheck(teamColor)){
+                if (!isInCheck(startPiece.getTeamColor())){
                     result.add(move);
                 }
                 // Revert to before moving
