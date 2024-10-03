@@ -244,18 +244,22 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        // want to know if we are in check or not
         if (!isInCheck(teamColor)){
             int temp_sum = 0;
+            // looping through all possible moves
             for (int i=1;i<9;i++) {
                 for (int j = 1; j < 9; j++) {
                     ChessPosition pos = new ChessPosition(i, j);
                     if (board.getPiece(pos) != null) {
+                        // counts the possible moves
                         if (board.getPiece(pos).getTeamColor() == teamColor) {
                             temp_sum += (validMoves(pos)).toArray().length;
                         }
                     }
                 }
             }
+            // if there is no possible moves, return true, else return false.
             return temp_sum == 0;
         }
         return false;
