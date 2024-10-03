@@ -51,26 +51,30 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-
+        // get the settings for identifying piece type and team color
         ChessPiece startPiece = this.board.getPiece(startPosition);
         Collection<ChessMove> moves = startPiece.pieceMoves(board,startPosition);
         Collection<ChessMove> result = new ArrayList<>();
+        // loop through the list "moves"
         for(ChessMove move : moves){
+            // if there is no piece in the endposition
             if (board.getPiece(move.getEndPosition()) == null){
                 board.addPiece(move.getEndPosition(),board.getPiece(move.getStartPosition()));
                 board.removePiece(move.getStartPosition());
+                // we need to check if the move make it check or not
                 if (!isInCheck(startPiece.getTeamColor())){
                     result.add(move);
                 }
                 // Revert to before moving
                 board.addPiece(move.getStartPosition(),board.getPiece(move.getEndPosition()));
                 board.removePiece(move.getEndPosition());
-
+            // if there is an opponent piece
             }else{ // since piecemoves returns valid moves where it can capture enemy or move to an empty position
                 ChessPiece target = board.getPiece(move.getEndPosition());
                 board.removePiece(move.getEndPosition());
                 board.addPiece(move.getEndPosition(),board.getPiece(move.getStartPosition()));
                 board.removePiece(move.getStartPosition());
+                // we need to check if the move make it check or not
                 if (!isInCheck(startPiece.getTeamColor())){
                     result.add(move);
                 }
