@@ -138,13 +138,13 @@ public class ChessGame {
                         }
                     }
                 } else {
-                    throw new InvalidMoveException("This is invalid move"); //??
+                    throw new InvalidMoveException("This is invalid move");
                 }
             }else {
-                throw new InvalidMoveException("This is invalid move"); //??
+                throw new InvalidMoveException("This is invalid move");
             }
         }else {
-            throw new InvalidMoveException("This is invalid move"); //??
+            throw new InvalidMoveException("This is invalid move");
         }
     }
 
