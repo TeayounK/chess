@@ -1,12 +1,10 @@
 package dataaccess;
 
-import model.AuthData;
 import model.UserData;
 
-import java.util.Collection;
 import java.util.HashMap;
 
-public class MemoryDAO implements DataAccess {
+public class MemoryUserDAO implements DataAccessUser {
     final private HashMap<String, UserData> users = new HashMap<>();
 
 
@@ -24,8 +22,4 @@ public class MemoryDAO implements DataAccess {
         return users.get(username);
     }
 
-    @Override
-    public void addAuth(AuthData authData) throws DataAccessException {
-
-    }
 }
