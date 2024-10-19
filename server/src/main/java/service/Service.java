@@ -6,8 +6,7 @@ import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class Service {
 
@@ -38,6 +37,7 @@ public class Service {
             throw new DataAccessException("Error: Unknown username");
         }
         AuthData authExistUser = dataAccessAuth.getAuth(user.username());
+
         if (authExistUser != null){
             throw new DataAccessException("Error: Already logged-in username");
         }
@@ -47,6 +47,12 @@ public class Service {
         AuthData authData = new AuthData(UUID.randomUUID().toString(), user.username());
         dataAccessAuth.addAuth(authData);
         return authData;
+    }
+
+
+    // Logout
+    public void logoutUser(String authToken) throws DataAccessException{
+        dataAccessAuth.removeAuth(authToken);
     }
 
 }
