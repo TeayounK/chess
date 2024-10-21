@@ -10,4 +10,8 @@ public interface DataAccessAuth {
 
     void removeAuth(String authToken) throws DataAccessException;
 
+    boolean checkAuth(String authToken) throws DataAccessException;
+
+    void clearAll();
+
 }
