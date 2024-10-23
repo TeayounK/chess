@@ -6,6 +6,7 @@ import dataaccess.DataAccessUser;
 import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
+import model.JoinGame;
 import model.UserData;
 
 import javax.xml.crypto.Data;
@@ -81,6 +82,13 @@ public class Service {
         dataAccessAuth.clearAll();
         dataAccessGame.clearAll();
         dataAccessUser.clearAll();
+    }
+
+    public void joinGame(JoinGame gameData, String authToken) throws DataAccessException{
+        String username = dataAccessAuth.getUser(authToken);
+        GameData gameCalled = dataAccessGame.getaGame(gameData, username);
+
+
     }
 
 }

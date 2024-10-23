@@ -8,6 +8,8 @@ public interface DataAccessAuth {
 
     AuthData getAuth(String username) throws DataAccessException;
 
+    public String getUser(String authToken);
+
     void removeAuth(String authToken) throws DataAccessException;
 
     boolean checkAuth(String authToken) throws DataAccessException;

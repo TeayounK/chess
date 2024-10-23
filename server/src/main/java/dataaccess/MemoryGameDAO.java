@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.GameData;
+import model.JoinGame;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,5 +31,26 @@ public class MemoryGameDAO implements DataAccessGame{
     public void clearAll() {
         games = new HashMap<>();
         max_id = -1;
+    }
+
+    public GameData getaGame(JoinGame game, String username) throws DataAccessException {
+        GameData gameCalled = games.get(game.gameID());
+        if (gameCalled == null||(!game.playerColor().equalsIgnoreCase("black")&&!game.playerColor().equalsIgnoreCase("white"))) {
+            throw new DataAccessException("Error: bad request");
+        } else if (gameCalled.blackUsername() != null && gameCalled.whiteUsername() != null) {
+            throw new DataAccessException("Error: already taken");
+        } else if ((gameCalled.blackUsername() != null && game.playerColor().equalsIgnoreCase("black")) || (gameCalled.whiteUsername() != null && game.playerColor().equalsIgnoreCase("white"))) {
+            throw new DataAccessException("Error: already taken");
+        } else {
+            games.remove(gameCalled.gameID(),gameCalled);
+            if (game.playerColor().equalsIgnoreCase("white")){
+                GameData newGame = new GameData(gameCalled.gameID(),username,gameCalled.blackUsername(),gameCalled.gameName(),gameCalled.game());
+                games.put(gameCalled.gameID(),newGame);
+            }else{
+                GameData newGame = new GameData(gameCalled.gameID(),gameCalled.whiteUsername(),username,gameCalled.gameName(),gameCalled.game());
+                games.put(gameCalled.gameID(),newGame);
+            }
+            return games.get(game.gameID());
+        }
     }
 }

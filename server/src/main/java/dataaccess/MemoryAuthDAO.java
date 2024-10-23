@@ -17,6 +17,15 @@ public class MemoryAuthDAO implements DataAccessAuth {
     public AuthData getAuth(String username){
         return auths.get(username);
     }
+    @Override
+    public String getUser(String authToken){
+        for (String username: auths.keySet()) {
+            if (Objects.equals(authToken, auths.get(username).authToken())) {
+                return username;
+            }
+        }
+        return null;
+    }
 
     @Override
     public void removeAuth(String authToken) throws DataAccessException {

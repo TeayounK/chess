@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.GameData;
+import model.JoinGame;
 
 import java.util.Collection;
 
@@ -11,4 +12,5 @@ public interface DataAccessGame {
 
     void clearAll();
 
+    public GameData getaGame(JoinGame game, String username)throws DataAccessException;
 }
