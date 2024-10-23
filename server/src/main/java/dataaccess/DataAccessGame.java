@@ -6,11 +6,11 @@ import model.JoinGame;
 import java.util.Collection;
 
 public interface DataAccessGame {
-    public GameData CreateGame(GameData gameData) throws DataAccessException;
+    GameData CreateGame(GameData gameData) throws DataAccessException;
 
-    public Collection<GameData> getGames();
+    Collection<GameData> getGames();
 
     void clearAll();
 
-    public GameData getaGame(JoinGame game, String username)throws DataAccessException;
+    void updateGame(JoinGame game, String username)throws DataAccessException;
 }

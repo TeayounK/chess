@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class MemoryGameDAO implements DataAccessGame{
     private HashMap<Integer, GameData> games = new HashMap<>();
-    int max_id = -1;
+    int max_id = 0;
 
 
     @Override
@@ -17,7 +17,7 @@ public class MemoryGameDAO implements DataAccessGame{
             throw new DataAccessException("Error: Not a valid Game name");
         }else {
             max_id += 1;
-            GameData newGame = new GameData(max_id, "","",gameData.gameName(),null);
+            GameData newGame = new GameData(max_id, null,null,gameData.gameName(),null);
             games.put(max_id, newGame);
             return newGame;
         }
@@ -33,7 +33,7 @@ public class MemoryGameDAO implements DataAccessGame{
         max_id = -1;
     }
 
-    public GameData getaGame(JoinGame game, String username) throws DataAccessException {
+    public void updateGame(JoinGame game, String username) throws DataAccessException {
         GameData gameCalled = games.get(game.gameID());
         if (gameCalled == null||(!game.playerColor().equalsIgnoreCase("black")&&!game.playerColor().equalsIgnoreCase("white"))) {
             throw new DataAccessException("Error: bad request");
@@ -50,7 +50,6 @@ public class MemoryGameDAO implements DataAccessGame{
                 GameData newGame = new GameData(gameCalled.gameID(),gameCalled.whiteUsername(),username,gameCalled.gameName(),gameCalled.game());
                 games.put(gameCalled.gameID(),newGame);
             }
-            return games.get(game.gameID());
         }
     }
 }

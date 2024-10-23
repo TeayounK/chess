@@ -9,7 +9,6 @@ import model.GameData;
 import model.JoinGame;
 import model.UserData;
 
-import javax.xml.crypto.Data;
 import java.util.*;
 
 public class Service {
@@ -64,9 +63,7 @@ public class Service {
 
     // Create Game
     public GameData createGame(GameData gamename) throws DataAccessException{
-        GameData newGame = dataAccessGame.CreateGame(gamename);
-        return newGame;
-
+        return dataAccessGame.CreateGame(gamename);
 
     }
 
@@ -86,7 +83,7 @@ public class Service {
 
     public void joinGame(JoinGame gameData, String authToken) throws DataAccessException{
         String username = dataAccessAuth.getUser(authToken);
-        GameData gameCalled = dataAccessGame.getaGame(gameData, username);
+        dataAccessGame.updateGame(gameData, username);
 
 
     }
