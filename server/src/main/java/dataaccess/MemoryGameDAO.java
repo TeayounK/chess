@@ -30,7 +30,7 @@ public class MemoryGameDAO implements DataAccessGame{
     @Override
     public void clearAll() {
         games = new HashMap<>();
-        max_id = -1;
+        max_id = 0;
     }
 
     public void updateGame(JoinGame game, String username) throws DataAccessException {
