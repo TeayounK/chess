@@ -99,15 +99,15 @@ public class ChessGame {
         if (board.getPiece(move.getStartPosition())!=null){
             // need to check the team color is the same as the color of piece we want to move
             if(teamColor==board.getPiece(move.getStartPosition()).getTeamColor()){
-                Collection<ChessMove> valid_moves = validMoves(move.getStartPosition());
-                TeamColor piece_color = board.getPiece(move.getStartPosition()).getTeamColor();
+                Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
+                TeamColor pieceColor = board.getPiece(move.getStartPosition()).getTeamColor();
                 // after successfully done with the move, we change the team color for next turn
-                piece_color = switch (piece_color){
+                pieceColor = switch (pieceColor){
                     case WHITE -> TeamColor.BLACK;
                     case BLACK -> TeamColor.WHITE;
                 };
                 // want to make sure the move we want to make is valid.
-                if (valid_moves.contains(move)) {
+                if (validMoves.contains(move)) {
                     // moving to empty space
                     if (board.getPiece(move.getEndPosition()) == null) {
                         if (move.getPromotionPiece() != null) {
@@ -115,11 +115,11 @@ public class ChessGame {
                             TeamColor colorType = board.getPiece(move.getStartPosition()).getTeamColor();
                             board.addPiece(move.getEndPosition(), new ChessPiece(colorType, pieceType));
                             board.removePiece(move.getStartPosition());
-                            teamColor=piece_color;
+                            teamColor=pieceColor;
                         } else {
                             board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
                             board.removePiece(move.getStartPosition());
-                            teamColor=piece_color;
+                            teamColor=pieceColor;
                         }
                         // killing opponent piece
                     } else { // since piece_moves returns valid moves where it can capture enemy or move to an empty position
@@ -129,12 +129,12 @@ public class ChessGame {
                             board.removePiece(move.getEndPosition());
                             board.addPiece(move.getEndPosition(), new ChessPiece(colorType, pieceType));
                             board.removePiece(move.getStartPosition());
-                            teamColor=piece_color;
+                            teamColor=pieceColor;
                         } else {
                             board.removePiece(move.getEndPosition());
                             board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
                             board.removePiece(move.getStartPosition());
-                            teamColor=piece_color;
+                            teamColor=pieceColor;
                         }
                     }
                 } else {
@@ -201,31 +201,31 @@ public class ChessGame {
                 if (clone.getPiece(pos) != null){
                     // verify team color
                     if (clone.getPiece(pos).getTeamColor()==teamColor){
-                        Collection<ChessMove> list_moves = clone.getPiece(pos).pieceMoves(clone,pos);
-                        for (ChessMove a_move : list_moves){
+                        Collection<ChessMove> listMoves = clone.getPiece(pos).pieceMoves(clone,pos);
+                        for (ChessMove aMove : listMoves){
                             // make a move and check its validation for escaping check
-                            if (clone.getPiece(a_move.getEndPosition()) == null){
-                                clone.addPiece(a_move.getEndPosition(),clone.getPiece(a_move.getStartPosition()));
-                                clone.removePiece(a_move.getStartPosition());
+                            if (clone.getPiece(aMove.getEndPosition()) == null){
+                                clone.addPiece(aMove.getEndPosition(),clone.getPiece(aMove.getStartPosition()));
+                                clone.removePiece(aMove.getStartPosition());
                                 if (!temp.isInCheck(teamColor)){
                                     result=false;
                                 }
                                 // Revert to before moving
-                                clone.addPiece(a_move.getStartPosition(),clone.getPiece(a_move.getEndPosition()));
-                                clone.removePiece(a_move.getEndPosition());
+                                clone.addPiece(aMove.getStartPosition(),clone.getPiece(aMove.getEndPosition()));
+                                clone.removePiece(aMove.getEndPosition());
 
                             }else{ // since piece_moves returns valid moves where it can capture enemy or move to an empty position
-                                ChessPiece target = clone.getPiece(a_move.getEndPosition());
-                                clone.removePiece(a_move.getEndPosition());
-                                clone.addPiece(a_move.getEndPosition(),clone.getPiece(a_move.getStartPosition()));
-                                clone.removePiece(a_move.getStartPosition());
+                                ChessPiece target = clone.getPiece(aMove.getEndPosition());
+                                clone.removePiece(aMove.getEndPosition());
+                                clone.addPiece(aMove.getEndPosition(),clone.getPiece(aMove.getStartPosition()));
+                                clone.removePiece(aMove.getStartPosition());
                                 if (!temp.isInCheck(teamColor)){
                                     result=false;
                                 }
                                 // Revert to before moving
-                                clone.addPiece(a_move.getStartPosition(),clone.getPiece(a_move.getEndPosition()));
-                                clone.removePiece(a_move.getEndPosition());
-                                clone.addPiece(a_move.getEndPosition(),target);
+                                clone.addPiece(aMove.getStartPosition(),clone.getPiece(aMove.getEndPosition()));
+                                clone.removePiece(aMove.getEndPosition());
+                                clone.addPiece(aMove.getEndPosition(),target);
                             }
                         }
                     }
@@ -246,7 +246,7 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         // want to know if we are in check or not
         if (!isInCheck(teamColor)){
-            int temp_sum = 0;
+            int tempSum = 0;
             // looping through all possible moves
             for (int i=1;i<9;i++) {
                 for (int j = 1; j < 9; j++) {
@@ -254,13 +254,13 @@ public class ChessGame {
                     if (board.getPiece(pos) != null) {
                         // counts the possible moves
                         if (board.getPiece(pos).getTeamColor() == teamColor) {
-                            temp_sum += (validMoves(pos)).toArray().length;
+                            tempSum += (validMoves(pos)).toArray().length;
                         }
                     }
                 }
             }
             // if there is no possible moves, return true, else return false.
-            return temp_sum == 0;
+            return tempSum == 0;
         }
         return false;
     }

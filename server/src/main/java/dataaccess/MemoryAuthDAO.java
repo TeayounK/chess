@@ -29,10 +29,10 @@ public class MemoryAuthDAO implements DataAccessAuth {
         if (authsKey.get(authToken)==null){
             throw new DataAccessException("Error: Already logged-out username");
         }
-        String TheUser = authsKey.get(authToken).username();
-        if (TheUser == null) throw new DataAccessException("Error: Already logged-out username");
+        String theUser = authsKey.get(authToken).username();
+        if (theUser == null) throw new DataAccessException("Error: Already logged-out username");
         else {
-            auths.remove(TheUser);
+            auths.remove(theUser);
             authsKey.remove(authToken);
         }
 

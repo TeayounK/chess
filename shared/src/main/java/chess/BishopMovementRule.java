@@ -15,7 +15,7 @@ public class BishopMovementRule {
 
     public Collection<ChessMove> possibleMoves(){
 
-        int [][] possible_upup = {
+        int [][] possibleUpup = {
                 {position.getRow()+1, position.getColumn()+1},
                 {position.getRow()+2, position.getColumn()+2},
                 {position.getRow()+3, position.getColumn()+3},
@@ -24,7 +24,7 @@ public class BishopMovementRule {
                 {position.getRow()+6, position.getColumn()+6},
                 {position.getRow()+7, position.getColumn()+7},
                 {position.getRow()+8, position.getColumn()+8}};
-        int [][] possible_updown = {
+        int [][] possibleUpdown = {
                 {position.getRow()+1, position.getColumn()-1},
                 {position.getRow()+2, position.getColumn()-2},
                 {position.getRow()+3, position.getColumn()-3},
@@ -33,7 +33,7 @@ public class BishopMovementRule {
                 {position.getRow()+6, position.getColumn()-6},
                 {position.getRow()+7, position.getColumn()-7},
                 {position.getRow()+8, position.getColumn()-8}};
-        int [][] possible_downup = {
+        int [][] possibleDownup = {
                 {position.getRow()-1, position.getColumn()+1},
                 {position.getRow()-2, position.getColumn()+2},
                 {position.getRow()-3, position.getColumn()+3},
@@ -42,7 +42,7 @@ public class BishopMovementRule {
                 {position.getRow()-6, position.getColumn()+6},
                 {position.getRow()-7, position.getColumn()+7},
                 {position.getRow()-8, position.getColumn()+8}};
-        int [][] possible_downdown = {
+        int [][] possibleDowndown = {
                 {position.getRow()-1, position.getColumn()-1},
                 {position.getRow()-2, position.getColumn()-2},
                 {position.getRow()-3, position.getColumn()-3},
@@ -52,12 +52,8 @@ public class BishopMovementRule {
                 {position.getRow()-7, position.getColumn()-7},
                 {position.getRow()-8, position.getColumn()-8}};
 
-//        for (int[] pos : possible_downdown){
-//            System.out.println(pos);
-//        }
 
-
-        int [][][] cases = {possible_upup,possible_updown,possible_downup,possible_downdown};
+        int [][][] cases = {possibleUpup,possibleUpdown,possibleDownup,possibleDowndown};
         Collection<ChessMove> result = new ArrayList<>();
         for (int j = 0; j < 4; j++){
             for (int i = 0; i < cases[j].length; i++) {

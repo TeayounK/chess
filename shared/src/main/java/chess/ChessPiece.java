@@ -56,23 +56,23 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
         if (getPieceType() == PieceType.KING) {
-            KingMovementRule King = new KingMovementRule(board, myPosition);
-            return King.possibleMoves();
+            KingMovementRule king = new KingMovementRule(board, myPosition);
+            return king.possibleMoves();
         }else if ((getPieceType() == PieceType.KNIGHT)){
-            KnightMovementRule Kight = new KnightMovementRule(board, myPosition);
-            return Kight.possibleMoves();
+            KnightMovementRule knight = new KnightMovementRule(board, myPosition);
+            return knight.possibleMoves();
         }else if ((getPieceType() == PieceType.PAWN)){
-            PawnMovementRule Pawn = new PawnMovementRule(board, myPosition);
-            return Pawn.possibleMoves();
+            PawnMovementRule pawn = new PawnMovementRule(board, myPosition);
+            return pawn.possibleMoves();
         }else if ((getPieceType() == PieceType.QUEEN)){
-            QueenMovementRule Queen = new QueenMovementRule(board, myPosition);
-            return Queen.possibleMoves();
+            QueenMovementRule queen = new QueenMovementRule(board, myPosition);
+            return queen.possibleMoves();
         }else if ((getPieceType() == PieceType.ROOK)){
-            RookMovementRule Rook = new RookMovementRule(board, myPosition);
-            return Rook.possibleMoves();
+            RookMovementRule rook = new RookMovementRule(board, myPosition);
+            return rook.possibleMoves();
         }else if ((getPieceType() == PieceType.BISHOP)){
-            BishopMovementRule Bishop = new BishopMovementRule(board, myPosition);
-            return Bishop.possibleMoves();
+            BishopMovementRule bishop = new BishopMovementRule(board, myPosition);
+            return bishop.possibleMoves();
         }else{
             return new ArrayList<>();
         }
