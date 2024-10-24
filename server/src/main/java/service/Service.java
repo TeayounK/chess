@@ -24,6 +24,9 @@ public class Service {
     }
     // Get Auth data from User data for registration.
     public AuthData addUser(UserData newUser) throws DataAccessException {
+        if (newUser.username() == null||newUser.password() == null||newUser.email() == null){
+            throw new DataAccessException("Error: bad request");
+        }
         UserData existingUser = dataAccessUser.getUser(newUser.username());
         if (existingUser!=null){
             throw new DataAccessException("Error: already taken");
@@ -41,11 +44,11 @@ public class Service {
         if (existingUser == null){
             throw new DataAccessException("Error: Unknown username");
         }
-        AuthData authExistUser = dataAccessAuth.getAuth(user.username());
+//        AuthData authExistUser = dataAccessAuth.getAuth(user.username());
 
-        if (authExistUser != null){
-            throw new DataAccessException("Error: Already logged-in username");
-        }
+//        if (authExistUser != null){
+//            throw new DataAccessException("Error: Already logged-in username");
+//        }
         if (!Objects.equals(user.password(), existingUser.password())){
             throw new DataAccessException("Error: Unauthorized");
         }
