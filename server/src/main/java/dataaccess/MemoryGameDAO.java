@@ -35,6 +35,9 @@ public class MemoryGameDAO implements DataAccessGame{
 
     public void updateGame(JoinGame game, String username) throws DataAccessException {
         GameData gameCalled = games.get(game.gameID());
+        if (game.playerColor() == null){
+            throw new DataAccessException("Error: bad request");
+        }
         if (gameCalled == null||(!game.playerColor().equalsIgnoreCase("black")&&!game.playerColor().equalsIgnoreCase("white"))) {
             throw new DataAccessException("Error: bad request");
         } else if (gameCalled.blackUsername() != null && gameCalled.whiteUsername() != null) {
