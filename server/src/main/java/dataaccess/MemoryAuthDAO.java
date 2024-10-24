@@ -7,10 +7,12 @@ import java.util.Objects;
 
 public class MemoryAuthDAO implements DataAccessAuth {
     private HashMap<String, AuthData> auths = new HashMap<>();
+    private HashMap<String, AuthData> auths_key = new HashMap<>();
 
     @Override
     public void addAuth(AuthData authData) {
         auths.put(authData.username(),authData);
+        auths_key.put(authData.authToken(),authData);
     }
 
     @Override
@@ -19,43 +21,34 @@ public class MemoryAuthDAO implements DataAccessAuth {
     }
     @Override
     public String getUser(String authToken){
-        for (String username: auths.keySet()) {
-            if (Objects.equals(authToken, auths.get(username).authToken())) {
-                return username;
-            }
-        }
-        return null;
+        return auths_key.get(authToken).username();
     }
 
     @Override
     public void removeAuth(String authToken) throws DataAccessException {
-        boolean isin = false;
-        String TheUser = "";
-        for (String username: auths.keySet()){
-            if (Objects.equals(authToken, auths.get(username).authToken())){
-                isin = true;
-                TheUser = username;
-            }
+        if (auths_key.get(authToken)==null){
+            throw new DataAccessException("Error: Already logged-out username");
         }
-        if (!isin) throw new DataAccessException("Error: Already logged-out username");
+        String TheUser = auths_key.get(authToken).username();
+        if (TheUser == null) throw new DataAccessException("Error: Already logged-out username");
         else {
             auths.remove(TheUser);
+            auths_key.remove(authToken);
         }
 
     }
 
     @Override
     public boolean checkAuth(String authToken) throws DataAccessException {
-        for (String username: auths.keySet()){
-            if (Objects.equals(authToken, auths.get(username).authToken())){
-                return true;
-            }
+        if(auths_key.get(authToken)==null){
+            throw new DataAccessException("Error: Unauthorized");
         }
-        throw new DataAccessException("Error: Unauthorized");
+        return true;
     }
 
     public void clearAll(){
         auths = new HashMap<>();
+        auths_key = new HashMap<>();
     }
 
 }
