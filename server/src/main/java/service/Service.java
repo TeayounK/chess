@@ -70,15 +70,15 @@ public class Service {
 
     }
 
-    public boolean checkAuth(String authToken) throws DataAccessException{
-        return dataAccessAuth.checkAuth(authToken);
+    public void checkAuth(String authToken) throws DataAccessException{
+        dataAccessAuth.checkAuth(authToken);
     }
 
     public Collection<GameData> listGames(){
         return dataAccessGame.getGames();
     }
 
-    public void clearDataBase() throws DataAccessException {
+    public void clearDataBase() throws DataAccessException{
         dataAccessAuth.clearAll();
         dataAccessGame.clearAll();
         dataAccessUser.clearAll();
@@ -87,8 +87,6 @@ public class Service {
     public void joinGame(JoinGame gameData, String authToken) throws DataAccessException{
         String username = dataAccessAuth.getUser(authToken);
         dataAccessGame.updateGame(gameData, username);
-
-
     }
 
 }
