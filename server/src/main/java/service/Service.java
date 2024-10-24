@@ -87,6 +87,7 @@ public class Service {
     public void joinGame(JoinGame gameData, String authToken) throws DataAccessException{
         String username = dataAccessAuth.getUser(authToken);
         dataAccessGame.updateGame(gameData, username);
+
     }
 
 }
