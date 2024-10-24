@@ -10,7 +10,7 @@ import model.JoinGame;
 import model.UserData;
 import org.junit.jupiter.api.*;
 
-public class serviceTest {
+public class ServiceTest {
 
     @Test
     public void addUserPositiveTest() {

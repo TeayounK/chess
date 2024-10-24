@@ -6,7 +6,7 @@ import model.JoinGame;
 import java.util.Collection;
 
 public interface DataAccessGame {
-    GameData CreateGame(GameData gameData) throws DataAccessException;
+    GameData createGame(GameData gameData) throws DataAccessException;
 
     Collection<GameData> getGames();
 

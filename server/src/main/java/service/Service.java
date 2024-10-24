@@ -66,7 +66,7 @@ public class Service {
 
     // Create Game
     public GameData createGame(GameData gamename) throws DataAccessException{
-        return dataAccessGame.CreateGame(gamename);
+        return dataAccessGame.createGame(gamename);
 
     }
 

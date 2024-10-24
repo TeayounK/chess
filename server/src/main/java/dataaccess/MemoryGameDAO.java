@@ -12,7 +12,7 @@ public class MemoryGameDAO implements DataAccessGame{
 
 
     @Override
-    public GameData CreateGame(GameData gameData) throws DataAccessException {
+    public GameData createGame(GameData gameData) throws DataAccessException {
         if (gameData.gameName() == null){
             throw new DataAccessException("Error: Not a valid Game name");
         }else {

@@ -25,19 +25,19 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        Spark.post("/user", this::CreateUser);
+        Spark.post("/user", this::createUser);
 
-        Spark.post("/session", this::LoginUser);
+        Spark.post("/session", this::loginUser);
 
-        Spark.delete("/session", this::LogoutUser);
+        Spark.delete("/session", this::logoutUser);
 
-        Spark.post("/game", this::CreateGame);
+        Spark.post("/game", this::createGame);
 
-        Spark.get("/game", this::ListGames);
+        Spark.get("/game", this::listGames);
 
-        Spark.delete("/db", this::ClearDataBase);
+        Spark.delete("/db", this::clearDataBase);
 
-        Spark.put("/game", this::JoinGame);
+        Spark.put("/game", this::joinGame);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
@@ -53,7 +53,7 @@ public class Server {
 
 
     // Registration
-    private String CreateUser(Request req, Response res) {
+    private String createUser(Request req, Response res) {
         var g = new Gson();
         int errorCode = 500;
         var newUser = g.fromJson(req.body(), UserData.class);
@@ -79,7 +79,7 @@ public class Server {
 
 
     // Login
-    private String LoginUser(Request req, Response res) {
+    private String loginUser(Request req, Response res) {
         var g = new Gson();
         int errorCode = 500;
         var userinfo = g.fromJson(req.body(), UserData.class);
@@ -103,7 +103,7 @@ public class Server {
         }
     }
 
-    private String LogoutUser(Request req, Response res) {
+    private String logoutUser(Request req, Response res) {
         var g = new Gson();
         int errorCode = 500;
         String authToken = req.headers("Authorization");
@@ -123,7 +123,7 @@ public class Server {
         }
     }
 
-    private String CreateGame(Request req, Response res) {
+    private String createGame(Request req, Response res) {
         var g = new Gson();
         int errorCode = 500;
         System.out.println(req.body());
@@ -150,7 +150,7 @@ public class Server {
         }
     }
 
-    public String ListGames(Request req, Response res){
+    public String listGames(Request req, Response res){
         var g = new Gson();
         int errorCode = 500;
         String authToken = req.headers("Authorization");
@@ -171,7 +171,7 @@ public class Server {
         }
     }
 
-    public String ClearDataBase(Request req, Response res){
+    public String clearDataBase(Request req, Response res){
         var g = new Gson();
         int errorCode = 500;
         try{
@@ -184,7 +184,7 @@ public class Server {
         }
     }
 
-    public String JoinGame(Request req, Response res){
+    public String joinGame(Request req, Response res){
         var g = new Gson();
         int errorCode = 500;
         var gameinfo = g.fromJson(req.body(), JoinGame.class);
