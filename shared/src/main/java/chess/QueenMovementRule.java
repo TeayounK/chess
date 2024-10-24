@@ -15,7 +15,7 @@ public class QueenMovementRule {
 
     }
     public Collection<ChessMove> possibleMoves(){
-        int [][] possible_right = {
+        int [][] possibleRight = {
                 {position.getRow()+1, position.getColumn()},
                 {position.getRow()+2, position.getColumn()},
                 {position.getRow()+3, position.getColumn()},
@@ -24,7 +24,7 @@ public class QueenMovementRule {
                 {position.getRow()+6, position.getColumn()},
                 {position.getRow()+7, position.getColumn()},
                 {position.getRow()+8, position.getColumn()}};
-        int [][] possible_left = {
+        int [][] possibleLeft = {
                 {position.getRow()-1, position.getColumn()},
                 {position.getRow()-2, position.getColumn()},
                 {position.getRow()-3, position.getColumn()},
@@ -33,7 +33,7 @@ public class QueenMovementRule {
                 {position.getRow()-6, position.getColumn()},
                 {position.getRow()-7, position.getColumn()},
                 {position.getRow()-8, position.getColumn()}};
-        int [][] possible_up = {
+        int [][] possibleUp = {
                 {position.getRow(), position.getColumn()+1},
                 {position.getRow(), position.getColumn()+2},
                 {position.getRow(), position.getColumn()+3},
@@ -42,7 +42,7 @@ public class QueenMovementRule {
                 {position.getRow(), position.getColumn()+6},
                 {position.getRow(), position.getColumn()+7},
                 {position.getRow(), position.getColumn()+8}};
-        int [][] possible_down = {
+        int [][] possibleDown = {
                 {position.getRow(), position.getColumn()-1},
                 {position.getRow(), position.getColumn()-2},
                 {position.getRow(), position.getColumn()-3},
@@ -52,7 +52,7 @@ public class QueenMovementRule {
                 {position.getRow(), position.getColumn()-7},
                 {position.getRow(), position.getColumn()-8}};
 
-        int [][] possible_upup = {
+        int [][] possibleUpup = {
                 {position.getRow()+1, position.getColumn()+1},
                 {position.getRow()+2, position.getColumn()+2},
                 {position.getRow()+3, position.getColumn()+3},
@@ -61,7 +61,7 @@ public class QueenMovementRule {
                 {position.getRow()+6, position.getColumn()+6},
                 {position.getRow()+7, position.getColumn()+7},
                 {position.getRow()+8, position.getColumn()+8}};
-        int [][] possible_updown = {
+        int [][] possibleUpdown = {
                 {position.getRow()+1, position.getColumn()-1},
                 {position.getRow()+2, position.getColumn()-2},
                 {position.getRow()+3, position.getColumn()-3},
@@ -70,7 +70,7 @@ public class QueenMovementRule {
                 {position.getRow()+6, position.getColumn()-6},
                 {position.getRow()+7, position.getColumn()-7},
                 {position.getRow()+8, position.getColumn()-8}};
-        int [][] possible_downup = {
+        int [][] possibleDownup = {
                 {position.getRow()-1, position.getColumn()+1},
                 {position.getRow()-2, position.getColumn()+2},
                 {position.getRow()-3, position.getColumn()+3},
@@ -79,7 +79,7 @@ public class QueenMovementRule {
                 {position.getRow()-6, position.getColumn()+6},
                 {position.getRow()-7, position.getColumn()+7},
                 {position.getRow()-8, position.getColumn()+8}};
-        int [][] possible_downdown = {
+        int [][] possibleDowndown = {
                 {position.getRow()-1, position.getColumn()-1},
                 {position.getRow()-2, position.getColumn()-2},
                 {position.getRow()-3, position.getColumn()-3},
@@ -89,7 +89,7 @@ public class QueenMovementRule {
                 {position.getRow()-7, position.getColumn()-7},
                 {position.getRow()-8, position.getColumn()-8}};
 
-        int [][][] cases = {possible_right,possible_left,possible_up,possible_down,possible_upup,possible_updown,possible_downup,possible_downdown};
+        int [][][] cases = {possibleRight,possibleLeft,possibleUp,possibleDown,possibleUpup,possibleUpdown,possibleDownup,possibleDowndown};
 
         Collection<ChessMove> result = new ArrayList<>();
         for (int j = 0 ; j < cases.length ; j++) {

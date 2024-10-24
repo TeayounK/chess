@@ -16,22 +16,22 @@ public class PawnMovementRule {
 
     public Collection<ChessMove> possibleMoves(){
         // For White Team
-        int [][] possible_1 = {{position.getRow()+1, position.getColumn()+1},
+        int [][] possible1 = {{position.getRow()+1, position.getColumn()+1},
                 {position.getRow()+1, position.getColumn()-1},
                 {position.getRow()+1, position.getColumn()},
                 {position.getRow()+2, position.getColumn()}};
 
-        int [][] possible_2 = {{position.getRow()+1, position.getColumn()+1},
+        int [][] possible2 = {{position.getRow()+1, position.getColumn()+1},
                 {position.getRow()+1, position.getColumn()-1},
                 {position.getRow()+1, position.getColumn()}};
 
         // For Black Team
-        int [][] possible_3 = {{position.getRow()-1, position.getColumn()+1},
+        int [][] possible3 = {{position.getRow()-1, position.getColumn()+1},
                 {position.getRow()-1, position.getColumn()-1},
                 {position.getRow()-1, position.getColumn()},
                 {position.getRow()-2, position.getColumn()}};
 
-        int [][] possible_4 = {{position.getRow()-1, position.getColumn()+1},
+        int [][] possible4 = {{position.getRow()-1, position.getColumn()+1},
                 {position.getRow()-1, position.getColumn()-1},
                 {position.getRow()-1, position.getColumn()}};
 
@@ -46,9 +46,9 @@ public class PawnMovementRule {
         // For White team
         if ((board.getPiece(position)).getTeamColor() == ChessGame.TeamColor.WHITE) {
             if (position.getRow() == 2) {
-                for (int i = 0; i < possible_1.length; i++) {
-                    if (possible_1[i][0] < 9 & possible_1[i][1] < 9 & possible_1[i][0] > 0 & possible_1[i][1] > 0) {
-                        ChessPosition endpoint = new ChessPosition(possible_1[i][0], possible_1[i][1]);
+                for (int i = 0; i < possible1.length; i++) {
+                    if (possible1[i][0] < 9 & possible1[i][1] < 9 & possible1[i][0] > 0 & possible1[i][1] > 0) {
+                        ChessPosition endpoint = new ChessPosition(possible1[i][0], possible1[i][1]);
                         if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
                                 & (endpoint.getRow() - position.getRow() == 1 || endpoint.getRow() - position.getRow() == -1)) {
                             if (endpoint.getRow() == 8) {
@@ -87,9 +87,9 @@ public class PawnMovementRule {
                     }
                 }
             } else {
-                for (int i = 0; i < possible_2.length; i++) {
-                    if (possible_2[i][0] < 9 & possible_2[i][1] < 9 & possible_2[i][0] > 0 & possible_2[i][1] > 0) {
-                        ChessPosition endpoint = new ChessPosition(possible_2[i][0], possible_2[i][1]);
+                for (int i = 0; i < possible2.length; i++) {
+                    if (possible2[i][0] < 9 & possible2[i][1] < 9 & possible2[i][0] > 0 & possible2[i][1] > 0) {
+                        ChessPosition endpoint = new ChessPosition(possible2[i][0], possible2[i][1]);
                         if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
                                 & (endpoint.getRow() - position.getRow() == 1 || endpoint.getRow() - position.getRow() == -1)) {
                             if (endpoint.getRow() == 8) {
@@ -129,9 +129,9 @@ public class PawnMovementRule {
         // For black team
         }else{
             if (position.getRow() == 7) {
-                for (int i = 0; i < possible_3.length; i++) {
-                    if (possible_3[i][0] < 9 & possible_3[i][1] < 9 & possible_3[i][0] > 0 & possible_3[i][1] > 0) {
-                        ChessPosition endpoint = new ChessPosition(possible_3[i][0], possible_3[i][1]);
+                for (int i = 0; i < possible3.length; i++) {
+                    if (possible3[i][0] < 9 & possible3[i][1] < 9 & possible3[i][0] > 0 & possible3[i][1] > 0) {
+                        ChessPosition endpoint = new ChessPosition(possible3[i][0], possible3[i][1]);
                         if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
                                 & (endpoint.getRow() - position.getRow() == 1 || endpoint.getRow() - position.getRow() == -1)) {
                             if (endpoint.getColumn() == 1) {
@@ -164,9 +164,9 @@ public class PawnMovementRule {
                     }
                 }
             } else {
-                for (int i = 0; i < possible_4.length; i++) {
-                    if (possible_4[i][0] < 9 & possible_4[i][1] < 9 & possible_4[i][0] > 0 & possible_4[i][1] > 0) {
-                        ChessPosition endpoint = new ChessPosition(possible_4[i][0], possible_4[i][1]);
+                for (int i = 0; i < possible4.length; i++) {
+                    if (possible4[i][0] < 9 & possible4[i][1] < 9 & possible4[i][0] > 0 & possible4[i][1] > 0) {
+                        ChessPosition endpoint = new ChessPosition(possible4[i][0], possible4[i][1]);
                         if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
                                 & (endpoint.getRow() - position.getRow() == 1 || endpoint.getRow() - position.getRow() == -1)) {
                             if (endpoint.getRow() == 1) {

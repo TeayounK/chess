@@ -17,7 +17,7 @@ public class RookMovementRule {
 
     public Collection<ChessMove> possibleMoves(){
 
-        int [][] possible_right = {
+        int [][] possibleRight = {
                 {position.getRow()+1, position.getColumn()},
                 {position.getRow()+2, position.getColumn()},
                 {position.getRow()+3, position.getColumn()},
@@ -26,7 +26,7 @@ public class RookMovementRule {
                 {position.getRow()+6, position.getColumn()},
                 {position.getRow()+7, position.getColumn()},
                 {position.getRow()+8, position.getColumn()}};
-        int [][] possible_left = {
+        int [][] possibleLeft = {
                 {position.getRow()-1, position.getColumn()},
                 {position.getRow()-2, position.getColumn()},
                 {position.getRow()-3, position.getColumn()},
@@ -35,7 +35,7 @@ public class RookMovementRule {
                 {position.getRow()-6, position.getColumn()},
                 {position.getRow()-7, position.getColumn()},
                 {position.getRow()-8, position.getColumn()}};
-        int [][] possible_up = {
+        int [][] possibleUp = {
                 {position.getRow(), position.getColumn()+1},
                 {position.getRow(), position.getColumn()+2},
                 {position.getRow(), position.getColumn()+3},
@@ -44,7 +44,7 @@ public class RookMovementRule {
                 {position.getRow(), position.getColumn()+6},
                 {position.getRow(), position.getColumn()+7},
                 {position.getRow(), position.getColumn()+8}};
-        int [][] possible_down = {
+        int [][] possibleDown = {
                 {position.getRow(), position.getColumn()-1},
                 {position.getRow(), position.getColumn()-2},
                 {position.getRow(), position.getColumn()-3},
@@ -54,7 +54,7 @@ public class RookMovementRule {
                 {position.getRow(), position.getColumn()-7},
                 {position.getRow(), position.getColumn()-8}};
 
-        int [][][] cases = {possible_right,possible_left,possible_up,possible_down};
+        int [][][] cases = {possibleRight,possibleLeft,possibleUp,possibleDown};
         Collection<ChessMove> result = new ArrayList<>();
         for (int j = 0; j < 4; j++){
             for (int i=0 ; i < cases[j].length; i++){
