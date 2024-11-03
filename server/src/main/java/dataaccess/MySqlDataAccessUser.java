@@ -34,18 +34,34 @@ public class MySqlDataAccessUser implements DataAccessUser{
             }
 
         } catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
+            throw new DataAccessException(String.format("Unable register user: %s", ex.getMessage()));
         }
     }
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        return null;
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username FROM pet";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+
+                preparedStatement.executeUpdate();
+            }
+
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable register user: %s", ex.getMessage()));
+        }
     }
 
     @Override
-    public void clearAll() {
-
+    public void clearAll() throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "DROP DATABASE users";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to clean up the database: %s", ex.getMessage()));
+        }
     }
 
     private void configureDatabaseUser() throws DataAccessException {

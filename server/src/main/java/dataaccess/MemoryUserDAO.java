@@ -22,7 +22,7 @@ public class MemoryUserDAO implements DataAccessUser {
         return users.get(username);
     }
 
-    public void clearAll(){
+    public void clearAll() throws DataAccessException{
         users = new HashMap<>();
     }
 
