@@ -3,7 +3,6 @@ package dataaccess;
 import model.AuthData;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class MemoryAuthDAO implements DataAccessAuth {
     private HashMap<String, AuthData> auths = new HashMap<>();
