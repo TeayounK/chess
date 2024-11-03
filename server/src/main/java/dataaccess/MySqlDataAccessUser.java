@@ -41,15 +41,21 @@ public class MySqlDataAccessUser implements DataAccessUser{
     @Override
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username FROM pet";
+            var statement = "SELECT * FROM users WHERE username = username";
             try (var preparedStatement = conn.prepareStatement(statement)) {
-
-                preparedStatement.executeUpdate();
+                preparedStatement.setString(1,username);
+                try(var result = preparedStatement.executeQuery()){
+                    if (result.next()){
+                        var password = result.getString("password");
+                        var email = result.getString("email");
+                        return new UserData(username,password,email);
+                    }
+                }
             }
-
         } catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable register user: %s", ex.getMessage()));
+            throw new DataAccessException(String.format("Unable to get the user data: %s", ex.getMessage()));
         }
+        return null;
     }
 
     @Override
