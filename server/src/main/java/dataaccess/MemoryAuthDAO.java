@@ -23,7 +23,7 @@ public class MemoryAuthDAO implements DataAccessAuth {
         return null;
     }
     @Override
-    public String getUser(String authToken){
+    public String getUser(String authToken) throws DataAccessException{
         return authsKey.get(authToken).username();
     }
 
@@ -48,7 +48,7 @@ public class MemoryAuthDAO implements DataAccessAuth {
         return true;
     }
 
-    public void clearAll(){
+    public void clearAll() throws DataAccessException{
         authsKey = new HashMap<>();
     }
 

@@ -23,7 +23,7 @@ public class Server {
 
         try {
             dataAccessUser = new MySqlDataAccessUser();
-           // dataAccessAuth = new MySqlDataAccessAuth();
+            dataAccessAuth = new MySqlDataAccessAuth();
             // dataAccessGame = new MySqlDataAccessGame();
 
         } catch(DataAccessException e) {
