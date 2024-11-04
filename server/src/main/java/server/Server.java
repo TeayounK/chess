@@ -1,10 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import model.JoinGame;
@@ -17,9 +14,24 @@ import java.util.Map;
 
 
 public class Server {
-    private final Service service = new Service(new MemoryUserDAO(), new MemoryAuthDAO(), new MemoryGameDAO());
+    private Service service = new Service(new MemoryUserDAO(), new MemoryAuthDAO(), new MemoryGameDAO());
 
     public int run(int desiredPort) {
+        DataAccessUser dataAccessUser = new MemoryUserDAO();
+        DataAccessAuth dataAccessAuth = new MemoryAuthDAO();
+        DataAccessGame dataAccessGame = new MemoryGameDAO();
+
+        try {
+            dataAccessUser = new MySqlDataAccessUser();
+           // dataAccessAuth = new MySqlDataAccessAuth();
+            // dataAccessGame = new MySqlDataAccessGame();
+
+        } catch(DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+
+        this.service = new Service(dataAccessUser, dataAccessAuth, dataAccessGame);
+
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");

@@ -10,9 +10,9 @@ public class MySqlDataAccessUser implements DataAccessUser{
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  users (
-              `username` String NOT NULL,
-              `password` String NOT NULL,
-              `email` String NOT NULL,
+              `username` varchar(256) NOT NULL,
+              `password` varchar(256) NOT NULL,
+              `email` varchar(256) NOT NULL,
               PRIMARY KEY (`username`)
             )
             """
@@ -25,7 +25,7 @@ public class MySqlDataAccessUser implements DataAccessUser{
     @Override
     public void addUser(UserData user) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "INSERT INTO pet (username, password, email) VALUES (?, ?, ?)";
+            var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setString(1,user.username());
                 preparedStatement.setString(2,user.password());
@@ -41,7 +41,7 @@ public class MySqlDataAccessUser implements DataAccessUser{
     @Override
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT * FROM users WHERE username = username";
+            var statement = "SELECT * FROM users WHERE username=?";
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setString(1,username);
                 try(var result = preparedStatement.executeQuery()){
@@ -61,7 +61,7 @@ public class MySqlDataAccessUser implements DataAccessUser{
     @Override
     public void clearAll() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "DROP DATABASE users";
+            var statement = "TRUNCATE users";
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
@@ -79,7 +79,7 @@ public class MySqlDataAccessUser implements DataAccessUser{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
+            System.out.println(ex.getMessage());
         }
     }
 }

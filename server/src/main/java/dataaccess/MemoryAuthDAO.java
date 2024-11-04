@@ -3,20 +3,24 @@ package dataaccess;
 import model.AuthData;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MemoryAuthDAO implements DataAccessAuth {
-    private HashMap<String, AuthData> auths = new HashMap<>();
     private HashMap<String, AuthData> authsKey = new HashMap<>();
 
     @Override
     public void addAuth(AuthData authData) {
-        auths.put(authData.username(),authData);
         authsKey.put(authData.authToken(),authData);
     }
 
     @Override
     public AuthData getAuth(String username){
-        return auths.get(username);
+        for (AuthData authData:authsKey.values()){
+            if (Objects.equals(authData.username(), username)){
+                return authData;
+            }
+        }
+        return null;
     }
     @Override
     public String getUser(String authToken){
@@ -31,7 +35,6 @@ public class MemoryAuthDAO implements DataAccessAuth {
         String theUser = authsKey.get(authToken).username();
         if (theUser == null) throw new DataAccessException("Error: Already logged-out username");
         else {
-            auths.remove(theUser);
             authsKey.remove(authToken);
         }
 
@@ -46,7 +49,6 @@ public class MemoryAuthDAO implements DataAccessAuth {
     }
 
     public void clearAll(){
-        auths = new HashMap<>();
         authsKey = new HashMap<>();
     }
 
