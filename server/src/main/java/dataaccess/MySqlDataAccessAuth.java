@@ -78,21 +78,15 @@ public class MySqlDataAccessAuth implements DataAccessAuth{
     public void removeAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "DELETE FROM authsKey WHERE authToken = ?";
-            var statement1 = "SELECT username FROM authsKey Where authToken = ?";
-            try (var preparedStatement1 = conn.prepareStatement(statement1)) {
-                preparedStatement1.setString(1, authToken);
-                try(var result = preparedStatement1.executeQuery()) {
-                    if (result.next()) {
-                        try (var preparedStatement = conn.prepareStatement(statement)) {
-                            preparedStatement.setString(1, authToken);
-                        }
-                    }
-                }catch (SQLException ex) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, authToken);
+                int updateRow = preparedStatement.executeUpdate();
+                if (updateRow == 0){
                     throw new DataAccessException("Error: Already logged-out username");
                 }
             }
         }catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to remove the authData with authToken : %s", ex.getMessage()));
+            throw new DataAccessException("Error: Already logged-out username");
         }
     }
 
@@ -111,7 +105,7 @@ public class MySqlDataAccessAuth implements DataAccessAuth{
         }catch (SQLException ex) {
             throw new DataAccessException(String.format("Unable to get the authToken : %s", ex.getMessage()));
         }
-        return false;
+        throw new DataAccessException("Error: Unauthorized");
     }
 
     @Override

@@ -37,7 +37,6 @@ public class MemoryAuthDAO implements DataAccessAuth {
         else {
             authsKey.remove(authToken);
         }
-
     }
 
     @Override
