@@ -24,7 +24,7 @@ public class Server {
         try {
             dataAccessUser = new MySqlDataAccessUser();
             dataAccessAuth = new MySqlDataAccessAuth();
-            // dataAccessGame = new MySqlDataAccessGame();
+            dataAccessGame = new MySqlDataAccessGame();
 
         } catch(DataAccessException e) {
             System.out.println(e.getMessage());
