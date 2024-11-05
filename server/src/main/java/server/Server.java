@@ -75,14 +75,11 @@ public class Server {
             res.status(200);
             return g.toJson(authData);
         } catch (DataAccessException e) {
-            switch (e.getMessage()){
-                case "Error: bad request":
-                    errorCode = 400;
-                    break;
-                case "Error: already taken":
-                    errorCode = 403;
-                    break;
-            }
+            errorCode = switch (e.getMessage()) {
+                case "Error: bad request" -> 400;
+                case "Error: already taken" -> 403;
+                default -> errorCode;
+            };
             res.body(g.toJson(Map.of("message",e.getMessage())));
             res.status(errorCode);
             return g.toJson(Map.of("message",e.getMessage()));
@@ -101,14 +98,11 @@ public class Server {
             res.status(200);
             return g.toJson(authData);
         } catch (DataAccessException e){
-            switch (e.getMessage()){
-                case "Error: Unauthorized":
-                    errorCode = 401;
-                    break;
-                case "Error: Unknown username":
-                    errorCode = 401;
-                    break;
-            }
+            errorCode = switch (e.getMessage()) {
+                case "Error: Unauthorized" -> 401;
+                case "Error: Unknown username" -> 401;
+                default -> errorCode;
+            };
             res.body(g.toJson(Map.of("message",e.getMessage())));
             res.status(errorCode);
             return g.toJson(Map.of("message",e.getMessage()));
@@ -124,10 +118,8 @@ public class Server {
             res.status(200);
             return g.toJson(Map.of("message",""));
         } catch (DataAccessException e){
-            switch (e.getMessage()){
-                case "Error: Already logged-out username":
-                    errorCode = 401;
-                    break;
+            if (e.getMessage().equals("Error: Already logged-out username")) {
+                errorCode = 401;
             }
             res.body(g.toJson(Map.of("message",e.getMessage())));
             res.status(errorCode);
@@ -148,14 +140,11 @@ public class Server {
             res.status(200);
             return g.toJson(Map.of("gameID",newGame.gameID()));
         }catch (DataAccessException e){
-            switch (e.getMessage()){
-                case "Error: Unauthorized":
-                    errorCode = 401;
-                    break;
-                case "Error: Not a valid Game name":
-                    errorCode = 400;
-                    break;
-            }
+            errorCode = switch (e.getMessage()) {
+                case "Error: Unauthorized" -> 401;
+                case "Error: Not a valid Game name" -> 400;
+                default -> errorCode;
+            };
             res.body(g.toJson(Map.of("message",e.getMessage())));
             res.status(errorCode);
             return g.toJson(Map.of("message",e.getMessage()));
@@ -172,10 +161,8 @@ public class Server {
             res.status(200);
             return g.toJson((Map.of("games",games)));
         }catch (DataAccessException e){
-            switch (e.getMessage()){
-                case "Error: Unauthorized":
-                    errorCode = 401;
-                    break;
+            if (e.getMessage().equals("Error: Unauthorized")) {
+                errorCode = 401;
             }
             res.body(g.toJson(Map.of("message",e.getMessage())));
             res.status(errorCode);
@@ -194,6 +181,7 @@ public class Server {
             res.status(errorCode);
             return g.toJson(Map.of("message",e.getMessage()));
         }
+
     }
 
     public String joinGame(Request req, Response res){
@@ -207,16 +195,12 @@ public class Server {
             res.status(200);
             return g.toJson(Map.of("message",""));
         }catch(DataAccessException e){
-            switch (e.getMessage()){
-                case "Error: Unauthorized":
-                    errorCode = 401;
-                    break;
-                case "Error: bad request":
-                    errorCode = 400;
-                    break;
-                case "Error: already taken":
-                    errorCode = 403;
-            }
+            errorCode = switch (e.getMessage()) {
+                case "Error: Unauthorized" -> 401;
+                case "Error: bad request" -> 400;
+                case "Error: already taken" -> 403;
+                default -> errorCode;
+            };
             res.body(g.toJson(Map.of("message",e.getMessage())));
             res.status(errorCode);
             return g.toJson(Map.of("message",e.getMessage()));

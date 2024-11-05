@@ -25,5 +25,8 @@ public class MemoryUserDAO implements DataAccessUser {
     public void clearAll() throws DataAccessException{
         users = new HashMap<>();
     }
+    public boolean verifyUser(String username, String password){
+        return false;
+    }
 
 }

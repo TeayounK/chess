@@ -8,5 +8,7 @@ public interface DataAccessUser {
     UserData getUser(String username) throws DataAccessException;
 
     void clearAll() throws DataAccessException;
+
+    boolean verifyUser(String username, String password);
 }
 
