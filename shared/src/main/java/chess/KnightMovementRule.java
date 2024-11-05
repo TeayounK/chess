@@ -42,8 +42,12 @@ public class KnightMovementRule {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         KnightMovementRule that = (KnightMovementRule) o;
         return Objects.equals(board, that.board) && Objects.equals(position, that.position);
     }

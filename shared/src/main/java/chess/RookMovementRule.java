@@ -78,8 +78,12 @@ public class RookMovementRule {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         RookMovementRule that = (RookMovementRule) o;
         return Objects.equals(position, that.position) && Objects.equals(board, that.board);
     }
