@@ -44,7 +44,7 @@ public class MySqlDataAccessGame implements DataAccessGame{
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
-            throw new DataAccessException(String.format("Unable to create game: %s", ex.getMessage()));
+            throw new DataAccessException("Error: Not a valid Game name");
         }
         return new GameData(maxID, null,null,gameData.gameName(),null);
     }
