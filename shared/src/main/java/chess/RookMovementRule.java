@@ -6,9 +6,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class RookMovementRule {
-
-    private ChessPosition position;
-    private ChessBoard board;
+    private final ChessPosition position;
+    private final ChessBoard board;
     public RookMovementRule(ChessBoard board,ChessPosition position){
         this.board = board;
         this.position = position;
