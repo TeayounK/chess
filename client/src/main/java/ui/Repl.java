@@ -2,9 +2,10 @@ package ui;
 
 import com.sun.nio.sctp.NotificationHandler;
 
+import javax.management.Notification;
 import java.util.Scanner;
 
-public class Repl implements NotificationHandler {
+public class Repl {
     private ChessClient client;
 
     public Repl(String serverUrl) {
@@ -21,7 +22,7 @@ public class Repl implements NotificationHandler {
 
             try {
                 result = client.eval(line);
-                System.out.print(BLUE + result);
+                System.out.print(result);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -30,6 +31,10 @@ public class Repl implements NotificationHandler {
         System.out.println();
     }
 
+//    public void notify(Notification notification) {
+//        System.out.println(notification.message());
+//        printPrompt();
+//    }
 
 
     private void printPrompt() {
