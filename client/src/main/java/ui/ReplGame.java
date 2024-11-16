@@ -37,10 +37,12 @@ public class ReplGame {
     private void printPrompt() {
         System.out.print("""
                 Options:
-                Login as an existing user: "l", "login" <USERNAME> <PASSWORD>
-                Register a new user: "r", "register" <USERNAME> <PASSWORD> <EMAIL>
-                Exit the program: "q", "quit"
-                Print this message: "h", "help"
+                Highlight legal moves: "hi", "highlight" <position> (e.g. f5)
+                Make a move: "m", "move", "make" <source> <destination> <optional promotion> (e.g. f5 e4 q)
+                Redraw Chess Board: "r", "redrew"
+                Change color scheme: "c", "colors" <color number>
+                Resign from game: "res", "resign"
+                Leave game: "leave"
                 \n
                 """);
     }

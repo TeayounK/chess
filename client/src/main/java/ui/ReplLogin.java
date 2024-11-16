@@ -37,10 +37,11 @@ public class ReplLogin {
     private void printPrompt() {
         System.out.print("""
                 Options:
-                Login as an existing user: "l", "login" <USERNAME> <PASSWORD>
-                Register a new user: "r", "register" <USERNAME> <PASSWORD> <EMAIL>
-                Exit the program: "q", "quit"
-                Print this message: "h", "help"
+                List current games: "l", "list"
+                Create a new game: "c", "create" <GAMENAME>
+                Join a game: "j", "join" <GAME ID> <COLOR>
+                Watch a game: "w", "watch" <GAME ID>
+                Logout: "logout"
                 \n
                 """);
     }
