@@ -33,6 +33,13 @@ public class Repl implements NotificationHandler {
 
 
     private void printPrompt() {
-        System.out.print("\n" + RESET + ">>> " + GREEN);
+        System.out.print("""
+                Options:
+                Login as an existing user: "l", "login" <USERNAME> <PASSWORD>
+                Register a new user: "r", "register" <USERNAME> <PASSWORD> <EMAIL>
+                Exit the program: "q", "quit"
+                Print this message: "h", "help"
+                \n
+                """);
     }
 }
