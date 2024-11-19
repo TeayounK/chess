@@ -47,29 +47,30 @@ public class Repl {
 
     static String printPromptPreLogin() {
         return """
+                \n
                 Options:
                 Login as an existing user: "l", "login" <USERNAME> <PASSWORD>
                 Register a new user: "r", "register" <USERNAME> <PASSWORD> <EMAIL>
                 Exit the program: "q", "quit"
                 Print this message: "h", "help"
-                \n
                 """;
     }
 
     static String printPromptLogin() {
         return """
+                \n
                 Options:
                 List current games: "l", "list"
                 Create a new game: "c", "create" <GAMENAME>
                 Join a game: "j", "join" <GAME ID> <COLOR>
                 Watch a game: "w", "watch" <GAME ID>
                 Logout: "logout"
-                \n
                 """;
     }
 
     static String printPromptGame() {
         return """
+                \n
                 Options:
                 Highlight legal moves: "hi", "highlight" <position> (e.g. f5)
                 Make a move: "m", "move", "make" <source> <destination> <optional promotion> (e.g. f5 e4 q)
@@ -77,7 +78,6 @@ public class Repl {
                 Change color scheme: "c", "colors" <color number>
                 Resign from game: "res", "resign"
                 Leave game: "leave"
-                \n
                 """;
     }
 }
