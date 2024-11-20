@@ -18,10 +18,10 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
-    public UserData createUser(String... params) throws ResponseException{
+    public AuthData createUser(String... params) throws ResponseException{
         var path = "/user";
         UserData newUser = new UserData(params[0], params[1], params[2]);
-        return this.makeRequest("POST", path, newUser, UserData.class, null);
+        return this.makeRequest("POST", path, newUser, AuthData.class, null);
     }
 
     public AuthData loginUser(String... params) throws ResponseException{

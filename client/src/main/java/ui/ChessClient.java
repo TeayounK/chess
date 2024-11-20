@@ -33,7 +33,8 @@ public class ChessClient {
                 case "register" -> register(params);
                 case "r" -> register(params);
                 case "quit" -> "quit";
-                case "q" -> clearData();
+                case "q" -> "quit";
+                case "DELETEDATABASE" -> clearData();
                 // commends in login phase
                 case "logout" -> logout();
                 case "create" -> createGame(params);
@@ -85,7 +86,7 @@ public class ChessClient {
         assertPreLogin();
         if (params.length == 3){
             state = States.PRELOGIN;
-            UserData result = server.createUser(params);
+            AuthData result = server.createUser(params);
             this.authData = server.loginUser(params[0],params[1]);
             return String.format("You registered in as %s.", result.username());
 
