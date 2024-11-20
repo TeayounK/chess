@@ -55,4 +55,6 @@ public class MemoryGameDAO implements DataAccessGame{
             }
         }
     }
+
+    //TODO: do I need to make leaveGame() method at some point?
 }

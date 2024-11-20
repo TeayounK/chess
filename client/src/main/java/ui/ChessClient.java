@@ -1,9 +1,6 @@
 package ui;
 
-import model.AuthData;
-import model.GameData;
-import model.ListResult;
-import model.UserData;
+import model.*;
 
 import java.util.Arrays;
 
@@ -31,6 +28,7 @@ public class ChessClient {
             return switch (cmd) {
                 // commends in preLogin phase
                 case "login" -> logIn(params);
+                case "list" -> listGame();
                 case "l" -> L(params);
                 case "register" -> register(params);
                 case "r" -> register(params);
@@ -44,6 +42,8 @@ public class ChessClient {
                 case "j" -> joinGame(params);
                 case "watch" -> watchGame(params);
                 case "w" -> watchGame(params);
+                // commends in game phase
+                case "leave" -> leaveGame();
 
                 default -> help();
             };
@@ -140,10 +140,13 @@ public class ChessClient {
     }
 
     private String joinGame(String... params) throws ResponseException{
-        assertPreLogin();
+        assertLogIn();
         if (params.length == 2){
+            JoinGame joinGame = new JoinGame(params[1], Integer.parseInt(params[0]));
+            server.joinGame(this.authData,joinGame);
             state = States.GAME;
-            server.joinGame(this.authData,params);
+            Board B = new Board();
+            B.main(null);
             return "Successfully joined a game";
         }else{
             throw new ResponseException(400, "Expected: <playerColor> <gameID>");
@@ -153,9 +156,21 @@ public class ChessClient {
     private String watchGame(String... params) throws ResponseException{
         assertLogIn();
         if (params.length == 1){
-            state =
+            state = States.GAME;
+            Board B = new Board();
+            B.main(null);
+            return "Successfully enter the game as an observer";
+        }else{
+            throw new ResponseException(400, "Expected: <gameID>");
         }
     }
+
+    private String leaveGame() throws ResponseException{
+        assertGame();
+        state = States.LOGIN;
+        return "You have logged out";
+    }
+
 
     // checking status
     private void assertLogIn() throws ResponseException {
