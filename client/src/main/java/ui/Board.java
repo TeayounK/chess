@@ -33,9 +33,14 @@ public class Board {
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
-        board.resetBoard();
-
         out.print(ERASE_SCREEN);
+        drawBoard(out);
+    }
+
+
+
+    private static void drawBoard(PrintStream out){
+        board.resetBoard();
 
         for (int i=0; i < 10 ; i++){
             for (int j=0; j< 10; j++){
@@ -46,14 +51,14 @@ public class Board {
                     }else{
                         drawFirstLine(out,j);
                     }
-                // last line
+                    // last line
                 }else if (i == 9) {
                     if (j==0||j==9){
                         out.print(EMPTY);
                     }else{
                         drawFirstLine(out,j);
                     }
-                // lines in the middle
+                    // lines in the middle
                 }else{
                     if (j==0||j==9){
                         drawIntheMiddle(out,i);
@@ -62,14 +67,8 @@ public class Board {
                     }
                 }
             }
+            out.print("\n");
         }
-
-        drawHeaders(out);
-
-        drawTicTacToeBoard(out);
-
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_WHITE);
     }
 
     private static String chessPiece2String(ChessPiece piece){
@@ -81,7 +80,6 @@ public class Board {
             case ChessPiece.PieceType.ROOK -> " R ";
             case ChessPiece.PieceType.QUEEN -> " Q ";
             case ChessPiece.PieceType.BISHOP -> " B ";
-            default -> EMPTY;
         };
     }
 
@@ -102,8 +100,12 @@ public class Board {
             ChessPosition pos = new ChessPosition(i,j);
             ChessPiece piece = board.getPiece(pos);
 
-            pieceColor(out,piece);
-            out.print(chessPiece2String(piece));
+            if (piece == null){
+                out.print(EMPTY);
+            }else {
+                pieceColor(out, piece);
+                out.print(chessPiece2String(piece));
+            }
 
         }else{
             out.print(SET_BG_COLOR_BLACK);
@@ -111,8 +113,12 @@ public class Board {
             ChessPosition pos = new ChessPosition(i,j);
             ChessPiece piece = board.getPiece(pos);
 
-            pieceColor(out,piece);
-            out.print(chessPiece2String(piece));
+            if (piece == null){
+                out.print(EMPTY);
+            }else {
+                pieceColor(out, piece);
+                out.print(chessPiece2String(piece));
+            }
         }
     }
 
@@ -122,7 +128,7 @@ public class Board {
 
         String[] headers = {" a ", " b ", " c ", " d "," e "," f "," g "," h "};
 
-        out.print(headers[j]);
+        out.print(headers[j-1]);
     }
 
     private static void drawIntheMiddle(PrintStream out, int i){
@@ -131,7 +137,7 @@ public class Board {
 
         String[] side = {" 1 ", " 2 ", " 3 "," 4 "," 5 "," 6 "," 7 "," 8 "};
 
-        out.print(side[i]);
+        out.print(side[i-1]);
     }
 
 
