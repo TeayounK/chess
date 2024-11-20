@@ -25,11 +25,11 @@ public class Board {
 
         out.print(ERASE_SCREEN);
 
-        drawBoard(out);
+        drawBoardBackward(out);
 
         EmptyLine(out);
 
-        drawBoardBackward(out);
+        drawBoard(out);
 
         out.print(RESET_BG_COLOR);
         out.print(RESET_TEXT_COLOR);
@@ -43,11 +43,12 @@ public class Board {
     private static void drawBoard(PrintStream out) {
         board.resetBoard();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 9; i > -1; i--) {
             for (int j = 0; j < 10; j++) {
                 // first line
                 if (i == 0) {
                     if (j == 0 || j == 9) {
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(EMPTY);
                     } else {
                         drawFirstLine(out, j);
@@ -55,6 +56,7 @@ public class Board {
                     // last line
                 } else if (i == 9) {
                     if (j == 0 || j == 9) {
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(EMPTY);
                     } else {
                         drawFirstLine(out, j);
@@ -76,12 +78,12 @@ public class Board {
     private static String chessPiece2String(ChessPiece piece) {
         ChessPiece.PieceType type = piece.getPieceType();
         return switch (type) {
-            case ChessPiece.PieceType.PAWN -> " P ";
-            case ChessPiece.PieceType.KING -> " K ";
-            case ChessPiece.PieceType.KNIGHT -> " N ";
-            case ChessPiece.PieceType.ROOK -> " R ";
-            case ChessPiece.PieceType.QUEEN -> " Q ";
-            case ChessPiece.PieceType.BISHOP -> " B ";
+            case ChessPiece.PieceType.PAWN    -> " P ";
+            case ChessPiece.PieceType.KING    -> " K ";
+            case ChessPiece.PieceType.KNIGHT  -> " N ";
+            case ChessPiece.PieceType.ROOK    -> " R ";
+            case ChessPiece.PieceType.QUEEN   -> " Q ";
+            case ChessPiece.PieceType.BISHOP  -> " B ";
         };
     }
 
@@ -146,11 +148,12 @@ public class Board {
     private static void drawBoardBackward(PrintStream out){
         board.resetBoard();
 
-        for (int i=9; i > -1 ; i--){
+        for (int i=0; i < 10 ; i++){
             for (int j=9; j > -1 ; j--){
                 // first line
                 if (i == 0){
                     if (j==0||j==9){
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(EMPTY);
                     }else{
                         drawFirstLine(out,j);
@@ -158,6 +161,7 @@ public class Board {
                     // last line
                 }else if (i == 9) {
                     if (j==0||j==9){
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(EMPTY);
                     }else{
                         drawFirstLine(out,j);
