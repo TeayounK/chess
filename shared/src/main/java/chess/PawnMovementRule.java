@@ -75,18 +75,17 @@ public class PawnMovementRule {
             if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
                     & (endpoint.getRow() - position.getRow() == 1 || endpoint.getRow() - position.getRow() == -1)) {
                 isSecondHelper(endpoint, 1, result);
-            } else if (board.getPiece(endpoint) != null) {
-                if ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()
-                        & endpoint.getColumn() != position.getColumn()) {
-                    if (endpoint.getRow() == 1) {
-                        for (ChessPiece.PieceType pieceType : types){
-                            ChessMove move = new ChessMove(position, endpoint, pieceType);
-                            result.add(move);
-                        }
-                    }else {
-                        ChessMove move = new ChessMove(position, endpoint, null);
+            } else if ((board.getPiece(endpoint) != null) &&
+                    ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()
+                    & endpoint.getColumn() != position.getColumn())) {
+                if (endpoint.getRow() == 1) {
+                    for (ChessPiece.PieceType pieceType : types){
+                        ChessMove move = new ChessMove(position, endpoint, pieceType);
                         result.add(move);
                     }
+                }else {
+                    ChessMove move = new ChessMove(position, endpoint, null);
+                    result.add(move);
                 }
             }
         }
@@ -97,21 +96,7 @@ public class PawnMovementRule {
             ChessPosition endpoint = new ChessPosition(possible3[i][0], possible3[i][1]);
             if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
                     & (endpoint.getRow() - position.getRow() == 1 || endpoint.getRow() - position.getRow() == -1)) {
-                if (endpoint.getColumn() == 1) {
-                    ChessMove move = new ChessMove(position, endpoint, ChessPiece.PieceType.QUEEN);
-                    result.add(move);
-                    ChessMove move1 = new ChessMove(position, endpoint, ChessPiece.PieceType.BISHOP);
-                    result.add(move1);
-                    ChessMove move2 = new ChessMove(position, endpoint, ChessPiece.PieceType.KNIGHT);
-                    result.add(move2);
-                    ChessMove move3 = new ChessMove(position, endpoint, ChessPiece.PieceType.ROOK);
-                    result.add(move3);
-                    first = true;
-                } else {
-                    ChessMove move = new ChessMove(position, endpoint, null);
-                    result.add(move);
-                    first = true;
-                }
+                first = isFirstHelpers(endpoint.getColumn(), 1, endpoint, result);
             } else if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
                     & (endpoint.getRow() - position.getRow() == 2 || endpoint.getRow() - position.getRow() == -2)
                     & first) {
@@ -124,6 +109,26 @@ public class PawnMovementRule {
                     result.add(move);
                 }
             }
+        }
+        return first;
+    }
+
+    private boolean isFirstHelpers(int endpoint, int x, ChessPosition endpoint1, Collection<ChessMove> result) {
+        boolean first;
+        if (endpoint == x) {
+            ChessMove move = new ChessMove(position, endpoint1, ChessPiece.PieceType.QUEEN);
+            result.add(move);
+            ChessMove move1 = new ChessMove(position, endpoint1, ChessPiece.PieceType.BISHOP);
+            result.add(move1);
+            ChessMove move2 = new ChessMove(position, endpoint1, ChessPiece.PieceType.KNIGHT);
+            result.add(move2);
+            ChessMove move3 = new ChessMove(position, endpoint1, ChessPiece.PieceType.ROOK);
+            result.add(move3);
+            first = true;
+        } else {
+            ChessMove move = new ChessMove(position, endpoint1, null);
+            result.add(move);
+            first = true;
         }
         return first;
     }
@@ -164,21 +169,7 @@ public class PawnMovementRule {
             ChessPosition endpoint = new ChessPosition(possible1[i][0], possible1[i][1]);
             if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
                     & (endpoint.getRow() - position.getRow() == 1 || endpoint.getRow() - position.getRow() == -1)) {
-                if (endpoint.getRow() == 8) {
-                    ChessMove move = new ChessMove(position, endpoint, ChessPiece.PieceType.QUEEN);
-                    result.add(move);
-                    ChessMove move1 = new ChessMove(position, endpoint, ChessPiece.PieceType.BISHOP);
-                    result.add(move1);
-                    ChessMove move2 = new ChessMove(position, endpoint, ChessPiece.PieceType.KNIGHT);
-                    result.add(move2);
-                    ChessMove move3 = new ChessMove(position, endpoint, ChessPiece.PieceType.ROOK);
-                    result.add(move3);
-                    first = true;
-                } else {
-                    ChessMove move = new ChessMove(position, endpoint, null);
-                    result.add(move);
-                    first = true;
-                }
+                first = isFirstHelpers(endpoint.getRow(), 8, endpoint, result);
             } else if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
                     & (endpoint.getRow() - position.getRow() == 2 || endpoint.getRow() - position.getRow() == -2)
                     & first) {
