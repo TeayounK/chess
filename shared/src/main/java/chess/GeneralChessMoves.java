@@ -47,9 +47,13 @@ public class GeneralChessMoves {
                 {position.getRow(), position.getColumn()-8}};
 
         int [][][] cases = {possibleRight,possibleLeft,possibleUp,possibleDown};
+        return getChessMovesHelper(board, position, cases);
+    }
+
+    private static Collection<ChessMove> getChessMovesHelper(ChessBoard board, ChessPosition position, int[][][] cases) {
         Collection<ChessMove> result = new ArrayList<>();
         for (int j = 0; j < 4; j++){
-            for (int i=0 ; i < cases[j].length; i++){
+            for (int i = 0; i < cases[j].length; i++){
                 if (checkHelper(board, position, cases, j, i, result)) {break;}
             }
         }
@@ -98,13 +102,7 @@ public class GeneralChessMoves {
 
 
         int [][][] cases = {possibleUpup,possibleUpdown,possibleDownup,possibleDowndown};
-        Collection<ChessMove> result = new ArrayList<>();
-        for (int j = 0; j < 4; j++){
-            for (int i = 0; i < cases[j].length; i++) {
-                if (checkHelper(board, position, cases, j, i, result)) {break;}
-            }
-        }
-        return result;
+        return getChessMovesHelper(board, position, cases);
     }
 
     private static boolean checkHelper(ChessBoard board, ChessPosition position, int[][][] cases, int j, int i, Collection<ChessMove> result) {

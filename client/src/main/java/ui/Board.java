@@ -16,7 +16,7 @@ public class Board {
     private static final int LINE_WIDTH_IN_PADDED_CHARS = 8;
     // Padded characters.
     private static final String EMPTY = "   ";
-    private static ChessBoard board = new ChessBoard();
+    private static final ChessBoard board = new ChessBoard();
 
 
     public static void main(String[] args) {
@@ -45,29 +45,7 @@ public class Board {
         for (int i = 9; i > -1; i--) {
             for (int j = 0; j < 10; j++) {
                 // first line
-                if (i == 0) {
-                    if (j == 0 || j == 9) {
-                        out.print(SET_BG_COLOR_LIGHT_GREY);
-                        out.print(EMPTY);
-                    } else {
-                        drawFirstLine(out, j);
-                    }
-                    // last line
-                } else if (i == 9) {
-                    if (j == 0 || j == 9) {
-                        out.print(SET_BG_COLOR_LIGHT_GREY);
-                        out.print(EMPTY);
-                    } else {
-                        drawFirstLine(out, j);
-                    }
-                    // lines in the middle
-                } else {
-                    if (j == 0 || j == 9) {
-                        drawIntheMiddle(out, i);
-                    } else {
-                        drawMainChessBoard(out, i, j);
-                    }
-                }
+                drawBoardHelper(out, i, j);
             }
             out.print(RESET_BG_COLOR);
             out.print("\n");
@@ -149,33 +127,37 @@ public class Board {
 
         for (int i=0; i < 10 ; i++){
             for (int j=9; j > -1 ; j--){
-                // first line
-                if (i == 0){
-                    if (j==0||j==9){
-                        out.print(SET_BG_COLOR_LIGHT_GREY);
-                        out.print(EMPTY);
-                    }else{
-                        drawFirstLine(out,j);
-                    }
-                    // last line
-                }else if (i == 9) {
-                    if (j==0||j==9){
-                        out.print(SET_BG_COLOR_LIGHT_GREY);
-                        out.print(EMPTY);
-                    }else{
-                        drawFirstLine(out,j);
-                    }
-                    // lines in the middle
-                }else{
-                    if (j==0||j==9){
-                        drawIntheMiddle(out,i);
-                    }else{
-                        drawMainChessBoard(out,i,j);
-                    }
-                }
+                drawBoardHelper(out, i, j);
             }
             out.print(RESET_BG_COLOR);
             out.print("\n");
+        }
+    }
+
+    private static void drawBoardHelper(PrintStream out, int i, int j) {
+        // first line
+        if (i == 0){
+            if (j ==0|| j ==9){
+                out.print(SET_BG_COLOR_LIGHT_GREY);
+                out.print(EMPTY);
+            }else{
+                drawFirstLine(out, j);
+            }
+            // last line
+        }else if (i == 9) {
+            if (j ==0|| j ==9){
+                out.print(SET_BG_COLOR_LIGHT_GREY);
+                out.print(EMPTY);
+            }else{
+                drawFirstLine(out, j);
+            }
+            // lines in the middle
+        }else{
+            if (j ==0|| j ==9){
+                drawIntheMiddle(out, i);
+            }else{
+                drawMainChessBoard(out, i, j);
+            }
         }
     }
 }
