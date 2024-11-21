@@ -50,19 +50,7 @@ public class GeneralChessMoves {
         Collection<ChessMove> result = new ArrayList<>();
         for (int j = 0; j < 4; j++){
             for (int i=0 ; i < cases[j].length; i++){
-                if (cases[j][i][0] < 9 & cases[j][i][1] < 9 & cases[j][i][0] > 0 & cases[j][i][1] > 0) {
-                    ChessPosition endpoint = new ChessPosition(cases[j][i][0], cases[j][i][1]);
-                    if (board.getPiece(endpoint) == null) {
-                        ChessMove move = new ChessMove(position, endpoint, null);
-                        result.add(move);
-                    }else if ((board.getPiece(endpoint)).getTeamColor() == (board.getPiece(position)).getTeamColor()){
-                        break;
-                    }else if ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()) {
-                        ChessMove move = new ChessMove(position, endpoint, null);
-                        result.add(move);
-                        break;
-                    }
-                }
+                if (checkHelper(board, position, cases, j, i, result)) break;
             }
         }
         return result;
@@ -113,21 +101,26 @@ public class GeneralChessMoves {
         Collection<ChessMove> result = new ArrayList<>();
         for (int j = 0; j < 4; j++){
             for (int i = 0; i < cases[j].length; i++) {
-                if (cases[j][i][0] < 9 & cases[j][i][1] < 9 & cases[j][i][0] > 0 & cases[j][i][1] > 0) {
-                    ChessPosition endpoint = new ChessPosition(cases[j][i][0], cases[j][i][1]);
-                    if (board.getPiece(endpoint) == null) {
-                        ChessMove move = new ChessMove(position, endpoint, null);
-                        result.add(move);
-                    }else if ((board.getPiece(endpoint)).getTeamColor() == (board.getPiece(position)).getTeamColor()){
-                        break;
-                    }else if ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()) {
-                        ChessMove move = new ChessMove(position, endpoint, null);
-                        result.add(move);
-                        break;
-                    }
-                }
+                if (checkHelper(board, position, cases, j, i, result)) break;
             }
         }
         return result;
+    }
+
+    private static boolean checkHelper(ChessBoard board, ChessPosition position, int[][][] cases, int j, int i, Collection<ChessMove> result) {
+        if (cases[j][i][0] < 9 & cases[j][i][1] < 9 & cases[j][i][0] > 0 & cases[j][i][1] > 0) {
+            ChessPosition endpoint = new ChessPosition(cases[j][i][0], cases[j][i][1]);
+            if (board.getPiece(endpoint) == null) {
+                ChessMove move = new ChessMove(position, endpoint, null);
+                result.add(move);
+            }else if ((board.getPiece(endpoint)).getTeamColor() == (board.getPiece(position)).getTeamColor()){
+                return true;
+            }else if ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()) {
+                ChessMove move = new ChessMove(position, endpoint, null);
+                result.add(move);
+                return true;
+            }
+        }
+        return false;
     }
 }

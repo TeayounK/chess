@@ -135,7 +135,6 @@ public class MySqlDAOTest {
     public void loginUserAlreadyLoggedOutTest(){
 
         UserData newUser = new UserData("username","password","email");
-        UserData newUser1 = new UserData("username1","password1","email1");
 
         try{
             service.addUser(newUser);
@@ -145,6 +144,7 @@ public class MySqlDAOTest {
         }
 
         try{
+            UserData newUser1 = new UserData("username1", "password1", "email1");
             AuthData authData = service.addUser(newUser1);
             service.logoutUser(authData.authToken());
             service.logoutUser(authData.authToken());

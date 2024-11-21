@@ -195,14 +195,14 @@ public class ChessGame {
             for (int j=1;j<9;j++){
                 ChessPosition pos = new ChessPosition(i,j);
                 // verify an existence of piece
-                result = CheckmateHelper(teamColor, clone, pos, temp, result);
+                result = checkmateHelper(teamColor, clone, pos, temp, result);
             }
         }
 
         return result;
     }
 
-    private static boolean CheckmateHelper(TeamColor teamColor, ChessBoard clone, ChessPosition pos, ChessGame temp, boolean result) {
+    private static boolean checkmateHelper(TeamColor teamColor, ChessBoard clone, ChessPosition pos, ChessGame temp, boolean result) {
         if ((clone.getPiece(pos) != null)&&(clone.getPiece(pos).getTeamColor()== teamColor)){
             Collection<ChessMove> listMoves = clone.getPiece(pos).pieceMoves(clone, pos);
             for (ChessMove aMove : listMoves){
