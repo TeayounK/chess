@@ -44,7 +44,7 @@ public class ChessClient {
                 // commends in game phase
                 case "leave" -> leaveGame();
 
-                default -> "Calling help";
+                default -> "";
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
@@ -95,7 +95,6 @@ public class ChessClient {
         }catch(ResponseException e){
             throw new ResponseException(400, e.getMessage());
         }
-
     }
 
     private String listGame() throws ResponseException{
