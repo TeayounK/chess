@@ -65,14 +65,13 @@ public class ChessPiece {
             PawnMovementRule pawn = new PawnMovementRule(board, myPosition);
             return pawn.possibleMoves();
         }else if ((getPieceType() == PieceType.QUEEN)){
-            QueenMovementRule queen = new QueenMovementRule(board, myPosition);
-            return queen.possibleMoves();
+            ArrayList<ChessMove> queensMove = (ArrayList<ChessMove>) GeneralChessMoves.straightMoves(board,myPosition);
+            queensMove.addAll(GeneralChessMoves.diagnalMoves(board,myPosition));
+            return queensMove;
         }else if ((getPieceType() == PieceType.ROOK)){
-            RookMovementRule rook = new RookMovementRule(board, myPosition);
-            return rook.possibleMoves();
+            return GeneralChessMoves.straightMoves(board,myPosition);
         }else if ((getPieceType() == PieceType.BISHOP)){
-            BishopMovementRule bishop = new BishopMovementRule(board, myPosition);
-            return bishop.possibleMoves();
+            return GeneralChessMoves.diagnalMoves(board,myPosition);
         }else{
             return new ArrayList<>();
         }

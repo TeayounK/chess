@@ -18,7 +18,7 @@ public class MySqlDataAccessAuth implements DataAccessAuth{
     };
 
     public MySqlDataAccessAuth() throws DataAccessException {
-        configureDatabaseAuth();
+        DatabaseManager.configureDatabase(createStatements);
     }
 
 
