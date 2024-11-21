@@ -107,7 +107,8 @@ public class MySqlDataAccessGame implements DataAccessGame{
         }
     }
 
-    private void updateHelper(JoinGame game, String username, PreparedStatement preparedStatement, Connection conn, String statement1) throws SQLException, DataAccessException {
+    private void updateHelper(JoinGame game, String username, PreparedStatement preparedStatement, Connection conn,
+                              String statement1) throws SQLException, DataAccessException {
         preparedStatement.setInt(1, game.gameID());
         try(var result = preparedStatement.executeQuery()){
             if (!result.next()) {

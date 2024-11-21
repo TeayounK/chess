@@ -50,7 +50,7 @@ public class GeneralChessMoves {
         Collection<ChessMove> result = new ArrayList<>();
         for (int j = 0; j < 4; j++){
             for (int i=0 ; i < cases[j].length; i++){
-                if (checkHelper(board, position, cases, j, i, result)) break;
+                if (checkHelper(board, position, cases, j, i, result)) {break;}
             }
         }
         return result;
@@ -101,7 +101,7 @@ public class GeneralChessMoves {
         Collection<ChessMove> result = new ArrayList<>();
         for (int j = 0; j < 4; j++){
             for (int i = 0; i < cases[j].length; i++) {
-                if (checkHelper(board, position, cases, j, i, result)) break;
+                if (checkHelper(board, position, cases, j, i, result)) {break;}
             }
         }
         return result;
@@ -122,5 +122,23 @@ public class GeneralChessMoves {
             }
         }
         return false;
+    }
+
+    static Collection<ChessMove> getChessMoves(int[][] possible, ChessBoard board, ChessPosition position) {
+        Collection<ChessMove> result = new ArrayList<>();
+        for (int[] ints : possible) {
+            if (ints[0] < 9 & ints[1] < 9 & ints[0] > 0 & ints[1] > 0) {
+                ChessPosition endpoint = new ChessPosition(ints[0], ints[1]);
+                if (board.getPiece(endpoint) == null) {
+                    ChessMove move = new ChessMove(position, endpoint, null);
+                    result.add(move);
+                } else if ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()) {
+                    ChessMove move = new ChessMove(position, endpoint, null);
+                    result.add(move);
+                }
+            }
+
+        }
+        return result;
     }
 }

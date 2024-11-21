@@ -74,19 +74,7 @@ public class PawnMovementRule {
             ChessPosition endpoint = new ChessPosition(possible4[i][0], possible4[i][1]);
             if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
                     & (endpoint.getRow() - position.getRow() == 1 || endpoint.getRow() - position.getRow() == -1)) {
-                if (endpoint.getRow() == 1) {
-                    ChessMove move = new ChessMove(position, endpoint, ChessPiece.PieceType.QUEEN);
-                    result.add(move);
-                    ChessMove move1 = new ChessMove(position, endpoint, ChessPiece.PieceType.BISHOP);
-                    result.add(move1);
-                    ChessMove move2 = new ChessMove(position, endpoint, ChessPiece.PieceType.KNIGHT);
-                    result.add(move2);
-                    ChessMove move3 = new ChessMove(position, endpoint, ChessPiece.PieceType.ROOK);
-                    result.add(move3);
-                } else {
-                    ChessMove move = new ChessMove(position, endpoint, null);
-                    result.add(move);
-                }
+                isSecondHelper(endpoint, 1, result);
             } else if (board.getPiece(endpoint) != null) {
                 if ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()
                         & endpoint.getColumn() != position.getColumn()) {
@@ -145,37 +133,29 @@ public class PawnMovementRule {
             ChessPosition endpoint = new ChessPosition(possible2[i][0], possible2[i][1]);
             if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
                     & (endpoint.getRow() - position.getRow() == 1 || endpoint.getRow() - position.getRow() == -1)) {
-                if (endpoint.getRow() == 8) {
-                    ChessMove move = new ChessMove(position, endpoint, ChessPiece.PieceType.QUEEN);
-                    result.add(move);
-                    ChessMove move1 = new ChessMove(position, endpoint, ChessPiece.PieceType.BISHOP);
-                    result.add(move1);
-                    ChessMove move2 = new ChessMove(position, endpoint, ChessPiece.PieceType.KNIGHT);
-                    result.add(move2);
-                    ChessMove move3 = new ChessMove(position, endpoint, ChessPiece.PieceType.ROOK);
-                    result.add(move3);
-                } else {
-                    ChessMove move = new ChessMove(position, endpoint, null);
-                    result.add(move);
-                }
+                isSecondHelper(endpoint, 8, result);
             } else if (board.getPiece(endpoint) != null) {
                 if ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()
                     & endpoint.getColumn() != position.getColumn()) {
-                    if (endpoint.getRow() == 8){
-                        ChessMove move = new ChessMove(position, endpoint, ChessPiece.PieceType.QUEEN);
-                        result.add(move);
-                        ChessMove move1 = new ChessMove(position, endpoint, ChessPiece.PieceType.BISHOP);
-                        result.add(move1);
-                        ChessMove move2 = new ChessMove(position, endpoint, ChessPiece.PieceType.KNIGHT);
-                        result.add(move2);
-                        ChessMove move3 = new ChessMove(position, endpoint, ChessPiece.PieceType.ROOK);
-                        result.add(move3);
-                    }else {
-                        ChessMove move = new ChessMove(position, endpoint, null);
-                        result.add(move);
-                    }
+                    isSecondHelper(endpoint, 8, result);
                 }
             }
+        }
+    }
+
+    private void isSecondHelper(ChessPosition endpoint, int x, Collection<ChessMove> result) {
+        if (endpoint.getRow() == x) {
+            ChessMove move = new ChessMove(position, endpoint, ChessPiece.PieceType.QUEEN);
+            result.add(move);
+            ChessMove move1 = new ChessMove(position, endpoint, ChessPiece.PieceType.BISHOP);
+            result.add(move1);
+            ChessMove move2 = new ChessMove(position, endpoint, ChessPiece.PieceType.KNIGHT);
+            result.add(move2);
+            ChessMove move3 = new ChessMove(position, endpoint, ChessPiece.PieceType.ROOK);
+            result.add(move3);
+        } else {
+            ChessMove move = new ChessMove(position, endpoint, null);
+            result.add(move);
         }
     }
 
