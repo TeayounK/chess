@@ -29,7 +29,7 @@ public class ChessClient {
                 // commends in preLogin phase
                 case "login" -> logIn(params);
                 case "list" -> listGame();
-                case "l" -> L(params);
+                case "l" -> l(params);
                 case "register" -> register(params);
                 case "r" -> register(params);
                 case "quit" -> "quit";
@@ -53,7 +53,7 @@ public class ChessClient {
         }
     }
 
-    private String L(String... params) throws ResponseException{
+    private String l(String... params) throws ResponseException{
         if (state == States.PRELOGIN){
             return this.logIn(params);
         }else if (state == States.LOGIN){
@@ -146,8 +146,8 @@ public class ChessClient {
             JoinGame joinGame = new JoinGame(params[1], Integer.parseInt(params[0]));
             server.joinGame(this.authData,joinGame);
             state = States.GAME;
-            Board B = new Board();
-            B.main(null);
+            Board boardDraw = new Board();
+            boardDraw.main(null);
             return "Successfully joined a game";
         }else{
             throw new ResponseException(400, "Expected: <playerColor> <gameID>");
@@ -158,8 +158,8 @@ public class ChessClient {
         assertLogIn();
         if (params.length == 1){
             state = States.GAME;
-            Board B = new Board();
-            B.main(null);
+            Board boardDraw = new Board();
+            boardDraw.main(null);
             return "Successfully enter the game as an observer";
         }else{
             throw new ResponseException(400, "Expected: <gameID>");

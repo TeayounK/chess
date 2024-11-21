@@ -26,7 +26,7 @@ public class Board {
 
         drawBoardBackward(out);
 
-        EmptyLine(out);
+        emptyLine(out);
 
         drawBoard(out);
 
@@ -34,7 +34,7 @@ public class Board {
         out.print(RESET_TEXT_COLOR);
     }
 
-    private static void EmptyLine(PrintStream out){
+    private static void emptyLine(PrintStream out){
         out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
         out.print("\n");
     }
