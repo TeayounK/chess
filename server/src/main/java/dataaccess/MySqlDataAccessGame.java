@@ -12,8 +12,9 @@ import java.util.Collection;
 public class MySqlDataAccessGame implements DataAccessGame{
     private int maxID = 0;
 
-    private final String[] createStatements = {
-            """
+    public MySqlDataAccessGame() throws DataAccessException {
+        String[] createStatements = {
+                """
             CREATE TABLE IF NOT EXISTS  games (
               `gameID` INT NOT NULL,
               `whiteUsername` varchar(256) NULL,
@@ -23,9 +24,7 @@ public class MySqlDataAccessGame implements DataAccessGame{
               PRIMARY KEY (`gameID`)
             )
             """
-    };
-
-    public MySqlDataAccessGame() throws DataAccessException {
+        };
         DatabaseManager.configureDatabase(createStatements);
     }
 
@@ -33,7 +32,8 @@ public class MySqlDataAccessGame implements DataAccessGame{
     public GameData createGame(GameData gameData) throws DataAccessException {
         maxID += 1;
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?,?,?,?,?)";
+            var statement = "INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, game) " +
+                    "VALUES (?,?,?,?,?)";
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setInt(1,maxID);
                 preparedStatement.setString(2,null);
@@ -81,7 +81,7 @@ public class MySqlDataAccessGame implements DataAccessGame{
 
     @Override
     public void updateGame(JoinGame game, String username) throws DataAccessException {
-        String statement1 = "";
+        String statement1;
 
         if (game.playerColor() == null){
             throw new DataAccessException("Error: bad request");
@@ -103,7 +103,10 @@ public class MySqlDataAccessGame implements DataAccessGame{
                         GameData gameData = readGame(result);
                         if (gameData.blackUsername() != null && gameData.whiteUsername() != null) {
                             throw new DataAccessException("Error: already taken");
-                        } else if ((gameData.blackUsername() != null && game.playerColor().equalsIgnoreCase("black")) || (gameData.whiteUsername() != null && game.playerColor().equalsIgnoreCase("white"))) {
+                        } else if ((gameData.blackUsername() != null &&
+                                game.playerColor().equalsIgnoreCase("black"))
+                                || (gameData.whiteUsername() != null &&
+                                game.playerColor().equalsIgnoreCase("white"))) {
                             throw new DataAccessException("Error: already taken");
                         }else{
                             try(var preparedStatement1 = conn.prepareStatement(statement1)){
@@ -118,7 +121,8 @@ public class MySqlDataAccessGame implements DataAccessGame{
                 }
             }
         }catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to get the authToken : %s", ex.getMessage()));
+            throw new DataAccessException(String.format("Unable to get the authToken : %s",
+                    ex.getMessage()));
         }
     }
 

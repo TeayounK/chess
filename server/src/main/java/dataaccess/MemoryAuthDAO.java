@@ -23,7 +23,7 @@ public class MemoryAuthDAO implements DataAccessAuth {
         return null;
     }
     @Override
-    public String getUser(String authToken) throws DataAccessException{
+    public String getUser(String authToken){
         return authsKey.get(authToken).username();
     }
 
@@ -33,7 +33,7 @@ public class MemoryAuthDAO implements DataAccessAuth {
             throw new DataAccessException("Error: Already logged-out username");
         }
         String theUser = authsKey.get(authToken).username();
-        if (theUser == null) throw new DataAccessException("Error: Already logged-out username");
+        if (theUser == null) {throw new DataAccessException("Error: Already logged-out username");}
         else {
             authsKey.remove(authToken);
         }

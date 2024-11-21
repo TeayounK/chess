@@ -8,7 +8,6 @@ import model.AuthData;
 import model.GameData;
 import model.JoinGame;
 import model.UserData;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.*;
 
@@ -45,11 +44,6 @@ public class Service {
         if (existingUser == null){
             throw new DataAccessException("Error: Unknown username");
         }
-//        AuthData authExistUser = dataAccessAuth.getAuth(user.username());
-
-//        if (authExistUser != null){
-//            throw new DataAccessException("Error: Already logged-in username");
-//        }
         if (!dataAccessUser.verifyUser(user.username(),user.password())){
             throw new DataAccessException("Error: Unauthorized");
         }

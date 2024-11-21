@@ -1,12 +1,9 @@
 package ui;
 
-import com.sun.nio.sctp.NotificationHandler;
-
-import javax.management.Notification;
 import java.util.Scanner;
 
 public class Repl {
-    private ChessClient client;
+    private final ChessClient client;
     private States state;
 
     public Repl(String serverUrl) {
@@ -38,12 +35,6 @@ public class Repl {
         }
         System.out.println();
     }
-
-//    public void notify(Notification notification) {
-//        System.out.println(notification.message());
-//        printPrompt();
-//    }
-
 
     static String printPromptPreLogin() {
         return """

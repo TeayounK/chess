@@ -7,15 +7,13 @@ import java.util.Arrays;
 import static ui.Repl.*;
 
 public class ChessClient {
-    private ServerFacade server;
-    private final String serverUrl;
+    private final ServerFacade server;
     public States state;
     private AuthData authData;
 
 
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
         this.state = States.PRELOGIN;
         this.authData = null;
     }
@@ -109,15 +107,15 @@ public class ChessClient {
 
     private String listGame() throws ResponseException{
         try{
-            String stringResult = "";
+            StringBuilder stringResult = new StringBuilder();
             int i = 0;
             assertLogIn();
             ListResult listResult = server.listGames(this.authData);
             for (GameData game : listResult.games()){
                 i+= 1;
-                stringResult += i + "." + game.gameName() + " " + game.whiteUsername() + " " + game.blackUsername() +"\n";
+                stringResult.append(i).append(".").append(game.gameName()).append(" ").append(game.whiteUsername()).append(" ").append(game.blackUsername()).append("\n");
             }
-            return stringResult;
+            return stringResult.toString();
         }catch(ResponseException e){
             throw new ResponseException(400, e.getMessage());
         }
@@ -127,8 +125,8 @@ public class ChessClient {
         assertLogIn();
         if (params.length==1){
             state = States.LOGIN;
-            GameData result = server.createGame(this.authData,params);
-            return String.format("You created a game with game ID: %s.", result.gameID());
+            server.createGame(this.authData,params);
+            return "You created a game";
         }else{
             throw new ResponseException(400, "Expected: <GAMENAME>");
         }
