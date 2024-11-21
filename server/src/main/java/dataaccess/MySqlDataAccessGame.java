@@ -25,9 +25,6 @@ public class MySqlDataAccessGame implements DataAccessGame{
             """
     };
 
-//    public MySqlDataAccessGame() throws DataAccessException {
-//        configureDatabaseGame();
-//    }
     public MySqlDataAccessGame() throws DataAccessException {
         DatabaseManager.configureDatabase(createStatements);
     }
@@ -139,17 +136,4 @@ public class MySqlDataAccessGame implements DataAccessGame{
         }
     }
 
-
-    private void configureDatabaseGame() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
 }

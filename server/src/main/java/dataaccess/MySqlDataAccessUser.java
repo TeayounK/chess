@@ -17,11 +17,7 @@ public class MySqlDataAccessUser implements DataAccessUser{
             )
             """
     };
-//    private org.mindrot.jbcrypt.BCrypt BCrypt;
 
-//    public MySqlDataAccessUser() throws DataAccessException {
-//        configureDatabaseUser();
-//    }
     public MySqlDataAccessUser() throws DataAccessException {
         DatabaseManager.configureDatabase(createStatements);
     }
@@ -105,16 +101,4 @@ public class MySqlDataAccessUser implements DataAccessUser{
         }
     }
 
-    private void configureDatabaseUser() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
 }
