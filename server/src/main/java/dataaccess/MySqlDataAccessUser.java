@@ -19,9 +19,13 @@ public class MySqlDataAccessUser implements DataAccessUser{
     };
 //    private org.mindrot.jbcrypt.BCrypt BCrypt;
 
+//    public MySqlDataAccessUser() throws DataAccessException {
+//        configureDatabaseUser();
+//    }
     public MySqlDataAccessUser() throws DataAccessException {
-        configureDatabaseUser();
+        DatabaseManager.configureDatabase(createStatements);
     }
+
 
     private String storeUserPassword(String clearTextPassword) {
         return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());

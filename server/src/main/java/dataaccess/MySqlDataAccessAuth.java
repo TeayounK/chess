@@ -119,18 +119,5 @@ public class MySqlDataAccessAuth implements DataAccessAuth{
             throw new DataAccessException(String.format("Unable to clean up the database: %s", ex.getMessage()));
         }
     }
-
-    private void configureDatabaseAuth() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
 }
 

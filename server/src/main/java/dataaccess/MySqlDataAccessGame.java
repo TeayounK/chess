@@ -25,8 +25,11 @@ public class MySqlDataAccessGame implements DataAccessGame{
             """
     };
 
+//    public MySqlDataAccessGame() throws DataAccessException {
+//        configureDatabaseGame();
+//    }
     public MySqlDataAccessGame() throws DataAccessException {
-        configureDatabaseGame();
+        DatabaseManager.configureDatabase(createStatements);
     }
 
     @Override
