@@ -96,7 +96,7 @@ public class MySqlDataAccessGame implements DataAccessGame{
             }else if (game.playerColor().equalsIgnoreCase("white")){
                 statement1 = "UPDATE games SET whiteUsername = ? WHERE gameID = ?";
             }else{
-                throw new DataAccessException("Error: bad request");
+                throw new DataAccessException("Error: not a valid color");
             }
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 updateHelper(game, username, preparedStatement, conn, statement1);

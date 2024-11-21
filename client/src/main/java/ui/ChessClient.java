@@ -3,6 +3,8 @@ package ui;
 import model.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import static ui.Repl.*;
 
@@ -10,12 +12,15 @@ public class ChessClient {
     private final ServerFacade server;
     public States state;
     private AuthData authData;
+    private HashMap<Integer, GameData> num2Game;
 
 
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
         this.state = States.PRELOGIN;
         this.authData = null;
+        this.num2Game = new HashMap<>();
+
     }
 
     public String eval(String input) {
@@ -57,7 +62,7 @@ public class ChessClient {
         }else if (state == States.LOGIN){
             return this.listGame();
         }else {
-            throw new ResponseException(400, "Not a valid command");
+            throw new ResponseException(400, "failure: not a valid command.");
         }
     }
 
@@ -66,10 +71,12 @@ public class ChessClient {
         assertPreLogin();
         if (params.length == 2){
             this.authData = server.loginUser(params);
+            initializeHashMap();
             state = States.LOGIN;
             return String.format("You logged in as %s.", this.authData.username());
         }else{
-            throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <USERNAME> <PASSWORD>");
         }
     }
     
@@ -82,7 +89,8 @@ public class ChessClient {
             return String.format("You registered in as %s.", result.username());
 
         }else{
-            throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <USERNAME> <PASSWORD> <EMAIL>");
         }
     }
 
@@ -97,6 +105,16 @@ public class ChessClient {
         }
     }
 
+    private void initializeHashMap()throws ResponseException{
+        ListResult listResult = server.listGames(this.authData);
+        int i = 0;
+        for (GameData game : listResult.games()) {
+            i += 1;
+            this.num2Game.put(i, game);
+        }
+    }
+
+
     private String listGame() throws ResponseException{
         try{
             StringBuilder stringResult = new StringBuilder();
@@ -105,6 +123,7 @@ public class ChessClient {
             ListResult listResult = server.listGames(this.authData);
             for (GameData game : listResult.games()){
                 i+= 1;
+                this.num2Game.put(i,game);
                 stringResult.append(i).append(".").append(game.gameName()).append(" ")
                         .append(game.whiteUsername()).append(" ").append(game.blackUsername()).append("\n");
             }
@@ -121,7 +140,8 @@ public class ChessClient {
             server.createGame(this.authData,params);
             return "You created a game";
         }else{
-            throw new ResponseException(400, "Expected: <GAMENAME>");
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <GAMENAME>");
         }
     }
 
@@ -133,15 +153,33 @@ public class ChessClient {
 
     private String joinGame(String... params) throws ResponseException{
         assertLogIn();
-        if (params.length == 2){
-            JoinGame joinGame = new JoinGame(params[1], Integer.parseInt(params[0]));
-            server.joinGame(this.authData,joinGame);
+        try {
+            int gameNum = Integer.parseInt(params[0]);
+            JoinGame joinGame = new JoinGame(params[1], this.num2Game.get(gameNum).gameID());
+            server.joinGame(this.authData, joinGame);
             state = States.GAME;
             Board boardDraw = new Board();
             boardDraw.main(null);
             return "Successfully joined a game";
-        }else{
-            throw new ResponseException(400, "Expected: <playerColor> <gameID>");
+        }catch(NumberFormatException ex){
+            throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
+                    "<GAME NUMBER> has to be integer");
+        }catch(NullPointerException ex){
+            throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
+                    "<GAME NUMBER> is not on the list");
+        }catch(ResponseException ex){
+            if ((params.length == 2)) {
+                throw new ResponseException(ex.hashCode(), "failure: not a valid color. \n" +
+                        "<COLOR> has to be \"white\" or \"black\"");
+            }else if (params.length > 2){
+                throw new ResponseException(400, "failure: not a valid input. \n" +
+                        "Expected: <game NUMBER> <playerColor>");
+            }else{
+                throw new ResponseException(400, "failure: not a valid input. \n" +ex.getMessage());
+            }
+        }catch(ArrayIndexOutOfBoundsException ex){
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <playerColor> <game NUMBER>");
         }
     }
 
@@ -153,32 +191,33 @@ public class ChessClient {
             boardDraw.main(null);
             return "Successfully enter the game as an observer";
         }else{
-            throw new ResponseException(400, "Expected: <gameID>");
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <game NUMBER>");
         }
     }
 
     private String leaveGame() throws ResponseException{
         assertGame();
         state = States.LOGIN;
-        return "You have logged out";
+        return "You have successfully left the game";
     }
 
 
     // checking status
     private void assertLogIn() throws ResponseException {
         if (state != States.LOGIN) {
-            throw new ResponseException(400, "This is a commend for logged in users");
+            throw new ResponseException(400, "failure: This is a commend for logged in users");
         }
     }
 
     private void assertPreLogin() throws ResponseException {
         if (state != States.PRELOGIN) {
-            throw new ResponseException(400, "This is a commend for pre-login users");
+            throw new ResponseException(400, "failure: This is a commend for pre-login users");
         }
     }
     private void assertGame() throws ResponseException {
         if (state != States.GAME) {
-            throw new ResponseException(400, "This is a commend for users in a game");
+            throw new ResponseException(400, "failure: This is a commend for users in a game");
         }
     }
 }

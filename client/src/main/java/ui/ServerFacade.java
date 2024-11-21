@@ -92,7 +92,7 @@ public class ServerFacade {
         var status = http.getResponseCode();
         var mess = http.getResponseMessage();
         if (!isSuccessful(status)) {
-            throw new ResponseException(status, "failure: " + status + " " + mess);
+            throw new ResponseException(status, "failure: " + mess);
         }
     }
 

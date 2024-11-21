@@ -38,8 +38,10 @@ public class MemoryGameDAO implements DataAccessGame{
         if (game.playerColor() == null){
             throw new DataAccessException("Error: bad request");
         }
-        if (gameCalled == null||(!game.playerColor().equalsIgnoreCase("black")&&!game.playerColor().equalsIgnoreCase("white"))) {
+        if (gameCalled == null){
             throw new DataAccessException("Error: bad request");
+        } else if (!game.playerColor().equalsIgnoreCase("black")&&!game.playerColor().equalsIgnoreCase("white")) {
+            throw new DataAccessException("Error: not a valid color");
         } else if (gameCalled.blackUsername() != null && gameCalled.whiteUsername() != null) {
             throw new DataAccessException("Error: already taken");
         } else if ((gameCalled.blackUsername() != null && game.playerColor().equalsIgnoreCase("black"))

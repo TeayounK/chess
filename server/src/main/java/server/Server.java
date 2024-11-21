@@ -198,6 +198,7 @@ public class Server {
             errorCode = switch (e.getMessage()) {
                 case "Error: Unauthorized" -> 401;
                 case "Error: bad request" -> 400;
+                case "Error: not a valid color" -> 400;
                 case "Error: already taken" -> 403;
                 default -> errorCode;
             };
