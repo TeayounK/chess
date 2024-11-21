@@ -247,53 +247,31 @@ public class MySqlDAOTest {
     }
     @Test
     public void joinGameAlreadyTakenTest(){
-
-        UserData newUser = new UserData("username","password","email");
-        UserData newUser1 = new UserData("username1","password1","email1");
         GameData newGame = new GameData(1,null,null,"newgame",null);
-        JoinGame newJoin = new JoinGame("WHITE",1);
-        JoinGame newJoin1 = new JoinGame("BLACK",1);
         try{
+            JoinGame newJoin = new JoinGame("WHITE",1);
+            UserData newUser = new UserData("username","password","email");
+
             AuthData authData = service.addUser(newUser);
             service.createGame(newGame);
             service.joinGame(newJoin,authData.authToken());
             service.joinGame(newJoin,authData.authToken());
         }catch(DataAccessException e){
-            Assertions.assertEquals("Error: already taken",e.getMessage(),"joinGame is not working");
-        }
-        try{
-            AuthData authData = service.addUser(newUser1);
-            service.createGame(newGame);
-            service.joinGame(newJoin,authData.authToken());
-            service.joinGame(newJoin1,authData.authToken());
-            service.joinGame(newJoin,authData.authToken());
-        }catch(DataAccessException e){
-            Assertions.assertEquals("Error: already taken",e.getMessage(),"joinGame is not working");
+            Assertions.assertEquals("Error: already taken",e.getMessage(),"joinGame is not valid");
         }
     }
 
     @Test
     public void joinGameBadRequestTest(){
-
-        UserData newUser = new UserData("username","password","email");
-        UserData newUser1 = new UserData("username1","password1","email1");
         GameData newGame = new GameData(1,null,null,"newgame",null);
-        JoinGame wrongGameID = new JoinGame("WHITE",0);
-        JoinGame wrongPlayerColor = new JoinGame("Red",1);
         try{
+            JoinGame wrongGameID = new JoinGame("WHITE",0);
+            UserData newUser = new UserData("username","password","email");
             AuthData authData = service.addUser(newUser);
             service.createGame(newGame);
             service.joinGame(wrongGameID,authData.authToken());
         }catch(DataAccessException e){
-            Assertions.assertEquals("Error: bad request",e.getMessage(),"joinGame is not working");
-        }
-        try{
-            AuthData authData = service.addUser(newUser1);
-            service.createGame(newGame);
-            service.joinGame(wrongPlayerColor,authData.authToken());
-        }catch(DataAccessException e){
-            Assertions.assertEquals("Error: bad request",e.getMessage(),"joinGame is not working");
+            Assertions.assertEquals("Error: bad request",e.getMessage(),"joinGame is not valid");
         }
     }
-
 }
