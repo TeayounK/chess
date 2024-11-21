@@ -1,6 +1,9 @@
 package client;
 
 
+import model.GameData;
+import model.JoinGame;
+import model.ListResult;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -57,6 +60,7 @@ public class UnitTestBasic {
 
     @Test
     void loginPositive() throws Exception{
+        facade.deleteDataBase();
         var authData = facade.createUser("player1", "password", "p1@email.com");
         try{
             var newAuthData = facade.loginUser("player1", "password");
@@ -83,7 +87,7 @@ public class UnitTestBasic {
         facade.deleteDataBase();
         var authData = facade.createUser("player1", "password", "p1@email.com");
         try{
-            facade.logoutUser();
+            facade.logoutUser(authData);
             assertTrue(true);
         }catch(ResponseException e){
             Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
@@ -95,8 +99,8 @@ public class UnitTestBasic {
         facade.deleteDataBase();
         var authData = facade.createUser("player1", "password", "p1@email.com");
         try{
-            facade.logoutUser();
-            facade.logoutUser();
+            facade.logoutUser(authData);
+            facade.logoutUser(authData);
             assertTrue(true);
         }catch(ResponseException e){
             Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
@@ -106,10 +110,10 @@ public class UnitTestBasic {
     @Test
     void createGamePositive() throws Exception{
         facade.deleteDataBase();
-        var authData = facade.createUser("player1", "password", "p1@email.com");
         try{
-            facade.logoutUser();
-            assertTrue(true);
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(authData,"Testgame");
+            Assertions.assertEquals(1,game.gameID());
         }catch(ResponseException e){
             Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
         }
@@ -118,15 +122,77 @@ public class UnitTestBasic {
     @Test
     void createGameNegative() throws Exception{
         facade.deleteDataBase();
-        var authData = facade.createUser("player1", "password", "p1@email.com");
         try{
-            facade.logoutUser();
-            facade.logoutUser();
-            assertTrue(true);
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(null,"Testgame");
+            Assertions.assertEquals("Testgame",game.gameName());
         }catch(ResponseException e){
             Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
         }
     }
+
+    @Test
+    void listGamePositive() throws Exception{
+        facade.deleteDataBase();
+        try{
+            facade.deleteDataBase();
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(authData,"Testgame");
+            ListResult result = facade.listGames(authData);
+            Assertions.assertEquals("Testgame", result.games().getFirst().gameName());
+        }catch(ResponseException e){
+            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+        }
+    }
+
+    @Test
+    void listGameNegative() throws Exception{
+        facade.deleteDataBase();
+        try{
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(null,"Testgame");
+            facade.listGames(null);
+            Assertions.assertEquals("Testgame",game.gameName());
+        }catch(ResponseException e){
+            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+        }
+    }
+
+    @Test
+    void joinGamePositive() throws Exception{
+        facade.deleteDataBase();
+        try{
+            facade.deleteDataBase();
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(authData,"Testgame2");
+            JoinGame joinGame = new JoinGame("white",game.gameID());
+            facade.joinGame(authData,joinGame);
+            ListResult result = facade.listGames(authData);
+            Assertions.assertEquals("[GameData[gameID=2, whiteUsername=player1, blackUsername=null, gameName=Testgame2, game=null]]",
+                    result.games().toString());
+        }catch(ResponseException e){
+            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+        }
+    }
+
+    @Test
+    void joinGameNegative() throws Exception{
+        facade.deleteDataBase();
+        try{
+            facade.deleteDataBase();
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(authData,"Testgame2");
+            JoinGame joinGame = new JoinGame("RED",game.gameID());
+            facade.joinGame(authData,joinGame);
+            ListResult result = facade.listGames(authData);
+            Assertions.assertEquals("[GameData[gameID=2, whiteUsername=null, blackUsername=null, gameName=Testgame1, game=null]]",
+                    result.games().toString());
+        }catch(ResponseException e){
+            Assertions.assertEquals("failure: 400 Bad Request",e.getMessage());
+        }
+    }
+
+
 
 
 

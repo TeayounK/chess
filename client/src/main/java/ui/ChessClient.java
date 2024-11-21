@@ -34,7 +34,7 @@ public class ChessClient {
                 case "r" -> register(params);
                 case "quit" -> "quit";
                 case "q" -> "quit";
-                case "DELETEDATABASE" -> clearData();
+                case "clear" -> clearData();
                 // commends in login phase
                 case "logout" -> logout();
                 case "create" -> createGame(params);
@@ -98,8 +98,8 @@ public class ChessClient {
     private String logout() throws ResponseException{
         try{
             assertLogIn();
+            server.logoutUser(authData);
             state = States.PRELOGIN;
-            server.logoutUser();
             return "You successfully logged out";
         }catch(ResponseException e){
             throw new ResponseException(400, e.getMessage());
@@ -135,8 +135,8 @@ public class ChessClient {
     }
 
     private String clearData() throws ResponseException{
-        state = States.PRELOGIN;
         server.deleteDataBase();
+        state = States.PRELOGIN;
         return "Successfully cleaned DataBase";
     }
 
