@@ -16,7 +16,7 @@ public class Board {
     private static final int LINE_WIDTH_IN_PADDED_CHARS = 8;
     // Padded characters.
     private static final String EMPTY = "   ";
-    private static final ChessBoard board = new ChessBoard();
+    private static final ChessBoard BOARD = new ChessBoard();
 
 
     public static void main(String[] args) {
@@ -40,7 +40,7 @@ public class Board {
     }
 
     private static void drawBoard(PrintStream out) {
-        board.resetBoard();
+        BOARD.resetBoard();
 
         for (int i = 9; i > -1; i--) {
             for (int j = 0; j < 10; j++) {
@@ -79,7 +79,7 @@ public class Board {
             out.print(SET_BG_COLOR_BLACK);
 
             ChessPosition pos = new ChessPosition(i, j);
-            ChessPiece piece = board.getPiece(pos);
+            ChessPiece piece = BOARD.getPiece(pos);
 
             if (piece == null) {
                 out.print(EMPTY);
@@ -92,7 +92,7 @@ public class Board {
             out.print(SET_BG_COLOR_WHITE);
 
             ChessPosition pos = new ChessPosition(i, j);
-            ChessPiece piece = board.getPiece(pos);
+            ChessPiece piece = BOARD.getPiece(pos);
 
             if (piece == null) {
                 out.print(EMPTY);
@@ -123,7 +123,7 @@ public class Board {
 
 
     private static void drawBoardBackward(PrintStream out){
-        board.resetBoard();
+        BOARD.resetBoard();
 
         for (int i=0; i < 10 ; i++){
             for (int j=9; j > -1 ; j--){
