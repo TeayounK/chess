@@ -83,10 +83,15 @@ public class ChessClient {
     private String register(String... params) throws ResponseException{
         assertPreLogin();
         if (params.length == 3){
-            state = States.LOGIN;
-            AuthData result = server.createUser(params);
-            this.authData = server.loginUser(params[0],params[1]);
-            return String.format("You registered in as %s.", result.username());
+            try {
+                AuthData result = server.createUser(params);
+                this.authData = server.loginUser(params[0], params[1]);
+                state = States.LOGIN;
+                return String.format("You registered in as %s.", result.username());
+            }catch(ResponseException e){
+                System.out.println(e.getMessage());
+                throw new ResponseException(400,"??");
+            }
 
         }else{
             throw new ResponseException(400, "failure: not a valid input. \n" +
@@ -124,8 +129,8 @@ public class ChessClient {
             for (GameData game : listResult.games()){
                 i+= 1;
                 this.num2Game.put(i,game);
-                stringResult.append(i).append(".").append(game.gameName()).append(" ")
-                        .append(game.whiteUsername()).append(" ").append(game.blackUsername()).append("\n");
+                stringResult.append(i).append(".").append(game.gameName()).append(" White User: ")
+                        .append(game.whiteUsername()).append(" Black User: ").append(game.blackUsername()).append("\n");
             }
             return stringResult.toString();
         }catch(ResponseException e){
@@ -186,10 +191,19 @@ public class ChessClient {
     private String watchGame(String... params) throws ResponseException{
         assertLogIn();
         if (params.length == 1){
-            state = States.GAME;
-            Board boardDraw = new Board();
-            boardDraw.main(null);
-            return "Successfully enter the game as an observer";
+            try{
+                GameData game = this.num2Game.get(Integer.parseInt(params[0]));
+                state = States.GAME;
+                Board boardDraw = new Board();
+                boardDraw.main(null);
+                return "Successfully enter the game as an observer";
+            }catch(NumberFormatException ex){
+                throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
+                        "<GAME NUMBER> has to be integer");
+            }catch(NullPointerException ex){
+                throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
+                        "<GAME NUMBER> is not on the list");
+            }
         }else{
             throw new ResponseException(400, "failure: not a valid input. \n" +
                     "Expected: <game NUMBER>");
