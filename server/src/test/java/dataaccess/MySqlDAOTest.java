@@ -47,20 +47,24 @@ public class MySqlDAOTest {
 
     @Test
     public void addUserBadRequestTest() {
-        UserData newUser = new UserData(null,"password","email");
-        try{
+        UserData newUser = new UserData(null, "password", "email");
+        try {
             service.addUser(newUser);
-        }catch(DataAccessException e){
-            Assertions.assertEquals(e.getMessage(),"Error: bad request","addUser is not working");
+        } catch (DataAccessException e) {
+            Assertions.assertEquals(e.getMessage(), "Error: bad request", "addUser is not working");
         }
-
-        UserData newUser1 = new UserData("username",null,"email");
-        try{
+    }
+    @Test
+    public void addUserBadRequestTest2() {
+        UserData newUser1 = new UserData("username", null, "email");
+        try {
             service.addUser(newUser1);
-        }catch(DataAccessException e){
-            Assertions.assertEquals(e.getMessage(),"Error: bad request","addUser is not working");
+        } catch (DataAccessException e) {
+            Assertions.assertEquals(e.getMessage(), "Error: bad request", "addUser is not working");
         }
-
+    }
+    @Test
+    public void addUserBadRequestTest3() {
         UserData newUser2 = new UserData("username","password",null);
         try{
             service.addUser(newUser2);
@@ -132,17 +136,20 @@ public class MySqlDAOTest {
     }
 
     @Test
-    public void loginUserAlreadyLoggedOutTest(){
+    public void loginUserAlreadyLoggedOutTest() {
 
-        UserData newUser = new UserData("username","password","email");
+        UserData newUser = new UserData("username", "password", "email");
 
-        try{
+        try {
             service.addUser(newUser);
             service.logoutUser(null);
-        }catch(DataAccessException e){
-            Assertions.assertEquals("Error: Already logged-out username",e.getMessage(),"authData=null given and get wrong error");
+        } catch (DataAccessException e) {
+            Assertions.assertEquals("Error: Already logged-out username", e.getMessage(), "authData=null given and get wrong error");
         }
+    }
 
+    @Test
+    public void loginUserAlreadyLoggedOutTest1(){
         try{
             UserData newUser1 = new UserData("username1", "password1", "email1");
             AuthData authData = service.addUser(newUser1);
@@ -272,6 +279,21 @@ public class MySqlDAOTest {
             service.joinGame(wrongGameID,authData.authToken());
         }catch(DataAccessException e){
             Assertions.assertEquals("Error: bad request",e.getMessage(),"joinGame is not valid");
+        }
+    }
+
+    @Test
+    public void joinGameBadRequestTest2(){
+        GameData newGame = new GameData(1,null,null,"newgame",null);
+
+        try{
+            JoinGame wrongPlayerColor = new JoinGame("Red",1);
+            UserData newUser1 = new UserData("username1","password1","email1");
+            AuthData authData = service.addUser(newUser1);
+            service.createGame(newGame);
+            service.joinGame(wrongPlayerColor,authData.authToken());
+        }catch(DataAccessException e){
+            Assertions.assertEquals("Error: bad request",e.getMessage(),"joinGame is not working");
         }
     }
 }
