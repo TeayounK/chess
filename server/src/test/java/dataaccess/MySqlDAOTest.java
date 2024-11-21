@@ -53,12 +53,14 @@ public class MySqlDAOTest {
         }catch(DataAccessException e){
             Assertions.assertEquals(e.getMessage(),"Error: bad request","addUser is not working");
         }
+
         UserData newUser1 = new UserData("username",null,"email");
         try{
             service.addUser(newUser1);
         }catch(DataAccessException e){
             Assertions.assertEquals(e.getMessage(),"Error: bad request","addUser is not working");
         }
+
         UserData newUser2 = new UserData("username","password",null);
         try{
             service.addUser(newUser2);

@@ -98,7 +98,7 @@ public class Board {
     private static void drawMainChessBoard(PrintStream out, int i, int j) {
 
         if (i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1) {
-            out.print(SET_BG_COLOR_WHITE);
+            out.print(SET_BG_COLOR_BLACK);
 
             ChessPosition pos = new ChessPosition(i, j);
             ChessPiece piece = board.getPiece(pos);
@@ -111,7 +111,7 @@ public class Board {
             }
 
         } else {
-            out.print(SET_BG_COLOR_BLACK);
+            out.print(SET_BG_COLOR_WHITE);
 
             ChessPosition pos = new ChessPosition(i, j);
             ChessPiece piece = board.getPiece(pos);

@@ -42,7 +42,8 @@ public class MemoryGameDAO implements DataAccessGame{
             throw new DataAccessException("Error: bad request");
         } else if (gameCalled.blackUsername() != null && gameCalled.whiteUsername() != null) {
             throw new DataAccessException("Error: already taken");
-        } else if ((gameCalled.blackUsername() != null && game.playerColor().equalsIgnoreCase("black")) || (gameCalled.whiteUsername() != null && game.playerColor().equalsIgnoreCase("white"))) {
+        } else if ((gameCalled.blackUsername() != null && game.playerColor().equalsIgnoreCase("black"))
+                || (gameCalled.whiteUsername() != null && game.playerColor().equalsIgnoreCase("white"))) {
             throw new DataAccessException("Error: already taken");
         } else {
             games.remove(gameCalled.gameID(),gameCalled);

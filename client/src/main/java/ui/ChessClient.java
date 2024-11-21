@@ -44,7 +44,7 @@ public class ChessClient {
                 // commends in game phase
                 case "leave" -> leaveGame();
 
-                default -> help();
+                default -> "Calling help";
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
@@ -61,13 +61,6 @@ public class ChessClient {
         }
     }
 
-    private String help() {
-        return switch (this.state){
-            case States.PRELOGIN -> printPromptPreLogin();
-            case States.LOGIN -> printPromptLogin();
-            case States.GAME -> printPromptGame();
-        };
-    }
 
     private String logIn(String... params) throws ResponseException {
         assertPreLogin();
@@ -83,7 +76,7 @@ public class ChessClient {
     private String register(String... params) throws ResponseException{
         assertPreLogin();
         if (params.length == 3){
-            state = States.PRELOGIN;
+            state = States.LOGIN;
             AuthData result = server.createUser(params);
             this.authData = server.loginUser(params[0],params[1]);
             return String.format("You registered in as %s.", result.username());
@@ -113,7 +106,8 @@ public class ChessClient {
             ListResult listResult = server.listGames(this.authData);
             for (GameData game : listResult.games()){
                 i+= 1;
-                stringResult.append(i).append(".").append(game.gameName()).append(" ").append(game.whiteUsername()).append(" ").append(game.blackUsername()).append("\n");
+                stringResult.append(i).append(".").append(game.gameName()).append(" ")
+                        .append(game.whiteUsername()).append(" ").append(game.blackUsername()).append("\n");
             }
             return stringResult.toString();
         }catch(ResponseException e){

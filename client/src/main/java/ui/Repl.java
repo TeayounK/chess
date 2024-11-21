@@ -53,7 +53,7 @@ public class Repl {
                 Options:
                 List current games: "l", "list"
                 Create a new game: "c", "create" <GAMENAME>
-                Join a game: "j", "join" <GAME ID> <COLOR>
+                Join a game: "j", "join" <COLOR> <GAME ID>
                 Watch a game: "w", "watch" <GAME ID>
                 Logout: "logout"
                 """;
