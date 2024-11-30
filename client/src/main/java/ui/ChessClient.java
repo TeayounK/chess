@@ -4,9 +4,7 @@ import model.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 
-import static ui.Repl.*;
 
 public class ChessClient {
     private final ServerFacade server;
@@ -89,10 +87,14 @@ public class ChessClient {
                 state = States.LOGIN;
                 return String.format("You registered in as %s.", result.username());
             }catch(ResponseException e){
-                System.out.println(e.getMessage());
-                throw new ResponseException(400,"??");
+                if (e.getMessage().equalsIgnoreCase("failure: Forbidden")){
+                    throw new ResponseException(400,"failure: already existing user");
+                }else{
+                    System.out.println(e.getMessage());
+                    throw new ResponseException(400,"failure: not a valid input. \n" +
+                            "Expected: <USERNAME> <PASSWORD> <EMAIL>");
+                }
             }
-
         }else{
             throw new ResponseException(400, "failure: not a valid input. \n" +
                     "Expected: <USERNAME> <PASSWORD> <EMAIL>");
@@ -129,8 +131,8 @@ public class ChessClient {
             for (GameData game : listResult.games()){
                 i+= 1;
                 this.num2Game.put(i,game);
-                stringResult.append(i).append(".").append(game.gameName()).append(" White User: ")
-                        .append(game.whiteUsername()).append(" Black User: ").append(game.blackUsername()).append("\n");
+                stringResult.append(i).append(". | GameName: ").append(game.gameName()).append(" | White User: ")
+                        .append(game.whiteUsername()).append(" | Black User: ").append(game.blackUsername()).append(" |").append("\n");
             }
             return stringResult.toString();
         }catch(ResponseException e){
@@ -192,7 +194,8 @@ public class ChessClient {
         assertLogIn();
         if (params.length == 1){
             try{
-                GameData game = this.num2Game.get(Integer.parseInt(params[0]));
+                int gameNum = Integer.parseInt(params[0]);
+                int gameID = this.num2Game.get(gameNum).gameID();
                 state = States.GAME;
                 Board boardDraw = new Board();
                 boardDraw.main(null);
