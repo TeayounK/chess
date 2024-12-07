@@ -1,10 +1,12 @@
 package ui;
 
+import websocket.messages.ServerMessage;
+
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
-public class Repl {
+public class Repl implements NotificationHandler{
     private final ChessClient client;
     private States state;
 
@@ -38,11 +40,6 @@ public class Repl {
             }
         }
         System.out.println();
-    }
-
-    public void notify(Notification notification){
-        System.out.println(SET_TEXT_COLOR_RED + notification.message());
-        printPromptGame();
     }
 
     static String printPromptPreLogin() {
@@ -79,5 +76,10 @@ public class Repl {
                 Resign from game: "res", "resign"
                 Leave game: "leave"
                 """;
+    }
+
+    @Override
+    public void notify(ServerMessage serverMessage) {
+        System.out.println(SET_TEXT_COLOR_RED + serverMessage.message());
     }
 }

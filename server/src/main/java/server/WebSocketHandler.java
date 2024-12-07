@@ -7,6 +7,8 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
 
+import websocket.messages.Notification;
+import websocket.messages.ServerMessage;
 import java.io.IOException;
 
 @WebSocket
@@ -24,15 +26,13 @@ public class WebSocketHandler {
         }
     }
 
-    private void enter(String username, Session session, Connection.Type type) throws IOException {
-        connections.add(username, session, type);
-        String userType = switch(type){
-            case OBSERVER -> "an observer";
-            case PLAYER -> playerColer(username);
-        };
+    private void enter(String username, Session session) throws IOException {
+        connections.add(username, session);
+
+        String userType = "";
         var message = username + " joins the game as " + userType;
-        var notification = new Notification(Notification.Type.ARRIVAL, message);
-        connections.broadcast(username, notification);
+        var notification = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        connections.broadcast(notification);
     }
 
     private String playerColer(String username){

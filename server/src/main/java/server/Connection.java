@@ -7,17 +7,10 @@ import java.io.IOException;
 public class Connection {
     public String username;
     public Session session;
-    public Type type;
 
-    public Connection(String username, Session session, Type type){
+    public Connection(String username, Session session){
         this.username = username;
         this.session = session;
-        this.type = type;
-    }
-
-    public enum Type {
-        OBSERVER,
-        PLAYER
     }
 
     public void send(String msg) throws IOException {
