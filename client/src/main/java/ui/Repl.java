@@ -24,6 +24,8 @@ public class Repl {
 
             String line = scanner.nextLine();
 
+//            do I need to separate two cases whether we want to do websocket or http?
+
             try {
                 result = client.eval(line);
                 this.state = client.state;
