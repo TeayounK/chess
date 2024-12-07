@@ -17,16 +17,26 @@ public class WebSocketHandler {
     public void onMessage(Session session, String message) throws IOException {
         UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
         switch (action.getCommandType()) {
-            case ENTER -> enter(action.visitorName(), session);
-            case EXIT -> exit(action.visitorName());
+            case CONNECT -> enter(action.getGameID(), session, );
+            case MAKE_MOVE -> "";
+            case LEAVE -> "";
+            case RESIGN -> "";
         }
     }
 
-    private void enter(String visitorName, Session session) throws IOException {
-        connections.add(visitorName, session);
-        var message = String.format("%s is in the shop", visitorName);
+    private void enter(String username, Session session, Connection.Type type) throws IOException {
+        connections.add(username, session, type);
+        String userType = switch(type){
+            case OBSERVER -> "an observer";
+            case PLAYER -> playerColer(username);
+        };
+        var message = username + " joins the game as " + userType;
         var notification = new Notification(Notification.Type.ARRIVAL, message);
-        connections.broadcast(visitorName, notification);
+        connections.broadcast(username, notification);
+    }
+
+    private String playerColer(String username){
+
     }
 
 }
