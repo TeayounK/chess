@@ -83,6 +83,20 @@ public class ChessBoard {
         squares[7][4] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KING);
 
     }
+
+    public ChessBoard duplicate() {
+        ChessBoard clone = new ChessBoard() ;
+        for (int i=1; i<9; i++){
+            for(int j=1; j<9; j++){
+                ChessPosition pos = new ChessPosition(i,j);
+                if (getPiece(pos)!= null) {
+                    clone.addPiece(pos, squares[i-1][j-1]);
+                }
+            }
+        }
+        return clone;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {return true;}
