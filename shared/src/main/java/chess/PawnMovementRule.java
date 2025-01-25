@@ -46,14 +46,14 @@ public class PawnMovementRule {
         if ((board.getPiece(position)).getTeamColor() == ChessGame.TeamColor.WHITE) {
             if (position.getRow() == 2) {
                 for (int i = 0; i < possible1.length; i++) {
-                    first = isFirst(possible1, i, result, first);
+                    first = isaBoolean(possible1, i, result, first);
                 }
             } else {
                 for (int i = 0; i < possible2.length; i++) {
                     isSecond(possible2, i, result);
                 }
             }
-            // For black team
+            // For Black team
         }else{
             if (position.getRow() == 7) {
                 for (int i = 0; i < possible3.length; i++) {
