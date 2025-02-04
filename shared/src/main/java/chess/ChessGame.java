@@ -10,15 +10,19 @@ import java.util.Collection;
  */
 public class ChessGame {
 
+    TeamColor teamColor;
+    ChessBoard board;
     public ChessGame() {
-
+        teamColor = TeamColor.WHITE;
+        board = new ChessBoard();
+        board.resetBoard();
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return teamColor;
     }
 
     /**
@@ -27,9 +31,8 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        teamColor = team;
     }
-
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
