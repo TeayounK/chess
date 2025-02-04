@@ -94,8 +94,57 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        // need to check if the piece we chose is not null
+        if (board.getPiece(move.getStartPosition()) == null) {
+            throw new InvalidMoveException("This is invalid move");
+        }
+        // need to check the team color is the same as the color of piece we want to move
+        if (teamColor != board.getPiece(move.getStartPosition()).getTeamColor()) {
+            throw new InvalidMoveException("This is invalid move");
+        }
+        Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
+        TeamColor pieceColor = board.getPiece(move.getStartPosition()).getTeamColor();
+        // after successfully done with the move, we change the team color for next turn
+        pieceColor = switch (pieceColor){
+            case WHITE -> TeamColor.BLACK;
+            case BLACK -> TeamColor.WHITE;
+        };
+        // want to make sure the move we want to make is valid.
+        if (!validMoves.contains(move)) {
+            throw new InvalidMoveException("This is invalid move");
+        } else {
+            // moving to empty space
+            if (board.getPiece(move.getEndPosition()) == null) {
+                if (move.getPromotionPiece() != null) {
+                    ChessPiece.PieceType pieceType = move.getPromotionPiece();
+                    TeamColor colorType = board.getPiece(move.getStartPosition()).getTeamColor();
+                    board.addPiece(move.getEndPosition(), new ChessPiece(colorType, pieceType));
+                    board.removePiece(move.getStartPosition());
+                    teamColor=pieceColor;
+                } else {
+                    board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+                    board.removePiece(move.getStartPosition());
+                    teamColor=pieceColor;
+                }
+                // killing opponent piece
+            } else { // since piece_moves returns valid moves where it can capture enemy or move to an empty position
+                if (move.getPromotionPiece() != null) {
+                    ChessPiece.PieceType pieceType = move.getPromotionPiece();
+                    TeamColor colorType = board.getPiece(move.getStartPosition()).getTeamColor();
+                    board.removePiece(move.getEndPosition());
+                    board.addPiece(move.getEndPosition(), new ChessPiece(colorType, pieceType));
+                    board.removePiece(move.getStartPosition());
+                    teamColor=pieceColor;
+                } else {
+                    board.removePiece(move.getEndPosition());
+                    board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+                    board.removePiece(move.getStartPosition());
+                    teamColor=pieceColor;
+                }
+            }
+        }
     }
+
 
     /**
      * Determines if the given team is in check
