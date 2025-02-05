@@ -184,9 +184,55 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // setting for result, clone of board, new game setup
+        boolean result = true;
+        ChessBoard clone = board.duplicate();
+        ChessGame temp = new ChessGame();
+        temp.setBoard(clone);
+        // looping through new cloned board
+        for (int i=1;i<9;i++){
+            for (int j=1;j<9;j++){
+                ChessPosition pos = new ChessPosition(i,j);
+                // verify an existence of piece
+                result = checkmateHelper(teamColor, clone, pos, temp, result);
+            }
+        }
+
+        return result;
     }
 
+    private static boolean checkmateHelper(TeamColor teamColor, ChessBoard clone, ChessPosition pos, ChessGame temp, boolean result) {
+        if ((clone.getPiece(pos) != null)&&(clone.getPiece(pos).getTeamColor()== teamColor)){
+            Collection<ChessMove> listMoves = clone.getPiece(pos).pieceMoves(clone, pos);
+            for (ChessMove aMove : listMoves){
+                // make a move and check its validation for escaping check
+                if (clone.getPiece(aMove.getEndPosition()) == null){
+                    clone.addPiece(aMove.getEndPosition(), clone.getPiece(aMove.getStartPosition()));
+                    clone.removePiece(aMove.getStartPosition());
+                    if (!temp.isInCheck(teamColor)){
+                        result =false;
+                    }
+                    // Revert to before moving
+                    clone.addPiece(aMove.getStartPosition(), clone.getPiece(aMove.getEndPosition()));
+                    clone.removePiece(aMove.getEndPosition());
+
+                }else{ // since piece_moves returns valid moves where it can capture enemy or move to an empty position
+                    ChessPiece target = clone.getPiece(aMove.getEndPosition());
+                    clone.removePiece(aMove.getEndPosition());
+                    clone.addPiece(aMove.getEndPosition(), clone.getPiece(aMove.getStartPosition()));
+                    clone.removePiece(aMove.getStartPosition());
+                    if (!temp.isInCheck(teamColor)){
+                        result =false;
+                    }
+                    // Revert to before moving
+                    clone.addPiece(aMove.getStartPosition(), clone.getPiece(aMove.getEndPosition()));
+                    clone.removePiece(aMove.getEndPosition());
+                    clone.addPiece(aMove.getEndPosition(),target);
+                }
+            }
+        }
+        return result;
+    }
     /**
      * Determines if the given team is in stalemate, which here is defined as having
      * no valid moves
