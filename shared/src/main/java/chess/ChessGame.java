@@ -192,11 +192,9 @@ public class ChessGame {
         // looping through new cloned board
         for (int i=1;i<9;i++){
             for (int j=1;j<9;j++){
-                ChessPosition pos = new ChessPosition(i, j);
-                if ((board.getPiece(pos) != null)&&
-                        (board.getPiece(pos).getTeamColor() == teamColor)) {
-                    tempSum += (validMoves(pos)).toArray().length;
-                }
+                ChessPosition pos = new ChessPosition(i,j);
+                // verify an existence of piece
+                result = checkmateHelper(teamColor, clone, pos, temp, result);
             }
         }
 
