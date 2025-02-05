@@ -156,11 +156,9 @@ public class ChessGame {
         // looping through board
         for (int i=1;i<9;i++){
             for (int j=1;j<9;j++){
-                ChessPosition pos = new ChessPosition(i, j);
-                if ((board.getPiece(pos) != null)&&
-                        (board.getPiece(pos).getTeamColor() == teamColor)) {
-                    tempSum += (validMoves(pos)).toArray().length;
-                }
+                ChessPosition pos = new ChessPosition(i,j);
+                ChessPiece piece = board.getPiece(pos);
+                if (moveHelper(teamColor, piece, pos)) {return true;}
             }
         }
         return false;
