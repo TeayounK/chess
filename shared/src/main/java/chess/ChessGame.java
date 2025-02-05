@@ -156,9 +156,11 @@ public class ChessGame {
         // looping through board
         for (int i=1;i<9;i++){
             for (int j=1;j<9;j++){
-                ChessPosition pos = new ChessPosition(i,j);
-                ChessPiece piece = board.getPiece(pos);
-                if (moveHelper(teamColor, piece, pos)) {return true;}
+                ChessPosition pos = new ChessPosition(i, j);
+                if ((board.getPiece(pos) != null)&&
+                        (board.getPiece(pos).getTeamColor() == teamColor)) {
+                    tempSum += (validMoves(pos)).toArray().length;
+                }
             }
         }
         return false;
@@ -192,9 +194,11 @@ public class ChessGame {
         // looping through new cloned board
         for (int i=1;i<9;i++){
             for (int j=1;j<9;j++){
-                ChessPosition pos = new ChessPosition(i,j);
-                // verify an existence of piece
-                result = checkmateHelper(teamColor, clone, pos, temp, result);
+                ChessPosition pos = new ChessPosition(i, j);
+                if ((board.getPiece(pos) != null)&&
+                        (board.getPiece(pos).getTeamColor() == teamColor)) {
+                    tempSum += (validMoves(pos)).toArray().length;
+                }
             }
         }
 
@@ -247,11 +251,9 @@ public class ChessGame {
             // looping through all possible moves
             for (int i=1;i<9;i++) {
                 for (int j = 1; j < 9; j++) {
-                    ChessPosition pos = new ChessPosition(i, j);
-                    if ((board.getPiece(pos) != null)&&
-                            (board.getPiece(pos).getTeamColor() == teamColor)) {
-                        tempSum += (validMoves(pos)).toArray().length;
-                    }
+                    ChessPosition pos = new ChessPosition(i,j);
+                    // verify an existence of piece
+                    result = checkmateHelper(teamColor, clone, pos, temp, result);
                 }
             }
             // if there is no possible moves, return true, else return false.
