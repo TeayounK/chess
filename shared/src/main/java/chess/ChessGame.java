@@ -280,4 +280,8 @@ public class ChessGame {
     public ChessBoard castling(){
         return board;
     }
+
+    public ChessBoard enPassant(){
+        return board;
+    }
 }
