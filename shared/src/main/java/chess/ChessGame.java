@@ -276,4 +276,8 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return board;
     }
+
+    public ChessBoard castling(){
+        return board;
+    }
 }
