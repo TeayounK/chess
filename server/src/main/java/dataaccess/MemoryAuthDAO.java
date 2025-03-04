@@ -38,4 +38,16 @@ public class MemoryAuthDAO {
             authsKey.remove(authToken);
         }
     }
+    @Override
+    public boolean checkAuth(String authToken) throws DataAccessException {
+        if(authsKey.get(authToken)==null){
+            throw new DataAccessException("Error: Unauthorized");
+        }
+        return true;
+    }
+
+    public void clearAll() throws DataAccessException{
+        authsKey = new HashMap<>();
+    }
+
 }
