@@ -57,4 +57,26 @@ public class Server {
         }
     }
 
+    // Login
+    private String loginUser(Request req, Response res) {
+        var g = new Gson();
+        int errorCode = 500;
+        var userinfo = g.fromJson(req.body(), UserData.class);
+        try {
+            AuthData authData = service.loginUser(userinfo);
+            res.body(g.toJson(authData));
+            res.status(200);
+            return g.toJson(authData);
+        } catch (DataAccessException e){
+            errorCode = switch (e.getMessage()) {
+                case "Error: Unauthorized" -> 401;
+                case "Error: Unknown username" -> 401;
+                default -> errorCode;
+            };
+            res.body(g.toJson(Map.of("message",e.getMessage())));
+            res.status(errorCode);
+            return g.toJson(Map.of("message",e.getMessage()));
+        }
+    }
+
 }
