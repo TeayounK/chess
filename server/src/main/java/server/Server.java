@@ -1,9 +1,11 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
+import dataaccess.*;
 import model.AuthData;
 import model.GameData;
+import model.JoinGame;
+import model.UserData;
 import service.Service;
 import spark.Request;
 import spark.Response;
@@ -26,6 +28,22 @@ public class Server {
 
         Spark.staticFiles.location("web");
         //This line initializes the server and can be removed once you have a functioning endpoint
+
+        // Register your endpoints and handle exceptions here.
+        Spark.post("/user", this::createUser);
+
+        Spark.post("/session", this::loginUser);
+
+        Spark.delete("/session", this::logoutUser);
+
+        Spark.post("/game", this::createGame);
+
+        Spark.get("/game", this::listGames);
+
+        Spark.delete("/db", this::clearDataBase);
+
+        Spark.put("/game", this::joinGame);
+
         Spark.init();
 
         Spark.awaitInitialization();

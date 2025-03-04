@@ -1,8 +1,13 @@
 package service;
 
+import dataaccess.DataAccessAuth;
 import dataaccess.DataAccessException;
+import dataaccess.DataAccessGame;
+import dataaccess.DataAccessUser;
 import model.AuthData;
 import model.GameData;
+import model.JoinGame;
+import model.UserData;
 
 import java.util.Collection;
 import java.util.UUID;
