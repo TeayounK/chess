@@ -4,6 +4,7 @@ import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 
+import java.util.Collection;
 import java.util.UUID;
 
 public class Service {
@@ -56,5 +57,12 @@ public class Service {
     public GameData createGame(GameData gamename) throws DataAccessException{
         return dataAccessGame.createGame(gamename);
 
+    }
+    public void checkAuth(String authToken) throws DataAccessException{
+        dataAccessAuth.checkAuth(authToken);
+    }
+
+    public Collection<GameData> listGames(){
+        return dataAccessGame.getGames();
     }
 }
