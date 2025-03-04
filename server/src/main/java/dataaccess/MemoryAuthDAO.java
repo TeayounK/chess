@@ -5,7 +5,7 @@ import model.AuthData;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class MemoryAuthDAO {
+public class MemoryAuthDAO implements DataAccessAuth {
     private HashMap<String, AuthData> authsKey = new HashMap<>();
 
     @Override
@@ -38,6 +38,7 @@ public class MemoryAuthDAO {
             authsKey.remove(authToken);
         }
     }
+
     @Override
     public boolean checkAuth(String authToken) throws DataAccessException {
         if(authsKey.get(authToken)==null){
