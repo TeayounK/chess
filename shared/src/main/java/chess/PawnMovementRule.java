@@ -149,27 +149,6 @@ public class PawnMovementRule {
         }
     }
 
-    private boolean isFirst(int[][] possible1, int i, Collection<ChessMove> result, boolean first) {
-        if (possible1[i][0] < 9 & possible1[i][1] < 9 & possible1[i][0] > 0 & possible1[i][1] > 0) {
-            ChessPosition endpoint = new ChessPosition(possible1[i][0], possible1[i][1]);
-            if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
-                    & (endpoint.getRow() - position.getRow() == 1 || endpoint.getRow() - position.getRow() == -1)) {
-                first = isFirstHelpers(endpoint.getRow(), 8, endpoint, result);
-            } else if (board.getPiece(endpoint) == null & endpoint.getColumn() == position.getColumn()
-                    & (endpoint.getRow() - position.getRow() == 2 || endpoint.getRow() - position.getRow() == -2)
-                    & first) {
-                ChessMove move = new ChessMove(position, endpoint, null);
-                result.add(move);
-            } else if (board.getPiece(endpoint) != null) {
-                if ((board.getPiece(endpoint)).getTeamColor() != (board.getPiece(position)).getTeamColor()
-                        & endpoint.getColumn() != position.getColumn()) {
-                    isFirstHelper2(result, endpoint);
-                }
-            }
-        }
-        return first;
-    }
-
     private void isFirstHelper2(Collection<ChessMove> result, ChessPosition endpoint) {
         ChessMove move = new ChessMove(position, endpoint, ChessPiece.PieceType.QUEEN);
         result.add(move);
