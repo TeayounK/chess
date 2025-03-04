@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.DataAccessException;
 import model.AuthData;
+import model.GameData;
 
 import java.util.UUID;
 
@@ -43,5 +44,17 @@ public class Service {
         AuthData authData = new AuthData(UUID.randomUUID().toString(), user.username());
         dataAccessAuth.addAuth(authData);
         return authData;
+    }
+
+    // Logout
+    public void logoutUser(String authToken) throws DataAccessException{
+        dataAccessAuth.removeAuth(authToken);
+    }
+
+
+    // Create Game
+    public GameData createGame(GameData gamename) throws DataAccessException{
+        return dataAccessGame.createGame(gamename);
+
     }
 }
