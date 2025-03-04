@@ -7,7 +7,6 @@ import java.util.HashMap;
 public class MemoryUserDAO implements DataAccessUser {
     private HashMap<String, UserData> users = new HashMap<>();
 
-
     @Override
     public void addUser(UserData user) throws DataAccessException {
         if (user.username() == null){
@@ -26,7 +25,8 @@ public class MemoryUserDAO implements DataAccessUser {
         users = new HashMap<>();
     }
     public boolean verifyUser(String username, String password){
-        return false;
+        UserData bringUser = getUser(username);
+        return bringUser != null && bringUser.password().equals(password);
     }
 
 }
