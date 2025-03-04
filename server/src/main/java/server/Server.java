@@ -79,4 +79,22 @@ public class Server {
         }
     }
 
+    private String logoutUser(Request req, Response res) {
+        var g = new Gson();
+        int errorCode = 500;
+        String authToken = req.headers("Authorization");
+        try {
+            service.logoutUser(authToken);
+            res.status(200);
+            return g.toJson(Map.of("message",""));
+        } catch (DataAccessException e){
+            if (e.getMessage().equals("Error: Already logged-out username")) {
+                errorCode = 401;
+            }
+            res.body(g.toJson(Map.of("message",e.getMessage())));
+            res.status(errorCode);
+            return g.toJson(Map.of("message",e.getMessage()));
+        }
+    }
+
 }
