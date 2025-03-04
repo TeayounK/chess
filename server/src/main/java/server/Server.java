@@ -9,6 +9,7 @@ import spark.Request;
 import spark.Response;
 import spark.Spark;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class Server {
@@ -121,5 +122,25 @@ public class Server {
             return g.toJson(Map.of("message",e.getMessage()));
         }
     }
+
+    public String listGames(Request req, Response res){
+        var g = new Gson();
+        int errorCode = 500;
+        String authToken = req.headers("Authorization");
+        try {
+            service.checkAuth(authToken);
+            Collection<GameData> games = service.listGames();
+            res.status(200);
+            return g.toJson((Map.of("games",games)));
+        }catch (DataAccessException e){
+            if (e.getMessage().equals("Error: Unauthorized")) {
+                errorCode = 401;
+            }
+            res.body(g.toJson(Map.of("message",e.getMessage())));
+            res.status(errorCode);
+            return g.toJson(Map.of("message",e.getMessage()));
+        }
+    }
+
 
 }
