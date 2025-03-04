@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.AuthData;
+import model.GameData;
 import service.Service;
 import spark.Request;
 import spark.Response;
@@ -91,6 +92,30 @@ public class Server {
             if (e.getMessage().equals("Error: Already logged-out username")) {
                 errorCode = 401;
             }
+            res.body(g.toJson(Map.of("message",e.getMessage())));
+            res.status(errorCode);
+            return g.toJson(Map.of("message",e.getMessage()));
+        }
+    }
+    // Create game
+    private String createGame(Request req, Response res) {
+        var g = new Gson();
+        int errorCode = 500;
+        System.out.println(req.body());
+        var gameinfo = g.fromJson(req.body(), GameData.class);
+        String authToken = req.headers("Authorization");
+        System.out.println(authToken);
+        try{
+            service.checkAuth(authToken);
+            GameData newGame = service.createGame(gameinfo);
+            res.status(200);
+            return g.toJson(Map.of("gameID",newGame.gameID()));
+        }catch (DataAccessException e){
+            errorCode = switch (e.getMessage()) {
+                case "Error: Unauthorized" -> 401;
+                case "Error: Not a valid Game name" -> 400;
+                default -> errorCode;
+            };
             res.body(g.toJson(Map.of("message",e.getMessage())));
             res.status(errorCode);
             return g.toJson(Map.of("message",e.getMessage()));
