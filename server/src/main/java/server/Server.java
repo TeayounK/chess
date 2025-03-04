@@ -1,7 +1,14 @@
 package server;
 
+import com.google.gson.Gson;
+import dataaccess.DataAccessException;
+import model.AuthData;
 import service.Service;
+import spark.Request;
+import spark.Response;
 import spark.Spark;
+
+import java.util.Map;
 
 public class Server {
     private Service service = new Service(new MemoryUserDAO(), new MemoryAuthDAO(), new MemoryGameDAO());
@@ -26,6 +33,28 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    // Registration
+    private String createUser(Request req, Response res) {
+        var g = new Gson();
+        int errorCode = 500;
+        var newUser = g.fromJson(req.body(), UserData.class);
+        try {
+            AuthData authData = service.addUser(newUser);
+            res.body(g.toJson(authData));
+            res.status(200);
+            return g.toJson(authData);
+        } catch (DataAccessException e) {
+            errorCode = switch (e.getMessage()) {
+                case "Error: bad request" -> 400;
+                case "Error: already taken" -> 403;
+                default -> errorCode;
+            };
+            res.body(g.toJson(Map.of("message",e.getMessage())));
+            res.status(errorCode);
+            return g.toJson(Map.of("message",e.getMessage()));
+        }
     }
 
 }
