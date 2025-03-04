@@ -142,5 +142,18 @@ public class Server {
         }
     }
 
+    public String clearDataBase(Request req, Response res){
+        var g = new Gson();
+        int errorCode = 500;
+        try{
+            service.clearDataBase();
+            res.status(200);
+            return g.toJson(Map.of("message",""));
+        }catch (DataAccessException e){
+            res.status(errorCode);
+            return g.toJson(Map.of("message",e.getMessage()));
+        }
+
+    }
 
 }
