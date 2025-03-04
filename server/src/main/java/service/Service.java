@@ -65,4 +65,16 @@ public class Service {
     public Collection<GameData> listGames(){
         return dataAccessGame.getGames();
     }
+
+    public void clearDataBase() throws DataAccessException{
+        dataAccessAuth.clearAll();
+        dataAccessGame.clearAll();
+        dataAccessUser.clearAll();
+    }
+
+    public void joinGame(JoinGame gameData, String authToken) throws DataAccessException{
+        String username = dataAccessAuth.getUser(authToken);
+        dataAccessGame.updateGame(gameData, username);
+
+    }
 }
