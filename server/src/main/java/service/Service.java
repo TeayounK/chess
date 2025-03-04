@@ -30,4 +30,18 @@ public class Service {
         dataAccessAuth.addAuth(authData);
         return authData;
     }
+
+    // get Auth data for login in.
+    public AuthData loginUser(UserData user) throws DataAccessException{
+        UserData existingUser = dataAccessUser.getUser(user.username());
+        if (existingUser == null){
+            throw new DataAccessException("Error: Unknown username");
+        }
+        if (!dataAccessUser.verifyUser(user.username(),user.password())){
+            throw new DataAccessException("Error: Unauthorized");
+        }
+        AuthData authData = new AuthData(UUID.randomUUID().toString(), user.username());
+        dataAccessAuth.addAuth(authData);
+        return authData;
+    }
 }
