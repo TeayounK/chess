@@ -6,13 +6,12 @@ import model.AuthData;
 import model.GameData;
 import model.JoinGame;
 import model.UserData;
+import spark.*;
 import service.Service;
-import spark.Request;
-import spark.Response;
-import spark.Spark;
 
 import java.util.Collection;
 import java.util.Map;
+
 
 public class Server {
     private Service service = new Service(new MemoryUserDAO(), new MemoryAuthDAO(), new MemoryGameDAO());
@@ -27,7 +26,6 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-        //This line initializes the server and can be removed once you have a functioning endpoint
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::createUser);
@@ -44,6 +42,7 @@ public class Server {
 
         Spark.put("/game", this::joinGame);
 
+        //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.init();
 
         Spark.awaitInitialization();
@@ -54,6 +53,7 @@ public class Server {
         Spark.stop();
         Spark.awaitStop();
     }
+
 
     // Registration
     private String createUser(Request req, Response res) {
@@ -76,6 +76,7 @@ public class Server {
             return g.toJson(Map.of("message",e.getMessage()));
         }
     }
+
 
     // Login
     private String loginUser(Request req, Response res) {
@@ -116,7 +117,7 @@ public class Server {
             return g.toJson(Map.of("message",e.getMessage()));
         }
     }
-    // Create game
+
     private String createGame(Request req, Response res) {
         var g = new Gson();
         int errorCode = 500;
@@ -197,5 +198,4 @@ public class Server {
             return g.toJson(Map.of("message",e.getMessage()));
         }
     }
-
 }
