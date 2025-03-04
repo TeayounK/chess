@@ -156,4 +156,28 @@ public class Server {
 
     }
 
+    public String joinGame(Request req, Response res){
+        var g = new Gson();
+        int errorCode = 500;
+        var gameinfo = g.fromJson(req.body(), JoinGame.class);
+        String authToken = req.headers("Authorization");
+        try{
+            service.checkAuth(authToken);
+            service.joinGame(gameinfo,authToken);
+            res.status(200);
+            return g.toJson(Map.of("message",""));
+        }catch(DataAccessException e){
+            errorCode = switch (e.getMessage()) {
+                case "Error: Unauthorized" -> 401;
+                case "Error: bad request" -> 400;
+                case "Error: not a valid color" -> 400;
+                case "Error: already taken" -> 403;
+                default -> errorCode;
+            };
+            res.body(g.toJson(Map.of("message",e.getMessage())));
+            res.status(errorCode);
+            return g.toJson(Map.of("message",e.getMessage()));
+        }
+    }
+
 }
