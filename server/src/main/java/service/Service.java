@@ -1,16 +1,15 @@
 package service;
 
 import dataaccess.DataAccessAuth;
-import dataaccess.DataAccessException;
 import dataaccess.DataAccessGame;
 import dataaccess.DataAccessUser;
+import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.JoinGame;
 import model.UserData;
 
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 public class Service {
 
@@ -38,6 +37,7 @@ public class Service {
         return authData;
     }
 
+
     // get Auth data for login in.
     public AuthData loginUser(UserData user) throws DataAccessException{
         UserData existingUser = dataAccessUser.getUser(user.username());
@@ -52,6 +52,7 @@ public class Service {
         return authData;
     }
 
+
     // Logout
     public void logoutUser(String authToken) throws DataAccessException{
         dataAccessAuth.removeAuth(authToken);
@@ -63,6 +64,7 @@ public class Service {
         return dataAccessGame.createGame(gamename);
 
     }
+
     public void checkAuth(String authToken) throws DataAccessException{
         dataAccessAuth.checkAuth(authToken);
     }
@@ -82,4 +84,5 @@ public class Service {
         dataAccessGame.updateGame(gameData, username);
 
     }
+
 }
