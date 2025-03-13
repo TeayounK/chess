@@ -131,4 +131,18 @@ public class MySqlDataAccessGame implements DataAccessGame {
         }
     }
 
+    private GameData readGame(ResultSet rs) throws SQLException {
+        var gameID = rs.getInt("gameID");
+        var whiteUsername = rs.getString("whiteUsername");
+        var blackUsername = rs.getString("blackUsername");
+        var gameName = rs.getString("gameName");
+        var game = rs.getString("game");
+        if (game==null){
+            return new GameData(gameID,whiteUsername,blackUsername,gameName,null);
+        }else{
+            GameData gameData = new Gson().fromJson(game, GameData.class);
+            return new GameData(gameID,whiteUsername,blackUsername,gameName,gameData.game());
+        }
+    }
+
 }
