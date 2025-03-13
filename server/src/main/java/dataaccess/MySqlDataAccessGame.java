@@ -1,8 +1,12 @@
 package dataaccess;
 
+import com.google.gson.Gson;
 import model.GameData;
 import model.JoinGame;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,4 +105,30 @@ public class MySqlDataAccessGame implements DataAccessGame {
                     ex.getMessage()));
         }
     }
+    private void updateHelper(JoinGame game, String username, PreparedStatement preparedStatement, Connection conn,
+                              String statement1) throws SQLException, DataAccessException {
+        preparedStatement.setInt(1, game.gameID());
+        try(var result = preparedStatement.executeQuery()){
+            if (!result.next()) {
+                throw new DataAccessException("Error: bad request");
+            } else {
+                GameData gameData = readGame(result);
+                if (gameData.blackUsername() != null && gameData.whiteUsername() != null) {
+                    throw new DataAccessException("Error: already taken");
+                } else if ((gameData.blackUsername() != null &&
+                        game.playerColor().equalsIgnoreCase("black"))
+                        || (gameData.whiteUsername() != null &&
+                        game.playerColor().equalsIgnoreCase("white"))) {
+                    throw new DataAccessException("Error: already taken");
+                }else{
+                    try(var preparedStatement1 = conn.prepareStatement(statement1)){
+                        preparedStatement1.setString(1, username);
+                        preparedStatement1.setInt(2, game.gameID());
+                        preparedStatement1.executeUpdate();
+                    }
+                }
+            }
+        }
+    }
+
 }
