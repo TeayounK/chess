@@ -21,6 +21,15 @@ public class Server {
         DataAccessAuth dataAccessAuth = new MemoryAuthDAO();
         DataAccessGame dataAccessGame = new MemoryGameDAO();
 
+        try {
+            dataAccessUser = new MySqlDataAccessUser();
+            dataAccessAuth = new MySqlDataAccessAuth();
+            dataAccessGame = new MySqlDataAccessGame();
+
+        } catch(DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+
         this.service = new Service(dataAccessUser, dataAccessAuth, dataAccessGame);
 
         Spark.port(desiredPort);
