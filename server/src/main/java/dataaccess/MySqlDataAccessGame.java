@@ -64,4 +64,41 @@ public class MySqlDataAccessGame implements DataAccessGame {
         return result;
     }
 
+    @Override
+    public void clearAll() {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "TRUNCATE games";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException ex) {
+            System.out.println("Unable to list games :" + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void updateGame(JoinGame game, String username) throws DataAccessException {
+        String statement1;
+
+        if (game.playerColor() == null){
+            throw new DataAccessException("Error: bad request");
+        }
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT * FROM games WHERE gameID = ?";
+
+            if (game.playerColor().equalsIgnoreCase("black")){
+                statement1 = "UPDATE games SET blackUsername = ? WHERE gameID = ?";
+            }else if (game.playerColor().equalsIgnoreCase("white")){
+                statement1 = "UPDATE games SET whiteUsername = ? WHERE gameID = ?";
+            }else{
+                throw new DataAccessException("Error: not a valid color");
+            }
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                updateHelper(game, username, preparedStatement, conn, statement1);
+            }
+        }catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to get the authToken : %s",
+                    ex.getMessage()));
+        }
+    }
 }
