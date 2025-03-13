@@ -104,4 +104,16 @@ public class MySqlDataAccessAuth implements DataAccessAuth{
         }
         throw new DataAccessException("Error: Unauthorized");
     }
+
+    @Override
+    public void clearAll() throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "TRUNCATE authsKey";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to clean up the database: %s", ex.getMessage()));
+        }
+    }
 }
