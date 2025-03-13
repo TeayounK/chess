@@ -87,4 +87,21 @@ public class MySqlDataAccessAuth implements DataAccessAuth{
             throw new DataAccessException("Error: Already logged-out username");
         }
     }
+    @Override
+    public boolean checkAuth(String authToken) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT * FROM authsKey WHERE authToken = ?";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, authToken);
+                try(var result = preparedStatement.executeQuery()){
+                    if (result.next()){
+                        return true;
+                    }
+                }
+            }
+        }catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to get the authToken : %s", ex.getMessage()));
+        }
+        throw new DataAccessException("Error: Unauthorized");
+    }
 }
