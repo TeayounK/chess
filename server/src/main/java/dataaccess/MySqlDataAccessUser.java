@@ -34,4 +34,23 @@ public class MySqlDataAccessAuth implements DataAccessAuth{
             throw new DataAccessException(String.format("Unable to add authData: %s", ex.getMessage()));
         }
     }
+
+    @Override
+    public AuthData getAuth(String username) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT * FROM authsKey WHERE username=?";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1,username);
+                try(var result = preparedStatement.executeQuery()){
+                    if (result.next()){
+                        var authToken = result.getString("authToken");
+                        return new AuthData(authToken,username);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to get the authData for user : %s", ex.getMessage()));
+        }
+        return null;
+    }
 }
