@@ -2,6 +2,8 @@ package ui;
 
 import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
+import model.ListResult;
 import model.UserData;
 
 import java.io.IOException;
@@ -33,6 +35,16 @@ public class ServerFacade {
     public void logoutUser(AuthData authData) throws ResponseException{
         var path = "/session";
         this.makeRequest("DELETE", path,null,null, authData);
+    }
+    public GameData createGame(AuthData authData, String... params) throws ResponseException{
+        var path = "/game";
+        GameData newGame = new GameData(0,null,null,params[0],null);
+        return this.makeRequest("POST", path, newGame, GameData.class, authData);
+    }
+
+    public ListResult listGames(AuthData authData) throws ResponseException{
+        var path = "/game";
+        return this.makeRequest("GET", path,null,ListResult.class, authData);
     }
 
 
