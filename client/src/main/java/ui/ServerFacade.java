@@ -24,6 +24,17 @@ public class ServerFacade {
         return this.makeRequest("POST", path, newUser, AuthData.class, null);
     }
 
+    public AuthData loginUser(String... params) throws ResponseException{
+        var path = "/session";
+        UserData newUser = new UserData(params[0], params[1], null);
+        return this.makeRequest("POST", path, newUser, AuthData.class, null);
+    }
+
+    public void logoutUser(AuthData authData) throws ResponseException{
+        var path = "/session";
+        this.makeRequest("DELETE", path,null,null, authData);
+    }
+
 
 
 
