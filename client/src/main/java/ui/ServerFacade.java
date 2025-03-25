@@ -1,8 +1,11 @@
 package ui;
 
+import com.google.gson.Gson;
 import model.AuthData;
 import model.UserData;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -41,6 +44,27 @@ public class ServerFacade {
             throw new ResponseException(500, ex.getMessage());
         }
     }
+
+    private static void writeBody(Object request, HttpURLConnection http) throws IOException {
+        if (request != null) {
+            http.addRequestProperty("Content-Type", "application/json");
+            String reqData = new Gson().toJson(request);
+            try (OutputStream reqBody = http.getOutputStream()) {
+                reqBody.write(reqData.getBytes());
+            }
+        }
+    }
+
+    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
+        var status = http.getResponseCode();
+        var mess = http.getResponseMessage();
+        if (!isSuccessful(status)) {
+            throw new ResponseException(status, "failure: " + mess);
+        }
+    }
+
+
+
 
 
 }
