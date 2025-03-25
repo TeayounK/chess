@@ -148,7 +148,39 @@ public class ServerFacadeTests {
         }
     }
 
+    @Test
+    void joinGamePositive() throws Exception{
+        facade.deleteDataBase();
+        try{
+            facade.deleteDataBase();
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(authData,"Testgame2");
+            JoinGame joinGame = new JoinGame("white",game.gameID());
+            facade.joinGame(authData,joinGame);
+            ListResult result = facade.listGames(authData);
+            Assertions.assertEquals("[GameData[gameID=2, whiteUsername=player1, blackUsername=null, gameName=Testgame2, game=null]]",
+                    result.games().toString());
+        }catch(ResponseException e){
+            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+        }
+    }
 
+    @Test
+    void joinGameNegative() throws Exception{
+        facade.deleteDataBase();
+        try{
+            facade.deleteDataBase();
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(authData,"Testgame2");
+            JoinGame joinGame = new JoinGame("RED",game.gameID());
+            facade.joinGame(authData,joinGame);
+            ListResult result = facade.listGames(authData);
+            Assertions.assertEquals("[GameData[gameID=2, whiteUsername=null, blackUsername=null, gameName=Testgame1, game=null]]",
+                    result.games().toString());
+        }catch(ResponseException e){
+            Assertions.assertEquals("failure: 400 Bad Request",e.getMessage());
+        }
+    }
 
 
 }
