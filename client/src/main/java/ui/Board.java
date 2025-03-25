@@ -123,7 +123,44 @@ public class Board {
     }
 
 
+    private static void drawBoardBackward(PrintStream out){
+        BOARD.resetBoard();
 
+        for (int i=0; i < 10 ; i++){
+            for (int j=9; j > -1 ; j--){
+                drawBoardHelper(out, i, j);
+            }
+            out.print(RESET_BG_COLOR);
+            out.print("\n");
+        }
+    }
+
+    private static void drawBoardHelper(PrintStream out, int i, int j) {
+        // first line
+        if (i == 0){
+            if (j ==0|| j ==9){
+                out.print(SET_BG_COLOR_LIGHT_GREY);
+                out.print(EMPTY);
+            }else{
+                drawFirstLine(out, j);
+            }
+            // last line
+        }else if (i == 9) {
+            if (j ==0|| j ==9){
+                out.print(SET_BG_COLOR_LIGHT_GREY);
+                out.print(EMPTY);
+            }else{
+                drawFirstLine(out, j);
+            }
+            // lines in the middle
+        }else{
+            if (j ==0|| j ==9){
+                drawIntheMiddle(out, i);
+            }else{
+                drawMainChessBoard(out, i, j);
+            }
+        }
+    }
 }
 
 
