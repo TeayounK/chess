@@ -53,6 +53,18 @@ public class Board {
         }
     }
 
+    private static String chessPiece2String(ChessPiece piece) {
+        ChessPiece.PieceType type = piece.getPieceType();
+        return switch (type) {
+            case ChessPiece.PieceType.PAWN    -> " P ";
+            case ChessPiece.PieceType.KING    -> " K ";
+            case ChessPiece.PieceType.KNIGHT  -> " N ";
+            case ChessPiece.PieceType.ROOK    -> " R ";
+            case ChessPiece.PieceType.QUEEN   -> " Q ";
+            case ChessPiece.PieceType.BISHOP  -> " B ";
+        };
+    }
+
 }
 
 
