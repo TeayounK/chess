@@ -35,11 +35,6 @@ public class Board {
         out.print(RESET_TEXT_COLOR);
     }
 
-    private static void emptyLine(PrintStream out){
-        out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
-        out.print("\n");
-    }
-
     private static void drawBoard(PrintStream out) {
         BOARD.resetBoard();
 

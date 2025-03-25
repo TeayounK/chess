@@ -24,39 +24,6 @@ public class ChessClient {
 
     }
 
-    public String eval(String input) {
-        try {
-            var tokens = input.toLowerCase().split(" ");
-            var cmd = (tokens.length > 0) ? tokens[0] : "help";
-            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-            return switch (cmd) {
-                // commends in preLogin phase
-                case "login" -> logIn(params);
-                case "list" -> listGame();
-                case "l" -> l(params);
-                case "register" -> register(params);
-                case "r" -> register(params);
-                case "quit" -> "quit";
-                case "q" -> "quit";
-                case "clear" -> clearData();
-                // commends in login phase
-                case "logout" -> logout();
-                case "create" -> createGame(params);
-                case "c" -> createGame(params);
-                case "join" -> joinGame(params);
-                case "j" -> joinGame(params);
-                case "watch" -> watchGame(params);
-                case "w" -> watchGame(params);
-                // commends in game phase
-                case "leave" -> leaveGame();
-
-                default -> "";
-            };
-        } catch (ResponseException ex) {
-            return ex.getMessage();
-        }
-    }
-
     private String l(String... params) throws ResponseException{
         if (state == States.PRELOGIN){
             return this.logIn(params);

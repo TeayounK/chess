@@ -44,7 +44,7 @@ public class ServerFacadeTests {
             var authData = facade.createUser("player1", "password", null);
             assertTrue(authData.authToken().length() > 10);
         }catch(ResponseException e){
-            Assertions.assertEquals(e.getMessage(),"failure: 400 Bad Request");
+            Assertions.assertEquals(e.getMessage(),"failure: Bad Request");
         }
     }
 
@@ -68,7 +68,7 @@ public class ServerFacadeTests {
             var newAuthData = facade.loginUser("player1", "wrongPassword");
             assertTrue(newAuthData.authToken().length() > 10);
         }catch(ResponseException e){
-            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+            Assertions.assertEquals(e.getMessage(),"failure: Unauthorized");
         }
     }
 
@@ -80,7 +80,7 @@ public class ServerFacadeTests {
             facade.logoutUser(authData);
             assertTrue(true);
         }catch(ResponseException e){
-            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+            Assertions.assertEquals(e.getMessage(),"failure: Unauthorized");
         }
     }
 
@@ -93,7 +93,7 @@ public class ServerFacadeTests {
             facade.logoutUser(authData);
             assertTrue(true);
         }catch(ResponseException e){
-            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+            Assertions.assertEquals(e.getMessage(),"failure: Unauthorized");
         }
     }
 
@@ -105,7 +105,7 @@ public class ServerFacadeTests {
             GameData game = facade.createGame(authData,"Testgame");
             Assertions.assertEquals(1,game.gameID());
         }catch(ResponseException e){
-            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+            Assertions.assertEquals(e.getMessage(),"failure: Unauthorized");
         }
     }
 
@@ -117,7 +117,7 @@ public class ServerFacadeTests {
             GameData game = facade.createGame(null,"Testgame");
             Assertions.assertEquals("Testgame",game.gameName());
         }catch(ResponseException e){
-            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+            Assertions.assertEquals(e.getMessage(),"failure: Unauthorized");
         }
     }
 
@@ -131,7 +131,7 @@ public class ServerFacadeTests {
             ListResult result = facade.listGames(authData);
             Assertions.assertEquals("Testgame", result.games().getFirst().gameName());
         }catch(ResponseException e){
-            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+            Assertions.assertEquals(e.getMessage(),"failure: Unauthorized");
         }
     }
 
@@ -144,7 +144,7 @@ public class ServerFacadeTests {
             facade.listGames(null);
             Assertions.assertEquals("Testgame",game.gameName());
         }catch(ResponseException e){
-            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+            Assertions.assertEquals(e.getMessage(),"failure: Unauthorized");
         }
     }
 
@@ -161,7 +161,7 @@ public class ServerFacadeTests {
             Assertions.assertEquals("[GameData[gameID=2, whiteUsername=player1, blackUsername=null, gameName=Testgame2, game=null]]",
                     result.games().toString());
         }catch(ResponseException e){
-            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+            Assertions.assertEquals(e.getMessage(),"failure: Unauthorized");
         }
     }
 
@@ -178,7 +178,7 @@ public class ServerFacadeTests {
             Assertions.assertEquals("[GameData[gameID=2, whiteUsername=null, blackUsername=null, gameName=Testgame1, game=null]]",
                     result.games().toString());
         }catch(ResponseException e){
-            Assertions.assertEquals("failure: 400 Bad Request",e.getMessage());
+            Assertions.assertEquals("failure: Bad Request",e.getMessage());
         }
     }
 
