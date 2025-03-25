@@ -223,5 +223,21 @@ public class ChessClient {
     }
 
 
+    // checking status
+    private void assertLogIn() throws ResponseException {
+        if (state != States.LOGIN) {
+            throw new ResponseException(400, "failure: This is a commend for logged in users");
+        }
+    }
 
+    private void assertPreLogin() throws ResponseException {
+        if (state != States.PRELOGIN) {
+            throw new ResponseException(400, "failure: This is a commend for pre-login users");
+        }
+    }
+    private void assertGame() throws ResponseException {
+        if (state != States.GAME) {
+            throw new ResponseException(400, "failure: This is a commend for users in a game");
+        }
+    }
 }
