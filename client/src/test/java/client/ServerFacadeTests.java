@@ -72,6 +72,31 @@ public class ServerFacadeTests {
         }
     }
 
+    @Test
+    void logoutPositive() throws Exception{
+        facade.deleteDataBase();
+        var authData = facade.createUser("player1", "password", "p1@email.com");
+        try{
+            facade.logoutUser(authData);
+            assertTrue(true);
+        }catch(ResponseException e){
+            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+        }
+    }
+
+    @Test
+    void logoutNegative() throws Exception{
+        facade.deleteDataBase();
+        var authData = facade.createUser("player1", "password", "p1@email.com");
+        try{
+            facade.logoutUser(authData);
+            facade.logoutUser(authData);
+            assertTrue(true);
+        }catch(ResponseException e){
+            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+        }
+    }
+
 
 
 
