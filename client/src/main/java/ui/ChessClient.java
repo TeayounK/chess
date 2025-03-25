@@ -117,5 +117,51 @@ public class ChessClient {
         }
     }
 
+    private void initializeHashMap()throws ResponseException{
+        ListResult listResult = server.listGames(this.authData);
+        int i = 0;
+        for (GameData game : listResult.games()) {
+            i += 1;
+            this.num2Game.put(i, game);
+        }
+    }
+
+
+    private String listGame() throws ResponseException{
+        try{
+            StringBuilder stringResult = new StringBuilder();
+            int i = 0;
+            assertLogIn();
+            ListResult listResult = server.listGames(this.authData);
+            for (GameData game : listResult.games()){
+                i+= 1;
+                this.num2Game.put(i,game);
+                stringResult.append(i).append(". | GameName: ").append(game.gameName()).append(" | White User: ")
+                        .append(game.whiteUsername()).append(" | Black User: ").append(game.blackUsername()).append(" |").append("\n");
+            }
+            return stringResult.toString();
+        }catch(ResponseException e){
+            throw new ResponseException(400, e.getMessage());
+        }
+    }
+
+    private String createGame(String... params) throws ResponseException{
+        assertLogIn();
+        if (params.length==1){
+            state = States.LOGIN;
+            server.createGame(this.authData,params);
+            return "You created a game";
+        }else{
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <GAMENAME>");
+        }
+    }
+
+    private String clearData() throws ResponseException{
+        server.deleteDataBase();
+        state = States.PRELOGIN;
+        return "Successfully cleaned DataBase";
+    }
+
 
 }
