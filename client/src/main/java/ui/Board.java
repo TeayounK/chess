@@ -27,13 +27,32 @@ public class Board {
 
         if (joinGame.playerColor().equalsIgnoreCase("black")) {
             drawBoardBackward(out);
-        } else {
+        }else{
             drawBoard(out);
         }
 
         out.print(RESET_BG_COLOR);
         out.print(RESET_TEXT_COLOR);
     }
+
+    private static void emptyLine(PrintStream out){
+        out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
+        out.print("\n");
+    }
+
+    private static void drawBoard(PrintStream out) {
+        BOARD.resetBoard();
+
+        for (int i = 9; i > -1; i--) {
+            for (int j = 0; j < 10; j++) {
+                // first line
+                drawBoardHelper(out, i, j);
+            }
+            out.print(RESET_BG_COLOR);
+            out.print("\n");
+        }
+    }
+
 }
 
 
