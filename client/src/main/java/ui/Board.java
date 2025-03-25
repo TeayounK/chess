@@ -104,6 +104,15 @@ public class Board {
         }
     }
 
+    private static void drawFirstLine(PrintStream out, int j) {
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(SET_TEXT_COLOR_GREEN);
+
+        String[] headers = {" a ", " b ", " c ", " d ", " e ", " f ", " g ", " h "};
+
+        out.print(headers[j - 1]);
+    }
+
 
 }
 
