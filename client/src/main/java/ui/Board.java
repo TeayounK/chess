@@ -113,6 +113,16 @@ public class Board {
         out.print(headers[j - 1]);
     }
 
+    private static void drawIntheMiddle(PrintStream out, int i) {
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(SET_TEXT_COLOR_GREEN);
+
+        String[] side = {" 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 "};
+
+        out.print(side[i - 1]);
+    }
+
+
 
 }
 
