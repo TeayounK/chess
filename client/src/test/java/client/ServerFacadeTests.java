@@ -97,6 +97,57 @@ public class ServerFacadeTests {
         }
     }
 
+    @Test
+    void createGamePositive() throws Exception{
+        facade.deleteDataBase();
+        try{
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(authData,"Testgame");
+            Assertions.assertEquals(1,game.gameID());
+        }catch(ResponseException e){
+            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+        }
+    }
+
+    @Test
+    void createGameNegative() throws Exception{
+        facade.deleteDataBase();
+        try{
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(null,"Testgame");
+            Assertions.assertEquals("Testgame",game.gameName());
+        }catch(ResponseException e){
+            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+        }
+    }
+
+    @Test
+    void listGamePositive() throws Exception{
+        facade.deleteDataBase();
+        try{
+            facade.deleteDataBase();
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(authData,"Testgame");
+            ListResult result = facade.listGames(authData);
+            Assertions.assertEquals("Testgame", result.games().getFirst().gameName());
+        }catch(ResponseException e){
+            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+        }
+    }
+
+    @Test
+    void listGameNegative() throws Exception{
+        facade.deleteDataBase();
+        try{
+            var authData = facade.createUser("player1", "password", "p1@email.com");
+            GameData game = facade.createGame(null,"Testgame");
+            facade.listGames(null);
+            Assertions.assertEquals("Testgame",game.gameName());
+        }catch(ResponseException e){
+            Assertions.assertEquals(e.getMessage(),"failure: 401 Unauthorized");
+        }
+    }
+
 
 
 
