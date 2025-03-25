@@ -65,6 +65,16 @@ public class Board {
         };
     }
 
+    private static void pieceColor(PrintStream out, ChessPiece piece) {
+        ChessGame.TeamColor color = piece.getTeamColor();
+        if (color == ChessGame.TeamColor.WHITE) {
+            out.print(SET_TEXT_COLOR_RED);
+        } else if (color == ChessGame.TeamColor.BLACK) {
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
+    }
+
+
 }
 
 
