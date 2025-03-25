@@ -1,10 +1,7 @@
 package ui;
 
 import com.google.gson.Gson;
-import model.AuthData;
-import model.GameData;
-import model.ListResult;
-import model.UserData;
+import model.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +42,16 @@ public class ServerFacade {
     public ListResult listGames(AuthData authData) throws ResponseException{
         var path = "/game";
         return this.makeRequest("GET", path,null,ListResult.class, authData);
+    }
+
+    public void deleteDataBase() throws ResponseException{
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null, null);
+    }
+
+    public void joinGame(AuthData authData, JoinGame joinGame) throws ResponseException{
+        var path = "/game";
+        this.makeRequest("PUT",path,joinGame,null,authData);
     }
 
 
