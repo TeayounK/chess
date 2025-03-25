@@ -163,5 +163,36 @@ public class ChessClient {
         return "Successfully cleaned DataBase";
     }
 
+    private String joinGame(String... params) throws ResponseException{
+        assertLogIn();
+        try {
+            int gameNum = Integer.parseInt(params[0]);
+            JoinGame joinGame = new JoinGame(params[1], this.num2Game.get(gameNum).gameID());
+            server.joinGame(this.authData, joinGame);
+            state = States.GAME;
+            Board.main(joinGame);
+            return "Successfully joined a game";
+        }catch(NumberFormatException ex){
+            throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
+                    "<GAME NUMBER> has to be integer");
+        }catch(NullPointerException ex){
+            throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
+                    "<GAME NUMBER> is not on the list");
+        }catch(ResponseException ex){
+            if ((params.length == 2)) {
+                throw new ResponseException(ex.hashCode(), "failure: not a valid color. \n" +
+                        "<COLOR> has to be \"white\" or \"black\"");
+            }else if (params.length > 2){
+                throw new ResponseException(400, "failure: not a valid input. \n" +
+                        "Expected: <game NUMBER> <playerColor>");
+            }else{
+                throw new ResponseException(400, "failure: not a valid input. \n" +ex.getMessage());
+            }
+        }catch(ArrayIndexOutOfBoundsException ex){
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <playerColor> <game NUMBER>");
+        }
+    }
+
 
 }
