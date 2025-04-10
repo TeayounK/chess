@@ -194,5 +194,50 @@ public class ChessClient {
         }
     }
 
+    private String watchGame(String... params) throws ResponseException{
+        assertLogIn();
+        if (params.length == 1){
+            try{
+                int gameNum = Integer.parseInt(params[0]);
+                JoinGame joinGame = new JoinGame("white", this.num2Game.get(gameNum).gameID());
+                state = States.GAME;
+                Board.main(joinGame);
+                return "Successfully enter the game as an observer";
+            }catch(NumberFormatException ex){
+                throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
+                        "<GAME NUMBER> has to be integer");
+            }catch(NullPointerException ex){
+                throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
+                        "<GAME NUMBER> is not on the list");
+            }
+        }else{
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <game NUMBER>");
+        }
+    }
 
+    private String leaveGame() throws ResponseException{
+        assertGame();
+        state = States.LOGIN;
+        return "You have successfully left the game";
+    }
+
+
+    // checking status
+    private void assertLogIn() throws ResponseException {
+        if (state != States.LOGIN) {
+            throw new ResponseException(400, "failure: This is a commend for logged in users");
+        }
+    }
+
+    private void assertPreLogin() throws ResponseException {
+        if (state != States.PRELOGIN) {
+            throw new ResponseException(400, "failure: This is a commend for pre-login users");
+        }
+    }
+    private void assertGame() throws ResponseException {
+        if (state != States.GAME) {
+            throw new ResponseException(400, "failure: This is a commend for users in a game");
+        }
+    }
 }
