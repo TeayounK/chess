@@ -82,5 +82,29 @@ public class ChessClient {
         }
     }
 
+    private String register(String... params) throws ResponseException{
+        assertPreLogin();
+        if (params.length == 3){
+            try {
+                AuthData result = server.createUser(params);
+                this.authData = server.loginUser(params[0], params[1]);
+                state = States.LOGIN;
+                username = authData.username();
+                return String.format("You registered in as %s.", result.username());
+            }catch(ResponseException e){
+                if (e.getMessage().equalsIgnoreCase("failure: Forbidden")){
+                    throw new ResponseException(400,"failure: already existing user");
+                }else{
+                    System.out.println(e.getMessage());
+                    throw new ResponseException(400,"failure: not a valid input. \n" +
+                            "Expected: <USERNAME> <PASSWORD> <EMAIL>");
+                }
+            }
+        }else{
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <USERNAME> <PASSWORD> <EMAIL>");
+        }
+    }
+
 
 }
