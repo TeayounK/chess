@@ -53,5 +53,17 @@ public class Repl implements NotificationHandler{
                 """;
     }
 
+    static String printPromptLogin() {
+        return """
+                \n
+                Options:
+                List current games: "l", "list"
+                Create a new game: "c", "create" <GAMENAME>
+                Join a game: "j", "join" <GAME NUMBER> <COLOR> 
+                Watch a game: "w", "watch" <GAME NUMBER>
+                Logout: "logout"
+                """;
+    }
+
 
 }
