@@ -65,5 +65,18 @@ public class Repl implements NotificationHandler{
                 """;
     }
 
+    static String printPromptGame() {
+        return """
+                \n
+                Options:
+                Highlight legal moves: "hi", "highlight" <position> (e.g. f5)
+                Make a move: "m", "move", "make" <source> <destination> <optional promotion> (e.g. f5 e4 q)
+                Redraw Chess Board: "r", "redrew"
+                Change color scheme: "c", "colors" <color number>
+                Resign from game: "res", "resign"
+                Leave game: "leave"
+                """;
+    }
+
 
 }
