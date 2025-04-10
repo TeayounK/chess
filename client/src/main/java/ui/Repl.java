@@ -42,5 +42,16 @@ public class Repl implements NotificationHandler{
         System.out.println();
     }
 
+    static String printPromptPreLogin() {
+        return """
+                \n
+                Options:
+                Login as an existing user: "l", "login" <USERNAME> <PASSWORD>
+                Register a new user: "r", "register" <USERNAME> <PASSWORD> <EMAIL>
+                Exit the program: "q", "quit"
+                Print this message: "h", "help"
+                """;
+    }
+
 
 }
