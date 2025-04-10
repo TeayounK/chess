@@ -106,5 +106,16 @@ public class ChessClient {
         }
     }
 
+    private String logout() throws ResponseException{
+        try{
+            assertLogIn();
+            server.logoutUser(authData);
+            state = States.PRELOGIN;
+            return "You successfully logged out";
+        }catch(ResponseException e){
+            throw new ResponseException(400, e.getMessage());
+        }
+    }
+
 
 }
