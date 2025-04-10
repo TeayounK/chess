@@ -157,5 +157,11 @@ public class ChessClient {
         }
     }
 
+    private String clearData() throws ResponseException{
+        server.deleteDataBase();
+        state = States.PRELOGIN;
+        return "Successfully cleaned DataBase";
+    }
+
 
 }
