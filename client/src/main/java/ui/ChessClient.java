@@ -57,5 +57,16 @@ public class ChessClient {
         }
     }
 
+    private String l(String... params) throws ResponseException{
+        if (state == States.PRELOGIN){
+            return this.logIn(params);
+        }else if (state == States.LOGIN){
+            return this.listGame();
+        }else {
+            throw new ResponseException(400, "failure: not a valid command.");
+        }
+    }
+
+
 
 }
