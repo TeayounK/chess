@@ -68,5 +68,19 @@ public class ChessClient {
     }
 
 
+    private String logIn(String... params) throws ResponseException {
+        assertPreLogin();
+        if (params.length == 2){
+            this.authData = server.loginUser(params);
+            initializeHashMap();
+            state = States.LOGIN;
+            username = authData.username();
+            return String.format("You logged in as %s.", this.authData.username());
+        }else{
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <USERNAME> <PASSWORD>");
+        }
+    }
+
 
 }
