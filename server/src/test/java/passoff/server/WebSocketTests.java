@@ -6,7 +6,6 @@ import passoff.model.*;
 import passoff.websocket.*;
 import server.Server;
 import websocket.commands.UserGameCommand;
-import websocket.messages.ServerMessage;
 
 import java.net.URISyntaxException;
 import java.util.*;
