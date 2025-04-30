@@ -1,5 +1,7 @@
 package ui;
 
+import websocket.messages.ServerMessage;
+
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
