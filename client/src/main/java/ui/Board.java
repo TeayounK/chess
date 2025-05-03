@@ -1,13 +1,12 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import model.JoinGame;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static ui.EscapeSequences.*;
 
@@ -20,28 +19,54 @@ public class Board {
     private static final ChessBoard BOARD = new ChessBoard();
 
 
-    public static void main(JoinGame joinGame) {
+    public static void main(JoinGame joinGame, Integer i, Integer j) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
-        out.print(ERASE_SCREEN);
+        ChessPosition pos = new ChessPosition(i, j);
 
+        out.print(ERASE_SCREEN);
         if (joinGame.playerColor().equalsIgnoreCase("black")) {
-            drawBoardBackward(out);
+            drawBoardBackward(out, pos);
         }else{
-            drawBoard(out);
+            drawBoard(out, pos);
         }
 
         out.print(RESET_BG_COLOR);
         out.print(RESET_TEXT_COLOR);
+
+
     }
 
-    private static void drawBoard(PrintStream out) {
+    public static void create(){
         BOARD.resetBoard();
+    }
+
+    private static void drawBoard(PrintStream out, ChessPosition pos) {
+
+        ChessPiece piece = null;
+        Collection<ChessMove> possMoves = new ArrayList<>();
+
+        if (pos.getRow()!=0 && pos.getColumn()!=0){
+            piece = BOARD.getPiece(pos);
+            possMoves = piece.pieceMoves(BOARD,pos);
+        }
+
+        Collection<Collection<Integer>> pairs = new ArrayList<>();
+
+        for (ChessMove pm : possMoves) {
+            Collection<Integer> temp = new ArrayList<>();
+            temp.add(pm.getEndPosition().getRow());
+            temp.add(pm.getEndPosition().getColumn());
+            pairs.add(temp);
+        }
 
         for (int i = 9; i > -1; i--) {
             for (int j = 0; j < 10; j++) {
                 // first line
-                drawBoardHelper(out, i, j);
+                Collection<Integer> match = new ArrayList<>();
+                match.add(i);
+                match.add(j);
+                drawBoardHelper(out, i, j, pairs.contains(match));
             }
             out.print(RESET_BG_COLOR);
             out.print("\n");
@@ -69,10 +94,14 @@ public class Board {
         }
     }
 
-    private static void drawMainChessBoard(PrintStream out, int i, int j) {
+    private static void drawMainChessBoard(PrintStream out, int i, int j, boolean highlight) {
 
         if (i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1) {
-            out.print(SET_BG_COLOR_BLACK);
+            if (highlight){
+                out.print(SET_BG_COLOR_DARK_GREEN);
+            }else {
+                out.print(SET_BG_COLOR_BLACK);
+            }
 
             ChessPosition pos = new ChessPosition(i, j);
             ChessPiece piece = BOARD.getPiece(pos);
@@ -85,7 +114,11 @@ public class Board {
             }
 
         } else {
-            out.print(SET_BG_COLOR_WHITE);
+            if (highlight){
+                out.print(SET_BG_COLOR_GREEN);
+            }else {
+                out.print(SET_BG_COLOR_WHITE);
+            }
 
             ChessPosition pos = new ChessPosition(i, j);
             ChessPiece piece = BOARD.getPiece(pos);
@@ -96,7 +129,9 @@ public class Board {
                 pieceColor(out, piece);
                 out.print(chessPiece2String(piece));
             }
+
         }
+
     }
 
     private static void drawFirstLine(PrintStream out, int j) {
@@ -118,19 +153,38 @@ public class Board {
     }
 
 
-    private static void drawBoardBackward(PrintStream out){
-        BOARD.resetBoard();
+    private static void drawBoardBackward(PrintStream out, ChessPosition pos){
+
+        ChessPiece piece = null;
+        Collection<ChessMove> possMoves = new ArrayList<>();
+
+        if (pos.getRow()!=0 && pos.getColumn()!=0){
+            piece = BOARD.getPiece(pos);
+            possMoves = piece.pieceMoves(BOARD,pos);
+        }
+
+        Collection<Collection<Integer>> pairs = new ArrayList<>();
+
+        for (ChessMove pm : possMoves) {
+            Collection<Integer> temp = new ArrayList<>();
+            temp.add(pm.getEndPosition().getRow());
+            temp.add(pm.getEndPosition().getColumn());
+            pairs.add(temp);
+        }
 
         for (int i=0; i < 10 ; i++){
             for (int j=9; j > -1 ; j--){
-                drawBoardHelper(out, i, j);
+                Collection<Integer> match = new ArrayList<>();
+                match.add(i);
+                match.add(j);
+                drawBoardHelper(out, i, j, pairs.contains(match));
             }
             out.print(RESET_BG_COLOR);
             out.print("\n");
         }
     }
 
-    private static void drawBoardHelper(PrintStream out, int i, int j) {
+    private static void drawBoardHelper(PrintStream out, int i, int j, boolean highlight) {
         // first line
         if (i == 0){
             if (j ==0|| j ==9){
@@ -152,7 +206,7 @@ public class Board {
             if (j ==0|| j ==9){
                 drawIntheMiddle(out, i);
             }else{
-                drawMainChessBoard(out, i, j);
+                drawMainChessBoard(out, i, j, highlight);
             }
         }
     }

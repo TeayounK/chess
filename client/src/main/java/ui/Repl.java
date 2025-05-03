@@ -11,7 +11,7 @@ public class Repl implements NotificationHandler{
     private States state;
 
     public Repl(String serverUrl) {
-        client = new ChessClient(serverUrl);
+        client = new ChessClient(serverUrl, this);
         this.state = States.PRELOGIN;
     }
 
@@ -24,6 +24,7 @@ public class Repl implements NotificationHandler{
                 case States.PRELOGIN -> printPromptPreLogin();
                 case States.LOGIN -> printPromptLogin();
                 case States.GAME -> printPromptGame();
+                case States.WATCH -> printPromptGame();
             });
 
             String line = scanner.nextLine();

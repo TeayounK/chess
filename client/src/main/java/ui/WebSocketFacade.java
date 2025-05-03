@@ -1,6 +1,9 @@
 package ui;
 
 import com.google.gson.Gson;
+import model.AuthData;
+import model.JoinGame;
+import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.Session;
@@ -39,5 +42,27 @@ public class WebSocketFacade extends Endpoint{
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
 
+    }
+
+    // not sure but good attempt. need a test.
+    public void leaveGame(AuthData authData, JoinGame joinGame) throws ResponseException{
+        try {
+            UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE,
+                    authData.authToken(), joinGame.gameID());
+            session.getBasicRemote().sendText(new Gson().toJson(command));
+            session.close();
+        } catch (IOException e) {
+            throw new ResponseException(500, e.getMessage());
+        }
+    }
+
+    public void joinGame(AuthData authData, JoinGame joinGame) throws ResponseException{
+        try {
+            UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
+                    authData.authToken(), joinGame.gameID());
+            session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException e) {
+            throw new ResponseException(500, e.getMessage());
+        }
     }
 }

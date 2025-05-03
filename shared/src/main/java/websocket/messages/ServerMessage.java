@@ -11,10 +11,6 @@ import java.util.Objects;
 public class ServerMessage {
     ServerMessageType serverMessageType;
 
-    public String message() {
-        return null;
-    }
-
     public enum ServerMessageType {
         LOAD_GAME,
         ERROR,
@@ -28,6 +24,8 @@ public class ServerMessage {
     public ServerMessageType getServerMessageType() {
         return this.serverMessageType;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

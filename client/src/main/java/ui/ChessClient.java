@@ -1,28 +1,53 @@
 package ui;
 
 import model.*;
+import websocket.messages.ServerMessage;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
 
-public class ChessClient {
+public class ChessClient implements NotificationHandler{
     private final ServerFacade server;
+    private final NotificationHandler notificationHandler;
     public States state;
     private AuthData authData;
     private HashMap<Integer, GameData> num2Game;
     private String username;
     private WebSocketFacade ws;
+    private JoinGame joinGame;
+    private JoinGame gameObserver;
+    private String serverUrl;
 
 
-    public ChessClient(String serverUrl) {
+    public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
         server = new ServerFacade(serverUrl);
         this.state = States.PRELOGIN;
         this.authData = null;
         this.num2Game = new HashMap<>();
         this.username = "";
+        this.joinGame = new JoinGame("null",0);
+        this.gameObserver = new JoinGame("null",0);
+        this.notificationHandler = notificationHandler;
+        this.serverUrl = serverUrl;
 
     }
+
+    private Integer charToInt(String input){
+        Integer result = switch (input) {
+            case "a" -> 1;
+            case "b" -> 2;
+            case "c" -> 3;
+            case "d" -> 4;
+            case "e" -> 5;
+            case "f" -> 6;
+            case "g" -> 7;
+            case "h" -> 8;
+            default -> 0;
+        };
+        return result;
+    }
+
 
     public String eval(String input) {
         try {
@@ -35,7 +60,7 @@ public class ChessClient {
                 case "list" -> listGame();
                 case "l" -> l(params);
                 case "register" -> register(params);
-                case "r" -> register(params);
+                case "r" -> r(params);
                 case "quit" -> "quit";
                 case "q" -> "quit";
                 case "clear" -> clearData();
@@ -49,6 +74,9 @@ public class ChessClient {
                 case "w" -> watchGame(params);
                 // commends in game phase
                 case "leave" -> leaveGame();
+                case "hi" -> highlight(params);
+                case "highlight" -> highlight(params);
+                case "redrew" -> redrawBoard();
 
                 default -> "";
             };
@@ -62,6 +90,16 @@ public class ChessClient {
             return this.logIn(params);
         }else if (state == States.LOGIN){
             return this.listGame();
+        }else {
+            throw new ResponseException(400, "failure: not a valid command.");
+        }
+    }
+
+    private String r(String... params) throws ResponseException{
+        if (state == States.PRELOGIN){
+            return this.register(params);
+        }else if (state == States.GAME ||state == States.WATCH ){
+            return this.redrawBoard();
         }else {
             throw new ResponseException(400, "failure: not a valid command.");
         }
@@ -150,6 +188,7 @@ public class ChessClient {
         if (params.length==1){
             state = States.LOGIN;
             server.createGame(this.authData,params);
+            Board.create();
             return "You created a game";
         }else{
             throw new ResponseException(400, "failure: not a valid input. \n" +
@@ -167,10 +206,12 @@ public class ChessClient {
         assertLogIn();
         try {
             int gameNum = Integer.parseInt(params[0]);
-            JoinGame joinGame = new JoinGame(params[1], this.num2Game.get(gameNum).gameID());
+            joinGame = new JoinGame(params[1], this.num2Game.get(gameNum).gameID());
             server.joinGame(this.authData, joinGame);
             state = States.GAME;
-            Board.main(joinGame);
+            Board.main(joinGame, 0,0);
+            ws = new WebSocketFacade(this.serverUrl, notificationHandler);
+            ws.joinGame(this.authData, joinGame);
             return "Successfully joined a game";
         }catch(NumberFormatException ex){
             throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
@@ -199,9 +240,9 @@ public class ChessClient {
         if (params.length == 1){
             try{
                 int gameNum = Integer.parseInt(params[0]);
-                JoinGame joinGame = new JoinGame("white", this.num2Game.get(gameNum).gameID());
-                state = States.GAME;
-                Board.main(joinGame);
+                gameObserver = new JoinGame("white", this.num2Game.get(gameNum).gameID());
+                state = States.WATCH;
+                Board.main(gameObserver, 0,0);
                 return "Successfully enter the game as an observer";
             }catch(NumberFormatException ex){
                 throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
@@ -219,7 +260,50 @@ public class ChessClient {
     private String leaveGame() throws ResponseException{
         assertGame();
         state = States.LOGIN;
+        ws.leaveGame(this.authData,joinGame);
+
         return "You have successfully left the game";
+    }
+
+    // in game functions
+    private String highlight(String... params) throws ResponseException{
+        assertGame();
+        if (params.length == 1){
+            try{
+                 // transport strings to i and j and make a chess position variable as "highlight"
+                char[] cArray = params[0].toCharArray();
+                int i = Integer.parseInt(String.valueOf(cArray[1]));
+                int j = charToInt(String.valueOf(cArray[0]));
+                if (j == 0){
+                    throw new ResponseException(403, "failure: not a valid position character. \n"
+                    + "The character has to be one of the following characters, [a,b,c,d,e,f,g]");
+                }
+
+                state = States.GAME;
+                Board.main(joinGame, i, j);
+
+                return "Successfully highlights possible moves";
+            }catch(NumberFormatException ex){
+                throw new ResponseException(ex.hashCode(), "failure: not a valid position number. \n" +
+                        "<position> has to be character + integer (e.g. f5)");
+            }catch(NullPointerException ex){
+                throw new ResponseException(ex.hashCode(), "failure: no piece is found. \n" +
+                        "Enter a position again (e.g. f5)");
+            }
+        }else{
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <position> (e.g. f5)");
+        }
+    }
+
+    private String redrawBoard() throws ResponseException{
+        assertGame();
+        if (state == States.WATCH){
+            Board.main(gameObserver, 0,0);
+        }else{
+            Board.main(joinGame,0,0);
+        }
+        return "Successfully redraws the board";
     }
 
 
@@ -236,8 +320,37 @@ public class ChessClient {
         }
     }
     private void assertGame() throws ResponseException {
-        if (state != States.GAME) {
+        if (state != States.GAME && state != States.WATCH) {
             throw new ResponseException(400, "failure: This is a commend for users in a game");
+        }
+    }
+
+
+    public void notify(ServerMessage message){
+        switch (message.getServerMessageType()){
+            case NOTIFICATION -> displayNotification();
+            case ERROR -> displayError();
+            case LOAD_GAME -> loadGame();
+        }
+    }
+
+    private void loadGame() {
+    }
+
+    private String displayError() {
+        return "null";
+    }
+
+    private String displayNotification(){
+        return "null";
+    };
+
+    public void onMessage(String message){
+        try{
+            ServerMessage meg = gson.fromJson(message, ServerMessage.class);
+//            observer.notify(message)
+        }catch (Exception ex) {
+            observer.notify(new ErrorMessage(ex.getMessage()));
         }
     }
 }
