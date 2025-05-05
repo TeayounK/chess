@@ -1,5 +1,6 @@
 package server;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import dataaccess.DataAccessAuth;
 import dataaccess.DataAccessException;
@@ -9,6 +10,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.commands.Move;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
@@ -17,6 +19,7 @@ import websocket.messages.Notification;
 import java.io.IOException;
 import java.lang.module.ResolutionException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
 import static websocket.messages.ServerMessage.*;
@@ -27,11 +30,13 @@ public class WebSocketHandler {
     private final DataAccessAuth dataAccessAuth;
     private final DataAccessGame dataAccessGame;
     private final ConnectionManager connections = new ConnectionManager();
+    private ArrayList<Integer> gameIDs;
 
 
     public WebSocketHandler(DataAccessAuth dataAccessAuth, DataAccessGame dataAccessGame) {
         this.dataAccessAuth = dataAccessAuth;
         this.dataAccessGame = dataAccessGame;
+        gameIDs = new ArrayList<>();
     }
 
     @OnWebSocketMessage
@@ -39,6 +44,8 @@ public class WebSocketHandler {
 
         try{
             UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
+            Move move = new Gson().fromJson(message, Move.class);
+
             if(dataAccessAuth.checkAuth(command.getAuthToken())) {
                 String username = dataAccessAuth.getUser(command.getAuthToken());
 
@@ -46,9 +53,9 @@ public class WebSocketHandler {
 
                 switch (command.getCommandType()){
                     case CONNECT -> connectGame(session,username,command);
-                    case LEAVE -> leaveGame("??",session);
-                    case MAKE_MOVE -> makeMove();
-                    case RESIGN -> resign();
+                    case LEAVE -> leaveGame(session, username, command);
+                    case MAKE_MOVE -> makeMove(session, username, command, move);
+                    case RESIGN -> resign(session, username, command);
                 }
             }
 
@@ -64,17 +71,30 @@ public class WebSocketHandler {
         }
     }
 
-    private void resign() {
+    private void resign(Session session, String username, UserGameCommand command) {
     }
 
-    private void makeMove() {
+    private void makeMove(Session session, String username, UserGameCommand command, Move move) {
+        try {
+            if (!gameIDs.contains(command.getGameID())) {
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Wrong GameID");
+                session.getRemote().sendString(new Gson().toJson(errorMessage));
+            } else {
+                LoadGame loadGame = new LoadGame(ServerMessageType.LOAD_GAME, command.getGameID());
+                session.getRemote().sendString(new Gson().toJson(loadGame));
 
+                Notification notification = new Notification(ServerMessageType.NOTIFICATION,
+                        new Gson().toJson(username + " made a move." ));
+                connections.broadcast(username,notification);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-
     private void connectGame(Session session, String username, UserGameCommand command) {
         // LOAD_GAME, NOTIFICATION
         try {
-            ArrayList<Integer> gameIDs = new ArrayList<>();
             for (GameData game :this.dataAccessGame.getGames()){
                 gameIDs.add(game.gameID());
             }
@@ -96,7 +116,7 @@ public class WebSocketHandler {
         }
 
     }
-    private void leaveGame(String username, Session session){
+    private void leaveGame(Session session, String username, UserGameCommand command){
         // LOAD_GAME
     };
 
