@@ -53,9 +53,6 @@ public class WebSocketHandler {
 
                 connections.add(username ,session, command.getGameID());
 
-                System.out.println("Test");
-                System.out.println(command.getCommandType().toString());
-
                 switch (command.getCommandType()){
                     case CONNECT -> connectGame(session,username,command);
                     case LEAVE -> leaveGame(session, username, command);

@@ -345,12 +345,12 @@ public class ChessClient implements NotificationHandler{
         return "null";
     };
 
-    public void onMessage(String message){
-        try{
-            ServerMessage meg = gson.fromJson(message, ServerMessage.class);
-//            observer.notify(message)
-        }catch (Exception ex) {
-            observer.notify(new ErrorMessage(ex.getMessage()));
-        }
-    }
+//    public void onMessage(String message){
+//        try{
+//            ServerMessage meg = gson.fromJson(message, ServerMessage.class);
+////            observer.notify(message)
+//        }catch (Exception ex) {
+//            observer.notify(new ErrorMessage(ex.getMessage()));
+//        }
+//    }
 }
