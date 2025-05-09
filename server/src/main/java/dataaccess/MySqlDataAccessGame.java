@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import model.JoinGame;
@@ -32,6 +33,7 @@ public class MySqlDataAccessGame implements DataAccessGame {
     @Override
     public GameData createGame(GameData gameData) throws DataAccessException {
         maxID += 1;
+        ChessGame chessGame = new ChessGame();
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, game) " +
                     "VALUES (?,?,?,?,?)";
@@ -40,14 +42,14 @@ public class MySqlDataAccessGame implements DataAccessGame {
                 preparedStatement.setString(2,null);
                 preparedStatement.setString(3,null);
                 preparedStatement.setString(4,gameData.gameName());
-                preparedStatement.setString(5,null); //new Gson().toJson(gameData.game())
+                preparedStatement.setString(5,new Gson().toJson(chessGame));
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             throw new DataAccessException("Error: Not a valid Game name");
         }
-        return new GameData(maxID, null,null,gameData.gameName(),null);
+        return new GameData(maxID, null,null,gameData.gameName(),chessGame);
     }
 
     @Override
@@ -131,6 +133,41 @@ public class MySqlDataAccessGame implements DataAccessGame {
         }
     }
 
+    @Override
+    public void updateMove(GameData game) throws DataAccessException {
+//        System.out.println("MySQL");
+        //TODO: it doesn't work... Don't know why
+        String statement1;
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT * FROM games WHERE gameID = ?";
+            statement1 = "UPDATE games SET game = ? WHERE gameID = ?";
+
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                updateMoveHelper(game, preparedStatement, conn, statement1);
+            }
+        }catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to get the authToken : %s",
+                    ex.getMessage()));
+        }
+    }
+    private void updateMoveHelper(GameData game, PreparedStatement preparedStatement, Connection conn,
+                              String statement1) throws SQLException, DataAccessException {
+        preparedStatement.setInt(1, game.gameID());
+        try(var result = preparedStatement.executeQuery()){
+            if (!result.next()) {
+                throw new DataAccessException("Error: bad request");
+            } else {
+                try(var preparedStatement1 = conn.prepareStatement(statement1)){
+                    preparedStatement1.setString(1, new Gson().toJson(game.game()));
+                    preparedStatement1.setInt(2, game.gameID());
+                    preparedStatement1.executeUpdate();
+                }
+            }
+        }
+    }
+
+
+
     private GameData readGame(ResultSet rs) throws SQLException {
         var gameID = rs.getInt("gameID");
         var whiteUsername = rs.getString("whiteUsername");
@@ -140,8 +177,9 @@ public class MySqlDataAccessGame implements DataAccessGame {
         if (game==null){
             return new GameData(gameID,whiteUsername,blackUsername,gameName,null);
         }else{
-            GameData gameData = new Gson().fromJson(game, GameData.class);
-            return new GameData(gameID,whiteUsername,blackUsername,gameName,gameData.game());
+//            GameData gameData = new Gson().fromJson(game, GameData.class);
+            ChessGame chessGame = new Gson().fromJson(game, ChessGame.class);
+            return new GameData(gameID,whiteUsername,blackUsername,gameName,chessGame);
         }
     }
 

@@ -13,4 +13,6 @@ public interface DataAccessGame {
     void clearAll();
 
     void updateGame(JoinGame game, String username)throws DataAccessException;
+
+    void updateMove(GameData game) throws DataAccessException;
 }

@@ -17,7 +17,7 @@ public class MemoryGameDAO implements DataAccessGame{
             throw new DataAccessException("Error: Not a valid Game name");
         }else {
             maxID += 1;
-            GameData newGame = new GameData(maxID, null,null,gameData.gameName(),null);
+            GameData newGame = new GameData(maxID, null,null,gameData.gameName(),gameData.game());
             games.put(maxID, newGame);
             return newGame;
         }
@@ -57,6 +57,13 @@ public class MemoryGameDAO implements DataAccessGame{
                 games.put(gameCalled.gameID(),newGame);
             }
         }
+    }
+
+    public void updateMove(GameData game) throws DataAccessException{
+        GameData gameCalled = games.get(game.gameID());
+        games.remove(gameCalled.gameID(),gameCalled);
+        GameData newGame = new GameData(gameCalled.gameID(),gameCalled.whiteUsername(),gameCalled.blackUsername(),gameCalled.gameName(),game.game());
+        games.put(gameCalled.gameID(),newGame);
     }
 
 }
