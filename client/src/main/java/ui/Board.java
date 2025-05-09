@@ -25,11 +25,7 @@ public class Board {
         ChessPosition pos = new ChessPosition(i, j);
 
         out.print(ERASE_SCREEN);
-        if (joinGame.playerColor().equalsIgnoreCase("black")) {
-            drawBoardBackward(out, pos);
-        }else{
-            drawBoard(out, pos);
-        }
+        drawBoard(out, pos, joinGame.playerColor().equalsIgnoreCase("black"));
 
         out.print(RESET_BG_COLOR);
         out.print(RESET_TEXT_COLOR);
@@ -41,7 +37,7 @@ public class Board {
         BOARD.resetBoard();
     }
 
-    private static void drawBoard(PrintStream out, ChessPosition pos) {
+    private static void drawBoard(PrintStream out, ChessPosition pos, Boolean backward) {
 
         ChessPiece piece = null;
         Collection<ChessMove> possMoves = new ArrayList<>();
@@ -55,21 +51,32 @@ public class Board {
 
         positionCollector(possMoves, pairs);
 
-        drawOnebyOne(out, pairs);
+        if (!backward){
+            for (int i = 9; i > -1; i--) {
+                for (int j = 0; j < 10; j++) {
+                    // first line
+                    drawOnebyOne(out, i, j, pairs);
+                }
+                out.print(RESET_BG_COLOR);
+                out.print("\n");
+            }
+        }else{
+            for (int i=0; i < 10 ; i++){
+                for (int j=9; j > -1 ; j--){
+                    drawOnebyOne(out, i, j, pairs);
+                }
+                out.print(RESET_BG_COLOR);
+                out.print("\n");
+            }
+        }
+
     }
 
-    private static void drawOnebyOne(PrintStream out, Collection<Collection<Integer>> pairs) {
-        for (int i = 9; i > -1; i--) {
-            for (int j = 0; j < 10; j++) {
-                // first line
-                Collection<Integer> match = new ArrayList<>();
-                match.add(i);
-                match.add(j);
-                drawBoardHelper(out, i, j, pairs.contains(match));
-            }
-            out.print(RESET_BG_COLOR);
-            out.print("\n");
-        }
+    private static void drawOnebyOne(PrintStream out, int i, int j, Collection<Collection<Integer>> pairs) {
+        Collection<Integer> match = new ArrayList<>();
+        match.add(i);
+        match.add(j);
+        drawBoardHelper(out, i, j, pairs.contains(match));
     }
 
     private static String chessPiece2String(ChessPiece piece) {
@@ -151,24 +158,6 @@ public class Board {
         out.print(side[i - 1]);
     }
 
-
-    private static void drawBoardBackward(PrintStream out, ChessPosition pos){
-
-        ChessPiece piece = null;
-        Collection<ChessMove> possMoves = new ArrayList<>();
-
-        if (pos.getRow()!=0 && pos.getColumn()!=0){
-            piece = BOARD.getPiece(pos);
-            possMoves = piece.pieceMoves(BOARD,pos);
-        }
-
-        Collection<Collection<Integer>> pairs = new ArrayList<>();
-
-        positionCollector(possMoves, pairs);
-
-        drawOnebyOne(out, pairs);
-
-    }
 
     private static void positionCollector(Collection<ChessMove> possMoves, Collection<Collection<Integer>> pairs) {
         for (ChessMove pm : possMoves) {

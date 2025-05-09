@@ -62,7 +62,8 @@ public class WebSocketHandler {
             }
         } catch (DataAccessException e) {
             if (Objects.equals(e.getMessage(), "Error: Unauthorized")){
-                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Unauthorized");
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR,
+                        "Error: Unauthorized");
                 try {
                     session.getRemote().sendString(new Gson().toJson(errorMessage));
                 } catch (IOException ex) {
@@ -76,7 +77,8 @@ public class WebSocketHandler {
         try {
             Integer gameID = command.getGameID();
             if (!gameIDs.contains(gameID)||connections.getResign(gameID)) {
-                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Wrong GameID");
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR,
+                        "Error: Wrong GameID");
                 session.getRemote().sendString(new Gson().toJson(errorMessage));
             } else {
                 Collection<GameData> games = dataAccessGame.getGames();
@@ -89,10 +91,12 @@ public class WebSocketHandler {
         }
     }
 
-    private void gameVaildationChecks(Session session, String username, GameData game, Integer gameID) throws IOException {
+    private void gameVaildationChecks(Session session, String username, GameData game, Integer gameID)
+            throws IOException {
         if(game.gameID() == gameID) {
             if (game.game()==null){
-                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command");
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR,
+                        "Error: Invalid command");
                 session.getRemote().sendString(new Gson().toJson(errorMessage));
             }else {
                 connections.removeResign(gameID);
@@ -111,7 +115,8 @@ public class WebSocketHandler {
                     connections.broadcast("",notification, gameID);
 
                 }else{
-                    ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command");
+                    ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR,
+                            "Error: Invalid command");
                     session.getRemote().sendString(new Gson().toJson(errorMessage));
                 }
             }
@@ -121,7 +126,8 @@ public class WebSocketHandler {
     private void isResign(Session session, String username, UserGameCommand command, Move move){
         try{
             if (connections.getResign(command.getGameID())){
-                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Resigned. Cannot make a move");
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR,
+                        "Error: Resigned. Cannot make a move");
                 session.getRemote().sendString(new Gson().toJson(errorMessage));
             }else{
                 makeMove(session, username, command,move);
@@ -135,7 +141,8 @@ public class WebSocketHandler {
         try {
             Integer gameID = command.getGameID();
             if (!gameIDs.contains(gameID)) {
-                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Wrong GameID");
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR,
+                        "Error: Wrong GameID");
                 session.getRemote().sendString(new Gson().toJson(errorMessage));
             } else {
                 Collection<GameData> games = dataAccessGame.getGames();
@@ -153,10 +160,12 @@ public class WebSocketHandler {
         }
     }
 
-    private void validationCheck1(Session session, String username, UserGameCommand command, Move move, GameData game, Integer gameID) throws IOException, InvalidMoveException, DataAccessException {
+    private void validationCheck1(Session session, String username, UserGameCommand command, Move move, GameData game,
+                                  Integer gameID) throws IOException, InvalidMoveException, DataAccessException {
         if(game.gameID() == gameID){
             if (game.game()==null){
-                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command");
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR,
+                        "Error: Invalid command");
                 session.getRemote().sendString(new Gson().toJson(errorMessage));
             }else {
                 // move validation check
@@ -165,7 +174,8 @@ public class WebSocketHandler {
         }
     }
 
-    private void moveValidationCheck(Session session, String username, UserGameCommand command, Move move, GameData game, Integer gameID) throws InvalidMoveException, DataAccessException, IOException {
+    private void moveValidationCheck(Session session, String username, UserGameCommand command, Move move,GameData game,
+                                     Integer gameID) throws InvalidMoveException, DataAccessException, IOException {
         if (game.game().validMoves(move.getMove().getStartPosition()).contains(move.getMove())){
 
             ChessGame.TeamColor userColor = null;
@@ -192,7 +202,8 @@ public class WebSocketHandler {
                         new Gson().toJson(username + " made a move." ));
                 connections.broadcast(username,notification, gameID);
             }else{
-                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command. " +
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR,
+                        "Error: Invalid command. " +
                         "\n" + "You are not the right user to take this turn");
                 session.getRemote().sendString(new Gson().toJson(errorMessage));
             }
@@ -212,7 +223,8 @@ public class WebSocketHandler {
             }
 
             if (!gameIDs.contains(command.getGameID())) {
-                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Wrong GameID");
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR,
+                        "Error: Wrong GameID");
                 session.getRemote().sendString(new Gson().toJson(errorMessage));
             }else{
                 LoadGame loadGame = new LoadGame(ServerMessageType.LOAD_GAME,command.getGameID());
@@ -235,7 +247,8 @@ public class WebSocketHandler {
             }
 
             if (!gameIDs.contains(command.getGameID())) {
-                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Wrong GameID");
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR,
+                        "Error: Wrong GameID");
                 session.getRemote().sendString(new Gson().toJson(errorMessage));
             }else{
 

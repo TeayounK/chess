@@ -55,11 +55,9 @@ public class ServerFacade {
     }
 
     public void leaveGame(AuthData authData, JoinGame joinGame) throws ResponseException{
-        var path = "/game"; //TODO: how to remove user from game list
+        var path = "/game";
         this.makeRequest("DELETE",path,joinGame,null,authData);
     }
-
-
 
 
 
