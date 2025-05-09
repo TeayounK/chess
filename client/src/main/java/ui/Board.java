@@ -16,7 +16,11 @@ public class Board {
     private static final int LINE_WIDTH_IN_PADDED_CHARS = 8;
     // Padded characters.
     private static final String EMPTY = "   ";
-    private static final ChessBoard BOARD = new ChessBoard();
+    private static ChessBoard BOARD;
+
+    public Board(){
+        BOARD = new ChessBoard();
+    }
 
 
     public static void main(JoinGame joinGame, Integer i, Integer j) {
@@ -29,7 +33,6 @@ public class Board {
 
         out.print(RESET_BG_COLOR);
         out.print(RESET_TEXT_COLOR);
-
 
     }
 

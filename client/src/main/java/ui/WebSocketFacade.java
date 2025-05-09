@@ -3,6 +3,8 @@ package ui;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.JoinGame;
+import websocket.commands.CandM;
+import websocket.commands.Move;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
@@ -63,6 +65,18 @@ public class WebSocketFacade extends Endpoint{
             session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (IOException e) {
             throw new ResponseException(500, e.getMessage());
+        }
+    }
+
+    public void makeMove(AuthData authData, JoinGame joinGame, Move move) throws ResponseException{
+        try{
+            UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,
+                    authData.authToken(), joinGame.gameID());
+            CandM commandAndMove = new CandM(command,move);
+            session.getBasicRemote().sendText(new Gson().toJson(commandAndMove));
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

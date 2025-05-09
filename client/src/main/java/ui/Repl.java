@@ -81,6 +81,6 @@ public class Repl implements NotificationHandler{
 
     @Override
     public void notify(ServerMessage serverMessage) {
-        System.out.println(SET_TEXT_COLOR_RED + serverMessage.toString());
+        System.out.println(SET_TEXT_COLOR_RED + serverMessage.getServerMessageType() + RESET_TEXT_COLOR);
     }
 }

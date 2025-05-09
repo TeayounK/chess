@@ -1,5 +1,6 @@
 package server;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
@@ -12,6 +13,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.commands.CandM;
 import websocket.commands.Move;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
@@ -48,6 +50,12 @@ public class WebSocketHandler {
             UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
             Move move = new Gson().fromJson(message, Move.class);
 
+            if (command.equals(new UserGameCommand(null,null,null))){
+                CandM candM = new Gson().fromJson(message, CandM.class);
+                command = candM.getUserGameCommand();
+                move = candM.getMove();
+            }
+
             if(dataAccessAuth.checkAuth(command.getAuthToken())) {
                 String username = dataAccessAuth.getUser(command.getAuthToken());
 
@@ -83,7 +91,7 @@ public class WebSocketHandler {
             } else {
                 Collection<GameData> games = dataAccessGame.getGames();
                 for (GameData game : games) {
-                    gameVaildationChecks(session, username, game, gameID);
+                    gameValidationChecks(session, username, game, gameID);
                 }
             }
         } catch (IOException e) {
@@ -91,7 +99,7 @@ public class WebSocketHandler {
         }
     }
 
-    private void gameVaildationChecks(Session session, String username, GameData game, Integer gameID)
+    private void gameValidationChecks(Session session, String username, GameData game, Integer gameID)
             throws IOException {
         if(game.gameID() == gameID) {
             if (game.game()==null){
@@ -130,7 +138,7 @@ public class WebSocketHandler {
                         "Error: Resigned. Cannot make a move");
                 session.getRemote().sendString(new Gson().toJson(errorMessage));
             }else{
-                makeMove(session, username, command,move);
+                makeMove(session, username, command, move);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -201,6 +209,7 @@ public class WebSocketHandler {
                 Notification notification = new Notification(ServerMessageType.NOTIFICATION,
                         new Gson().toJson(username + " made a move." ));
                 connections.broadcast(username,notification, gameID);
+
             }else{
                 ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR,
                         "Error: Invalid command. " +

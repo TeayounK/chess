@@ -1,6 +1,11 @@
 package ui;
 
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
+import com.google.gson.Gson;
 import model.*;
+import websocket.commands.Move;
 import websocket.messages.ServerMessage;
 
 import java.util.Arrays;
@@ -18,6 +23,7 @@ public class ChessClient implements NotificationHandler{
     private JoinGame joinGame;
     private JoinGame gameObserver;
     private final String serverUrl;
+    private Board board;
 
 
     public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
@@ -30,6 +36,7 @@ public class ChessClient implements NotificationHandler{
         this.gameObserver = new JoinGame("null",0);
         this.notificationHandler = notificationHandler;
         this.serverUrl = serverUrl;
+        board = new Board();
 
     }
 
@@ -77,6 +84,9 @@ public class ChessClient implements NotificationHandler{
                 case "hi" -> highlight(params);
                 case "highlight" -> highlight(params);
                 case "redrew" -> redrawBoard();
+                case "m" -> makeMove(params);
+                case "make" -> makeMove(params);
+                case "move" -> makeMove(params);
 
                 default -> "";
             };
@@ -188,7 +198,7 @@ public class ChessClient implements NotificationHandler{
         if (params.length==1){
             state = States.LOGIN;
             server.createGame(this.authData,params);
-            Board.create();
+            board.create();
             return "You created a game";
         }else{
             throw new ResponseException(400, "failure: not a valid input. \n" +
@@ -209,7 +219,7 @@ public class ChessClient implements NotificationHandler{
             joinGame = new JoinGame(params[1], this.num2Game.get(gameNum).gameID());
             server.joinGame(this.authData, joinGame);
             state = States.GAME;
-            Board.main(joinGame, 0,0);
+            board.main(joinGame, 0,0);
             ws = new WebSocketFacade(this.serverUrl, notificationHandler);
             ws.joinGame(this.authData, joinGame);
             return "Successfully joined a game";
@@ -242,7 +252,8 @@ public class ChessClient implements NotificationHandler{
                 int gameNum = Integer.parseInt(params[0]);
                 gameObserver = new JoinGame("white", this.num2Game.get(gameNum).gameID());
                 state = States.WATCH;
-                Board.main(gameObserver, 0,0);
+                board.main(gameObserver, 0,0);
+
                 return "Successfully enter the game as an observer";
             }catch(NumberFormatException ex){
                 throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
@@ -265,6 +276,94 @@ public class ChessClient implements NotificationHandler{
         return "You have successfully left the game";
     }
 
+    private String makeMove(String... params) throws ResponseException {
+        assertInGame();
+        if (params.length == 2){
+            try{
+                char[] source = params[0].toCharArray();
+                int si = Integer.parseInt(String.valueOf(source[1]));
+                int sj = charToInt(String.valueOf(source[0]));
+                if (sj==0){
+                    throw new ResponseException(403, "failure: not a valid source position character. \n"
+                            + "The character has to be one of the following characters, [a,b,c,d,e,f,g]");
+                }
+
+                char[] desti = params[1].toCharArray();
+                int di = Integer.parseInt(String.valueOf(desti[1]));
+                int dj = charToInt(String.valueOf(desti[0]));
+                if (dj==0){
+                    throw new ResponseException(403, "failure: not a valid destination position character. \n"
+                            + "The character has to be one of the following characters, [a,b,c,d,e,f,g]");
+                }
+
+                Move move2make = new Move(new ChessMove(new ChessPosition(si,sj),
+                        new ChessPosition(di,dj),
+                        null));
+
+                ws.makeMove(authData, joinGame, move2make);
+                board.main(joinGame,0,0);
+
+                return "successfully made a move";
+            }catch(NumberFormatException ex) {
+                throw new ResponseException(ex.hashCode(), "failure: not a valid position number. \n" +
+                        "<position> has to be character + integer (e.g. f5)");
+            }
+        }else if (params.length == 3){
+            try{
+                ChessPiece.PieceType promo = null;
+                if (params[2].equals("Q")||params[2].equals("QUEEN")){
+                    promo = ChessPiece.PieceType.QUEEN;
+                }else if(params[2].equals("R")||params[2].equals("ROOK")){
+                    promo = ChessPiece.PieceType.ROOK;
+                }else if(params[2].equals("B")||params[2].equals("BISHOP")){
+                    promo = ChessPiece.PieceType.BISHOP;
+                }else if(params[2].equals("K")||params[2].equals("KNIGHT")){
+                    promo = ChessPiece.PieceType.KNIGHT;
+                }else{
+                    throw new ResponseException(403, "Not a valid promotion command. \n"
+                    + "Leave it empty if you meant not to promote. But if you meant to promote, \n"
+                    + "type one of followings when you promote your pawn in which that is applicable."
+                            + "<source> <destination> <Q>/<QUEEN> -> promote a pawn to queen \n"
+                            + "<source> <destination> <R>/<ROOK> -> promote a pawn to rook \n"
+                            + "<source> <destination> <B>/<BISHOP> -> promote a pawn to bishop \n"
+                            + "<source> <destination> <K>/<KNIGHT> -> promote a pawn to knight \n"
+                    );
+                }
+
+                char[] source = params[0].toCharArray();
+                int si = Integer.parseInt(String.valueOf(source[1]));
+                int sj = charToInt(String.valueOf(source[0]));
+                if (sj==0){
+                    throw new ResponseException(403, "failure: not a valid source position character. \n"
+                            + "The character has to be one of the following characters, [a,b,c,d,e,f,g]");
+                }
+
+                char[] desti = params[1].toCharArray();
+                int di = Integer.parseInt(String.valueOf(desti[1]));
+                int dj = charToInt(String.valueOf(desti[0]));
+                if (dj==0){
+                    throw new ResponseException(403, "failure: not a valid destination position character. \n"
+                            + "The character has to be one of the following characters, [a,b,c,d,e,f,g]");
+                }
+
+                Move move2make = new Move(new ChessMove(new ChessPosition(si,sj),
+                                                        new ChessPosition(di,dj),
+                                                        promo));
+
+                ws.makeMove(authData, joinGame, move2make);
+                board.main(joinGame,0,0);
+                return "successfully made a move";
+
+            }catch(NumberFormatException ex) {
+                throw new ResponseException(ex.hashCode(), "failure: not a valid position number. \n" +
+                        "<position> has to be character + integer (e.g. f5)");
+            }
+        }else{
+            throw new ResponseException(400, "failure: not a valid input. \n" +
+                    "Expected: <source> <destination> <optional promotion> (e.g. f5 e4 q)");
+        }
+    }
+
     // in game functions
     private String highlight(String... params) throws ResponseException{
         assertGame();
@@ -280,7 +379,7 @@ public class ChessClient implements NotificationHandler{
                 }
 
                 state = States.GAME;
-                Board.main(joinGame, i, j);
+                board.main(joinGame, i, j);
 
                 return "Successfully highlights possible moves";
             }catch(NumberFormatException ex){
@@ -299,9 +398,9 @@ public class ChessClient implements NotificationHandler{
     private String redrawBoard() throws ResponseException{
         assertGame();
         if (state == States.WATCH){
-            Board.main(gameObserver, 0,0);
+            board.main(gameObserver, 0,0);
         }else{
-            Board.main(joinGame,0,0);
+            board.main(joinGame,0,0);
         }
         return "Successfully redraws the board";
     }
@@ -321,6 +420,11 @@ public class ChessClient implements NotificationHandler{
     }
     private void assertGame() throws ResponseException {
         if (state != States.GAME && state != States.WATCH) {
+            throw new ResponseException(400, "failure: This is a commend for users in a game");
+        }
+    }
+    private void assertInGame() throws ResponseException {
+        if (state != States.GAME) {
             throw new ResponseException(400, "failure: This is a commend for users in a game");
         }
     }
