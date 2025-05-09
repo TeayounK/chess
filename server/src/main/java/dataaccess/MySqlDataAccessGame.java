@@ -107,6 +107,7 @@ public class MySqlDataAccessGame implements DataAccessGame {
                     ex.getMessage()));
         }
     }
+
     private void updateHelper(JoinGame game, String username, PreparedStatement preparedStatement, Connection conn,
                               String statement1) throws SQLException, DataAccessException {
         preparedStatement.setInt(1, game.gameID());
@@ -115,12 +116,12 @@ public class MySqlDataAccessGame implements DataAccessGame {
                 throw new DataAccessException("Error: bad request");
             } else {
                 GameData gameData = readGame(result);
-                if (gameData.blackUsername() != null && gameData.whiteUsername() != null) {
+                if (gameData.blackUsername() != null && gameData.whiteUsername() != null && username!= null) {
                     throw new DataAccessException("Error: already taken");
                 } else if ((gameData.blackUsername() != null &&
-                        game.playerColor().equalsIgnoreCase("black"))
+                        game.playerColor().equalsIgnoreCase("black") && username!= null)
                         || (gameData.whiteUsername() != null &&
-                        game.playerColor().equalsIgnoreCase("white"))) {
+                        game.playerColor().equalsIgnoreCase("white") && username!= null)) {
                     throw new DataAccessException("Error: already taken");
                 }else{
                     try(var preparedStatement1 = conn.prepareStatement(statement1)){
@@ -135,8 +136,6 @@ public class MySqlDataAccessGame implements DataAccessGame {
 
     @Override
     public void updateMove(GameData game) throws DataAccessException {
-//        System.out.println("MySQL");
-        //TODO: it doesn't work... Don't know why
         String statement1;
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM games WHERE gameID = ?";
@@ -177,7 +176,6 @@ public class MySqlDataAccessGame implements DataAccessGame {
         if (game==null){
             return new GameData(gameID,whiteUsername,blackUsername,gameName,null);
         }else{
-//            GameData gameData = new Gson().fromJson(game, GameData.class);
             ChessGame chessGame = new Gson().fromJson(game, ChessGame.class);
             return new GameData(gameID,whiteUsername,blackUsername,gameName,chessGame);
         }

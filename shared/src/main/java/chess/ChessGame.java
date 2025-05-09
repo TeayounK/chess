@@ -126,7 +126,7 @@ public class ChessGame {
                     board.removePiece(move.getStartPosition());
                     teamColor=pieceColor;
                 }
-                System.out.println("empty: "+teamColor.toString());
+                System.out.println("empty: "+teamColor);
 
                 // killing opponent piece
             } else { // since piece_moves returns valid moves where it can capture enemy or move to an empty position
@@ -143,7 +143,7 @@ public class ChessGame {
                     board.removePiece(move.getStartPosition());
                     teamColor=pieceColor;
                 }
-                System.out.println("kill: "+teamColor.toString());
+                System.out.println("kill: "+teamColor);
             }
         }
     }

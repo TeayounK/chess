@@ -1,7 +1,6 @@
 package server;
 
 import chess.ChessGame;
-import chess.ChessMove;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.DataAccessAuth;
@@ -20,10 +19,8 @@ import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 
 import java.io.IOException;
-import java.lang.module.ResolutionException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Objects;
 
 import static websocket.messages.ServerMessage.*;
@@ -34,7 +31,7 @@ public class WebSocketHandler {
     private final DataAccessAuth dataAccessAuth;
     private final DataAccessGame dataAccessGame;
     private final ConnectionManager connections = new ConnectionManager();
-    private ArrayList<Integer> gameIDs;
+    private final ArrayList<Integer> gameIDs;
 
 
 
@@ -246,6 +243,7 @@ public class WebSocketHandler {
                             String color = "white";
                             JoinGame joinGame = new JoinGame(color,command.getGameID());
                             dataAccessGame.updateGame(joinGame, null);
+
                         }else if (game.blackUsername().equals(username)){
                             String color = "black";
                             JoinGame joinGame = new JoinGame(color,command.getGameID());
@@ -261,6 +259,6 @@ public class WebSocketHandler {
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
-    };
+    }
 
 }

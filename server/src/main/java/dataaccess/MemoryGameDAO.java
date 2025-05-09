@@ -59,7 +59,7 @@ public class MemoryGameDAO implements DataAccessGame{
         }
     }
 
-    public void updateMove(GameData game) throws DataAccessException{
+    public void updateMove(GameData game){
         GameData gameCalled = games.get(game.gameID());
         games.remove(gameCalled.gameID(),gameCalled);
         GameData newGame = new GameData(gameCalled.gameID(),gameCalled.whiteUsername(),gameCalled.blackUsername(),gameCalled.gameName(),game.game());
