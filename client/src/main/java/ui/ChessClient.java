@@ -17,7 +17,7 @@ public class ChessClient implements NotificationHandler{
     private WebSocketFacade ws;
     private JoinGame joinGame;
     private JoinGame gameObserver;
-    private String serverUrl;
+    private final String serverUrl;
 
 
     public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
@@ -343,14 +343,6 @@ public class ChessClient implements NotificationHandler{
 
     private String displayNotification(){
         return "null";
-    };
+    }
 
-//    public void onMessage(String message){
-//        try{
-//            ServerMessage meg = gson.fromJson(message, ServerMessage.class);
-////            observer.notify(message)
-//        }catch (Exception ex) {
-//            observer.notify(new ErrorMessage(ex.getMessage()));
-//        }
-//    }
 }

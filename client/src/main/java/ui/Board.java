@@ -53,13 +53,12 @@ public class Board {
 
         Collection<Collection<Integer>> pairs = new ArrayList<>();
 
-        for (ChessMove pm : possMoves) {
-            Collection<Integer> temp = new ArrayList<>();
-            temp.add(pm.getEndPosition().getRow());
-            temp.add(pm.getEndPosition().getColumn());
-            pairs.add(temp);
-        }
+        positionCollector(possMoves, pairs);
 
+        drawOnebyOne(out, pairs);
+    }
+
+    private static void drawOnebyOne(PrintStream out, Collection<Collection<Integer>> pairs) {
         for (int i = 9; i > -1; i--) {
             for (int j = 0; j < 10; j++) {
                 // first line
@@ -165,22 +164,18 @@ public class Board {
 
         Collection<Collection<Integer>> pairs = new ArrayList<>();
 
+        positionCollector(possMoves, pairs);
+
+        drawOnebyOne(out, pairs);
+
+    }
+
+    private static void positionCollector(Collection<ChessMove> possMoves, Collection<Collection<Integer>> pairs) {
         for (ChessMove pm : possMoves) {
             Collection<Integer> temp = new ArrayList<>();
             temp.add(pm.getEndPosition().getRow());
             temp.add(pm.getEndPosition().getColumn());
             pairs.add(temp);
-        }
-
-        for (int i=0; i < 10 ; i++){
-            for (int j=9; j > -1 ; j--){
-                Collection<Integer> match = new ArrayList<>();
-                match.add(i);
-                match.add(j);
-                drawBoardHelper(out, i, j, pairs.contains(match));
-            }
-            out.print(RESET_BG_COLOR);
-            out.print("\n");
         }
     }
 

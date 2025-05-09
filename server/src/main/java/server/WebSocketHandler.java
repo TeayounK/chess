@@ -81,38 +81,40 @@ public class WebSocketHandler {
             } else {
                 Collection<GameData> games = dataAccessGame.getGames();
                 for (GameData game : games) {
-                    if(game.gameID() == gameID) {
-                        if (game.game()==null){
-                            ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command");
-                            session.getRemote().sendString(new Gson().toJson(errorMessage));
-                        }else {
-                            connections.removeResign(gameID);
-                            connections.addResign(gameID,true);
-                            if (username.equals(game.whiteUsername())){
-                                ChessGame.TeamColor userColor = ChessGame.TeamColor.WHITE;
-
-                                Notification notification = new Notification(ServerMessageType.NOTIFICATION,
-                                        new Gson().toJson("White player, " + username + ", resigned."));
-                                connections.broadcast("",notification,gameID);
-
-
-                            }else if (username.equals(game.blackUsername())){
-                                ChessGame.TeamColor userColor = ChessGame.TeamColor.BLACK;
-
-                                Notification notification = new Notification(ServerMessageType.NOTIFICATION,
-                                        new Gson().toJson("Black player, " + username + ", resigned." ));
-                                connections.broadcast("",notification,gameID);
-
-                            }else{
-                                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command");
-                                session.getRemote().sendString(new Gson().toJson(errorMessage));
-                            }
-                        }
-                    }
+                    gameVaildationChecks(session, username, game, gameID);
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void gameVaildationChecks(Session session, String username, GameData game, Integer gameID) throws IOException {
+        if(game.gameID() == gameID) {
+            if (game.game()==null){
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command");
+                session.getRemote().sendString(new Gson().toJson(errorMessage));
+            }else {
+                connections.removeResign(gameID);
+                connections.addResign(gameID,true);
+                if (username.equals(game.whiteUsername())){
+
+                    Notification notification = new Notification(ServerMessageType.NOTIFICATION,
+                            new Gson().toJson("White player, " + username + ", resigned."));
+                    connections.broadcast("",notification, gameID);
+
+
+                }else if (username.equals(game.blackUsername())){
+
+                    Notification notification = new Notification(ServerMessageType.NOTIFICATION,
+                            new Gson().toJson("Black player, " + username + ", resigned." ));
+                    connections.broadcast("",notification, gameID);
+
+                }else{
+                    ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command");
+                    session.getRemote().sendString(new Gson().toJson(errorMessage));
+                }
+            }
         }
     }
 
@@ -138,49 +140,7 @@ public class WebSocketHandler {
             } else {
                 Collection<GameData> games = dataAccessGame.getGames();
                 for (GameData game: games){
-                    if(game.gameID() == gameID){
-                        if (game.game()==null){
-                            ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command");
-                            session.getRemote().sendString(new Gson().toJson(errorMessage));
-                        }else {
-                            // move validation check
-                            if (game.game().validMoves(move.getMove().getStartPosition()).contains(move.getMove())){
-
-                                ChessGame.TeamColor userColor = null;
-                                if (username.equals(game.whiteUsername())){
-                                    userColor = ChessGame.TeamColor.WHITE;
-                                }else if (username.equals(game.blackUsername())){
-                                    userColor = ChessGame.TeamColor.BLACK;
-                                }
-
-                                if (game.game().getTeamTurn() == userColor){
-                                    ChessGame updatedGame = game.game();
-                                    updatedGame.makeMove(move.getMove());
-
-                                    GameData tempGame = new GameData(game.gameID(),game.whiteUsername(),game.blackUsername()
-                                            ,game.gameName(),updatedGame);
-
-                                    // update the game
-                                    dataAccessGame.updateMove(tempGame);
-
-                                    LoadGame loadGame = new LoadGame(ServerMessageType.LOAD_GAME, command.getGameID());
-                                    connections.loadGames(loadGame, gameID);
-
-                                    Notification notification = new Notification(ServerMessageType.NOTIFICATION,
-                                            new Gson().toJson(username + " made a move." ));
-                                    connections.broadcast(username,notification,gameID);
-                                }else{
-                                    ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command. " +
-                                            "\n" + "You are not the right user to take this turn");
-                                    session.getRemote().sendString(new Gson().toJson(errorMessage));
-                                }
-
-                            }else{
-                                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid move");
-                                session.getRemote().sendString(new Gson().toJson(errorMessage));
-                            }
-                        }
-                    }
+                    validationCheck1(session, username, command, move, game, gameID);
                 }
             }
         } catch (IOException e) {
@@ -192,6 +152,57 @@ public class WebSocketHandler {
             throw new RuntimeException(e);
         }
     }
+
+    private void validationCheck1(Session session, String username, UserGameCommand command, Move move, GameData game, Integer gameID) throws IOException, InvalidMoveException, DataAccessException {
+        if(game.gameID() == gameID){
+            if (game.game()==null){
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command");
+                session.getRemote().sendString(new Gson().toJson(errorMessage));
+            }else {
+                // move validation check
+                moveValidationCheck(session, username, command, move, game, gameID);
+            }
+        }
+    }
+
+    private void moveValidationCheck(Session session, String username, UserGameCommand command, Move move, GameData game, Integer gameID) throws InvalidMoveException, DataAccessException, IOException {
+        if (game.game().validMoves(move.getMove().getStartPosition()).contains(move.getMove())){
+
+            ChessGame.TeamColor userColor = null;
+            if (username.equals(game.whiteUsername())){
+                userColor = ChessGame.TeamColor.WHITE;
+            }else if (username.equals(game.blackUsername())){
+                userColor = ChessGame.TeamColor.BLACK;
+            }
+
+            if (game.game().getTeamTurn() == userColor){
+                ChessGame updatedGame = game.game();
+                updatedGame.makeMove(move.getMove());
+
+                GameData tempGame = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername()
+                        , game.gameName(),updatedGame);
+
+                // update the game
+                dataAccessGame.updateMove(tempGame);
+
+                LoadGame loadGame = new LoadGame(ServerMessageType.LOAD_GAME, command.getGameID());
+                connections.loadGames(loadGame, gameID);
+
+                Notification notification = new Notification(ServerMessageType.NOTIFICATION,
+                        new Gson().toJson(username + " made a move." ));
+                connections.broadcast(username,notification, gameID);
+            }else{
+                ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid command. " +
+                        "\n" + "You are not the right user to take this turn");
+                session.getRemote().sendString(new Gson().toJson(errorMessage));
+            }
+
+        }else{
+            ErrorMessage errorMessage = new ErrorMessage(ServerMessageType.ERROR, "Error: Invalid move");
+            session.getRemote().sendString(new Gson().toJson(errorMessage));
+        }
+    }
+
     private void connectGame(Session session, String username, UserGameCommand command) {
         // LOAD_GAME, NOTIFICATION
         try {
@@ -235,26 +246,30 @@ public class WebSocketHandler {
 
                 // remove the player from the game by updating the game
                 for (GameData game : dataAccessGame.getGames()){
-                    if (game.gameID() == command.getGameID()){
-                        if (game.whiteUsername().equals(username)){
-                            String color = "white";
-                            JoinGame joinGame = new JoinGame(color,command.getGameID());
-                            dataAccessGame.updateGame(joinGame, null);
-
-                        }else if (game.blackUsername().equals(username)){
-                            String color = "black";
-                            JoinGame joinGame = new JoinGame(color,command.getGameID());
-                            dataAccessGame.updateGame(joinGame, null);
-                        }else{
-                            throw new DataAccessException("Error: unknown username");
-                        }
-                    }
+                    removeCheck(username, command, game);
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void removeCheck(String username, UserGameCommand command, GameData game) throws DataAccessException {
+        if (game.gameID() == command.getGameID()){
+            if (game.whiteUsername().equals(username)){
+                String color = "white";
+                JoinGame joinGame = new JoinGame(color, command.getGameID());
+                dataAccessGame.updateGame(joinGame, null);
+
+            }else if (game.blackUsername().equals(username)){
+                String color = "black";
+                JoinGame joinGame = new JoinGame(color, command.getGameID());
+                dataAccessGame.updateGame(joinGame, null);
+            }else{
+                throw new DataAccessException("Error: unknown username");
+            }
         }
     }
 
