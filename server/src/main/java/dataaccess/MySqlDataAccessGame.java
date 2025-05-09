@@ -128,6 +128,7 @@ public class MySqlDataAccessGame implements DataAccessGame {
                         preparedStatement1.setString(1, username);
                         preparedStatement1.setInt(2, game.gameID());
                         preparedStatement1.executeUpdate();
+
                     }
                 }
             }
