@@ -1,5 +1,6 @@
 package ui;
 
+import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
 import java.util.Scanner;
@@ -25,11 +26,10 @@ public class Repl implements NotificationHandler{
                 case States.LOGIN -> printPromptLogin();
                 case States.GAME -> printPromptGame();
                 case States.WATCH -> printPromptGame();
+                case States.RESIGN -> printPromptResign();
             });
 
             String line = scanner.nextLine();
-
-//            do I need to separate two cases whether we want to do websocket or http?
 
             try {
                 result = client.eval(line);
@@ -41,6 +41,14 @@ public class Repl implements NotificationHandler{
             }
         }
         System.out.println();
+    }
+
+    private String printPromptResign() {
+        return """
+                \n
+                Options:
+                Are you sure you want to resign the game? (y/n)
+                """;
     }
 
     static String printPromptPreLogin() {
@@ -80,7 +88,8 @@ public class Repl implements NotificationHandler{
     }
 
     @Override
-    public void notify(ServerMessage serverMessage) {
-        System.out.println(SET_TEXT_COLOR_RED + serverMessage.getServerMessageType() + RESET_TEXT_COLOR);
+    public void notify(String serverMessage) {
+        System.out.println("<Repl notify>");
+        client.notify(serverMessage);
     }
 }

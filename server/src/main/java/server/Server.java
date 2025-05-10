@@ -15,6 +15,7 @@ import java.util.Map;
 
 public class Server {
     private Service service = new Service(new MemoryUserDAO(), new MemoryAuthDAO(), new MemoryGameDAO());
+    private WebSocketHandler webSocketHandler;
 
     public int run(int desiredPort) {
         DataAccessUser dataAccessUser = new MemoryUserDAO();
@@ -31,6 +32,7 @@ public class Server {
         }
 
         this.service = new Service(dataAccessUser, dataAccessAuth, dataAccessGame);
+        this.webSocketHandler = new WebSocketHandler(dataAccessAuth,dataAccessGame);
 
         Spark.port(desiredPort);
 
@@ -194,6 +196,7 @@ public class Server {
         try{
             service.checkAuth(authToken);
             service.joinGame(gameinfo,authToken);
+//            webSocketHandler. perhaps you want to make a public function to call
             res.status(200);
             return g.toJson(Map.of("message",""));
         }catch(DataAccessException e){

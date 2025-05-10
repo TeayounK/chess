@@ -4,5 +4,6 @@ public enum States {
     PRELOGIN,
     LOGIN,
     GAME,
-    WATCH
+    WATCH,
+    RESIGN
 }

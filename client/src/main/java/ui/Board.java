@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import static ui.EscapeSequences.*;
 
@@ -17,9 +18,26 @@ public class Board {
     // Padded characters.
     private static final String EMPTY = "   ";
     private static ChessBoard BOARD;
+    private static ChessColors chessColors;
 
-    public Board(){
-        BOARD = new ChessBoard();
+
+    public Board(ChessBoard board, int colorNum){
+        BOARD = board;
+        chessColors = intToChar(colorNum);
+        System.out.println("Board test");
+        System.out.println(chessColors.getWhite());
+        System.out.println(chessColors.getBlack());
+    }
+
+    private ChessColors intToChar(Integer input){
+
+        ChessColors chessColors = switch (input) {
+            case 1 -> new ChessColors(SET_TEXT_COLOR_MAGENTA,SET_TEXT_COLOR_LIGHT_GREY);
+            case 2 -> new ChessColors(SET_TEXT_COLOR_GREEN,SET_TEXT_COLOR_BLUE);
+            case 3 -> new ChessColors(SET_TEXT_COLOR_RED,SET_TEXT_COLOR_YELLOW);
+            default -> new ChessColors(SET_TEXT_COLOR_RED,SET_TEXT_COLOR_BLUE);
+        };
+        return chessColors;
     }
 
 
@@ -97,9 +115,9 @@ public class Board {
     private static void pieceColor(PrintStream out, ChessPiece piece) {
         ChessGame.TeamColor color = piece.getTeamColor();
         if (color == ChessGame.TeamColor.WHITE) {
-            out.print(SET_TEXT_COLOR_RED);
+            out.print(chessColors.getWhite());
         } else if (color == ChessGame.TeamColor.BLACK) {
-            out.print(SET_TEXT_COLOR_BLUE);
+            out.print(chessColors.getBlack());
         }
     }
 

@@ -3,7 +3,7 @@ import ui.Repl;
 
 public class Main {
     public static void main(String[] args) {
-        var serverUrl = "http://localhost:8800";
+        var serverUrl = "http://localhost:8801";
         if (args.length == 1) {
             serverUrl = args[0];
         }

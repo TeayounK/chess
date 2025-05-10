@@ -6,6 +6,8 @@ import chess.ChessPosition;
 import com.google.gson.Gson;
 import model.*;
 import websocket.commands.Move;
+import websocket.messages.LoadGame;
+import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
 import java.util.Arrays;
@@ -24,6 +26,7 @@ public class ChessClient implements NotificationHandler{
     private JoinGame gameObserver;
     private final String serverUrl;
     private Board board;
+    private int colornumber;
 
 
     public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
@@ -36,7 +39,8 @@ public class ChessClient implements NotificationHandler{
         this.gameObserver = new JoinGame("null",0);
         this.notificationHandler = notificationHandler;
         this.serverUrl = serverUrl;
-        board = new Board();
+        board = new Board(null,0);
+        colornumber = 0;
 
     }
 
@@ -74,7 +78,7 @@ public class ChessClient implements NotificationHandler{
                 // commends in login phase
                 case "logout" -> logout();
                 case "create" -> createGame(params);
-                case "c" -> createGame(params);
+                case "c" -> c(params);
                 case "join" -> joinGame(params);
                 case "j" -> joinGame(params);
                 case "watch" -> watchGame(params);
@@ -87,12 +91,73 @@ public class ChessClient implements NotificationHandler{
                 case "m" -> makeMove(params);
                 case "make" -> makeMove(params);
                 case "move" -> makeMove(params);
+                case "color" -> c(params);
+                case "res" -> reallyResign();
+                case "y" -> yesResign();
+                case "n" -> noResign();
+
 
                 default -> "";
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
+    }
+
+    private String noResign() throws ResponseException {
+        assertResign();
+        state = States.GAME;
+        return "Successfully not resign the game.";
+    }
+
+    private String yesResign() throws ResponseException {
+        assertResign();
+        state = States.GAME;
+        ws.resignRequest(authData,joinGame);
+        return "Successfully resign the game. \n Any further moves are prohibited.";
+    }
+
+    private String reallyResign() throws ResponseException {
+        assertInGame();
+        state = States.RESIGN;
+        return "You commanded 'resign' the game.";
+    }
+
+    private String c(String... params) throws ResponseException{
+        System.out.println("<colorTest>");
+        if (state == States.LOGIN){
+            return this.createGame(params);
+        }else if (state == States.GAME || state == States.WATCH){
+            return this.setColor(params);
+        }else {
+            throw new ResponseException(400, "failure: not a valid command.");
+        }
+    }
+
+    private String setColor(String[] params) throws ResponseException {
+        assertGame();
+        if (params.length == 1) {
+            try {
+                colornumber = Integer.parseInt(params[0]);;
+                System.out.println(colornumber);
+
+                board = new Board(ws.getUpdatedBoard(),colornumber);
+                if (state == States.WATCH){
+                    board.main(gameObserver, 0,0);
+                }else{
+                    board.main(joinGame,0,0);
+                }
+                return "Successfully redraws the board";
+
+            } catch (NumberFormatException e) {
+                throw new ResponseException(e.hashCode(), "failure: not a valid color number. \n" +
+                        "<color number> has to be an integer of [0,1,2,3]");
+            }
+        }else{
+            throw new ResponseException(400, "failure: Not a valid command. \n"+
+                    "Expected: <color number>");
+        }
+
     }
 
     private String l(String... params) throws ResponseException{
@@ -198,7 +263,6 @@ public class ChessClient implements NotificationHandler{
         if (params.length==1){
             state = States.LOGIN;
             server.createGame(this.authData,params);
-            board.create();
             return "You created a game";
         }else{
             throw new ResponseException(400, "failure: not a valid input. \n" +
@@ -219,10 +283,12 @@ public class ChessClient implements NotificationHandler{
             joinGame = new JoinGame(params[1], this.num2Game.get(gameNum).gameID());
             server.joinGame(this.authData, joinGame);
             state = States.GAME;
-            board.main(joinGame, 0,0);
+
             ws = new WebSocketFacade(this.serverUrl, notificationHandler);
-            ws.joinGame(this.authData, joinGame);
+            ws.connectGame(this.authData, joinGame);
+
             return "Successfully joined a game";
+
         }catch(NumberFormatException ex){
             throw new ResponseException(ex.hashCode(), "failure: not a valid game number. \n" +
                     "<GAME NUMBER> has to be integer");
@@ -252,6 +318,11 @@ public class ChessClient implements NotificationHandler{
                 int gameNum = Integer.parseInt(params[0]);
                 gameObserver = new JoinGame("white", this.num2Game.get(gameNum).gameID());
                 state = States.WATCH;
+
+                ws = new WebSocketFacade(this.serverUrl, notificationHandler);
+                ws.connectGame(this.authData, gameObserver);
+
+                board = new Board(ws.getUpdatedBoard(),colornumber);
                 board.main(gameObserver, 0,0);
 
                 return "Successfully enter the game as an observer";
@@ -272,7 +343,7 @@ public class ChessClient implements NotificationHandler{
         assertGame();
         state = States.LOGIN;
         ws.leaveGame(this.authData,joinGame);
-
+        ws = null;
         return "You have successfully left the game";
     }
 
@@ -297,13 +368,12 @@ public class ChessClient implements NotificationHandler{
                 }
 
                 Move move2make = new Move(new ChessMove(new ChessPosition(si,sj),
-                        new ChessPosition(di,dj),
-                        null));
+                                                        new ChessPosition(di,dj),
+                                                            null));
 
                 ws.makeMove(authData, joinGame, move2make);
-                board.main(joinGame,0,0);
 
-                return "successfully made a move";
+                return " ";
             }catch(NumberFormatException ex) {
                 throw new ResponseException(ex.hashCode(), "failure: not a valid position number. \n" +
                         "<position> has to be character + integer (e.g. f5)");
@@ -351,8 +421,8 @@ public class ChessClient implements NotificationHandler{
                                                         promo));
 
                 ws.makeMove(authData, joinGame, move2make);
-                board.main(joinGame,0,0);
-                return "successfully made a move";
+
+                return " ";
 
             }catch(NumberFormatException ex) {
                 throw new ResponseException(ex.hashCode(), "failure: not a valid position number. \n" +
@@ -379,6 +449,7 @@ public class ChessClient implements NotificationHandler{
                 }
 
                 state = States.GAME;
+                board = new Board(ws.getUpdatedBoard(),colornumber);
                 board.main(joinGame, i, j);
 
                 return "Successfully highlights possible moves";
@@ -397,6 +468,7 @@ public class ChessClient implements NotificationHandler{
 
     private String redrawBoard() throws ResponseException{
         assertGame();
+        board = new Board(ws.getUpdatedBoard(),colornumber);
         if (state == States.WATCH){
             board.main(gameObserver, 0,0);
         }else{
@@ -428,25 +500,18 @@ public class ChessClient implements NotificationHandler{
             throw new ResponseException(400, "failure: This is a commend for users in a game");
         }
     }
-
-
-    public void notify(ServerMessage message){
-        switch (message.getServerMessageType()){
-            case NOTIFICATION -> displayNotification();
-            case ERROR -> displayError();
-            case LOAD_GAME -> loadGame();
+    private void assertResign() throws ResponseException {
+        if (state != States.RESIGN) {
+            throw new ResponseException(400, "failure: This is a commend for users who request resign");
         }
     }
 
-    private void loadGame() {
-    }
 
-    private String displayError() {
-        return "null";
-    }
+    // perhaps I can make them public and call them from Repl to print out notifications
 
-    private String displayNotification(){
-        return "null";
+    @Override
+    public void notify(String message) {
+        Notification notification = new Gson().fromJson(message, Notification.class);
+        System.out.println("Notification: "+ notification.getMessage());
     }
-
 }

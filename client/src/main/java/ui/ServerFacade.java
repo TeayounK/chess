@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.*;
 
@@ -35,10 +36,9 @@ public class ServerFacade {
     }
     public GameData createGame(AuthData authData, String... params) throws ResponseException{
         var path = "/game";
-        GameData newGame = new GameData(0,null,null,params[0],null);
+        GameData newGame = new GameData(0,null,null,params[0],new ChessGame());
         return this.makeRequest("POST", path, newGame, GameData.class, authData);
     }
-
     public ListResult listGames(AuthData authData) throws ResponseException{
         var path = "/game";
         return this.makeRequest("GET", path,null,ListResult.class, authData);
